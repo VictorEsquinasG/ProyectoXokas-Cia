@@ -18,13 +18,14 @@ class ApiDistribucionController extends AbstractController
     public function getDistribucion(DistribucionRepository $mr, int $id): Response
     {
 
-        $distribucion = $mr->find($id);
-
-        if ($distribucion->getId() === null) {
+        
+        if ($id === null) {
             $distribuciones = $mr->findAll();
             # Si es null, los quiere todos
             return $this->json(["Distribucion" => $distribuciones,"Success"=>true], 202);
         } else {
+            // La distribucion
+            $distribucion = $mr->find($id);
             return $this->json(["Distribucion" => [
                 "id" => $distribucion->getId(),
                 "pos_x" => $distribucion->getPosicionX(),

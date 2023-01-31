@@ -34,6 +34,9 @@ class Juego
     #[ORM\OneToMany(mappedBy: 'Juego', targetEntity: Reserva::class)]
     private Collection $reservas;
 
+    #[ORM\Column(type: Types::BLOB)]
+    private $imagen = null;
+
     public function __construct()
     {
         $this->Eventos = new ArrayCollection();
@@ -143,6 +146,18 @@ class Juego
                 $reserva->setJuego(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getImagen()
+    {
+        return $this->imagen;
+    }
+
+    public function setImagen($imagen): self
+    {
+        $this->imagen = $imagen;
 
         return $this;
     }

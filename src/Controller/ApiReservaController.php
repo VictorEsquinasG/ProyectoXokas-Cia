@@ -18,13 +18,13 @@ class ApiReservaController extends AbstractController
     public function getReserva(ReservaRepository $rr, int $id): Response
     {
 
-        $reserva = $rr->find($id);
-
-        if ($reserva->getId() === null) {
+        if ($id === null) {
             # Si es null, las quiere todas
             $reservas = $rr->findAll();
             return $this->json(["reservas" => $reservas,"Success"=>true], 400);
         } else {
+            // LA RESERVA
+            $reserva = $rr->find($id);
             return $this->json(["Reserva" => [
                 "id" => $reserva->getId(),
                 "juego" => $reserva->getJuego(),

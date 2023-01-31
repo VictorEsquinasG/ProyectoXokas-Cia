@@ -15,16 +15,17 @@ use Symfony\Component\Routing\Annotation\Route;
 class ApiJuegoController extends AbstractController
 {
     #[Route("/juego/{id}", name: "getJuego", methods: "GET")]
-    public function getJuego(JuegoRepository $jr, int $id): Response
+    public function getJuego(JuegoRepository $jr, int $id = null): Response
     {
 
-        $juego = $jr->find($id);
-
-        if ($juego->getId() === null) {
+        
+        if ($id === null) {
             # Si es null, los quiere todos
             $juegos = $jr->findAll();
             return $this->json(["juegos" => $juegos,"Success"=>true], 400);
         } else {
+            // Cogemos el juego
+            $juego = $jr->find($id);
             return $this->json(["Juego" => [
                 "id" => $juego->getId(),
                 "nombre" => $juego->getNombre(),

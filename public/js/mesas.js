@@ -6,14 +6,13 @@
 $(function () {
 
     /* LAS MESAS */
-   /*  var mesas = [];
+    var mesas = [];
     mesas = $.ajax({
-        type: "GET",
-        url: "http://127.0.0.1:8000/api/mesa/1",
-        data: "data"
+        method: "GET",
+        url: "http://127.0.0.1:8000/api/mesa",
     }).done(function (data) {
         console.log(data.id);
-    }); */
+    });
     
     /* CAPURAMOS EL ALMACÉN Y LA SALA */
     $("#container-mesas").css({

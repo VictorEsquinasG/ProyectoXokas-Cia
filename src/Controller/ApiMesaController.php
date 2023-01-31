@@ -15,16 +15,17 @@ use Symfony\Component\Routing\Annotation\Route;
 class ApiMesaController extends AbstractController
 {
     #[Route("/mesa/{id}", name: "getMesa", methods: "GET")]
-    public function getMesa(MesaRepository $mr, int $id): Response
+    public function getMesa(MesaRepository $mr, int $id = null): Response
     {
 
-        $mesa = $mr->find($id);
-
-        if ($mesa->getId() === null) {
+        
+        if ($id === null) {
             # Si es null, las quiere todas
             $mesas = $mr->findAll();
-            return $this->json(["mesas" => $mesa,"Success"=>true],400);
+            return $this->json(["mesas" => $mesas,"Success"=>true],400);
         } else {
+            // cogemos la mesa
+            $mesa = $mr->find($id);
             return $this->json(["mesa" => ["id" => $mesa->getId(), "largo" => $mesa->getLargo(), "ancho" => $mesa->getAncho()], "Success" => true]);
         }
     }
