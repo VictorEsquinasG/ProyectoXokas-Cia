@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+	{# En el body #}
+
+	<h1>{{ title }}</h1>
+
+	<div>
+		<h5>Empresas óptimas para realización de sus prácticas:</h5>
+		<ul>
+			{% for empresa in empresas %}
+				<li>
+					{{ empresa }}
+				</li>
+			{% endfor %}
+		</ul> 
+	{% if app.request.method == "GET" %}
+		{# <p>
+			HOLA
+			{{user | upper}}, te notificamos sobre una compra reciente con tu tarjeta
+		</p>  #}
+		<pre>
+		************************
+		 * id = {{user.id}} 	*
+		 * nombre = {{user.name}}	*
+		************************
+		</pre>
+		<a href="{{path('salir',{
+		'user':user.name
+		})}}">ADIÓS</<a>
+	{% else %}
+		{% dump(app.request.method) %}
+	{% endif %}
+{% endblock %}

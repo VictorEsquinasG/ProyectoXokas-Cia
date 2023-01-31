@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+	<script src=""></script>
+{% endblock %}
+
+
+{% block body %}
+	{# En el body #}
+
+	<div id="container-mesas">
+		<div id="almacen">
+			<div class="mesa"></div>
+			<div class="mesa"></div>
+			<div class="mesa"></div>
+			<div class="mesa"></div>
+		</div>
+		<div id="sala">
+			<div class="mesa"></div>
+		</div>
+	</div>
+
+	<style>
+		.mesa {
+			background: url('../images/mesa.png') no-repeat;
+			background-size: 100%;
+			background-color: aliceblue;
+		}
+	</style>
+
+{% endblock %}
