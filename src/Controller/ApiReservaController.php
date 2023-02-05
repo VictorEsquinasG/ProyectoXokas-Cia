@@ -21,7 +21,7 @@ class ApiReservaController extends AbstractController
         if ($id === null) {
             # Si es null, las quiere todas
             $reservas = $rr->findAll();
-            return $this->json(["reservas" => $reservas,"Success"=>true], 400);
+            return $this->json(["reservas" => $reservas,"Success"=>true], 200);
         } else {
             // LA RESERVA
             $reserva = $rr->find($id);
@@ -34,14 +34,15 @@ class ApiReservaController extends AbstractController
                 "user" => $reserva->getUsuario(),
                 "asiste" => $reserva->isAsiste()
             ], "Success" => true],
-            202);
+            200);
         }
     }
 
     #[Route("/reserva", name: "postReserva", methods: "POST")]
     public function postReserva(ManagerRegistry $mr, Request $request): Response
     {
-        $datos = json_decode($request->request->get('reserva'));
+        $datos = json_decode($request->getContent());
+        $datos = $datos->reserva;
         $reserva = new Reserva();
 
         $reserva->setFechaReserva($datos->fecha);
@@ -59,7 +60,8 @@ class ApiReservaController extends AbstractController
         try {
             // La creamos
             $manager = $mr->getManager();
-            $manager->persist($reserva, true);
+            $manager->persist($reserva);
+            $manager->flush();
         } catch (PDOException $e) {
             $this->json(['message'=>$e->getMessage(),"Success"=>false],400);
         }
@@ -67,6 +69,7 @@ class ApiReservaController extends AbstractController
         # Creado con éxito => Devolvemos la ID
         return $this->json(
             [
+                "id" => $id,
                 "message" => "Éxito al crear la Reserva " . $id,
                 "Success" => true
             ],
@@ -77,7 +80,8 @@ class ApiReservaController extends AbstractController
     #[Route("/reserva", name: "putReserva", methods: "PUT")]
     public function putReserva(ManagerRegistry $mr, Request $request): Response
     {
-        $datos = json_decode($request->request->get('reserva'));
+        $datos = json_decode($request->getContent());
+        $datos = $datos->reserva;
         // Cogemos el ID de el Reserva a editar
         $id = $datos->id;
         // Obtenemos el Reserva
@@ -102,6 +106,7 @@ class ApiReservaController extends AbstractController
         # Creado con éxito => Devolvemos la ID
         return $this->json(
             [
+                "id" => $id,
                 "message" => "Éxito al editar la reserva " . $id,
                 "Success" => true
             ],
@@ -130,6 +135,7 @@ class ApiReservaController extends AbstractController
         # Creado con éxito => Devolvemos la ID
         return $this->json(
             [
+                "id" => $id,
                 "message" => "Éxito al borrar la reserva " . $id,
                 "Success" => true
             ],

@@ -22,7 +22,7 @@ class ApiJuegoController extends AbstractController
         if ($id === null) {
             # Si es null, los quiere todos
             $juegos = $jr->findAll();
-            return $this->json(["juegos" => $juegos,"Success"=>true], 400);
+            return $this->json(["juegos" => $juegos,"Success"=>true], 200);
         } else {
             // Cogemos el juego
             $juego = $jr->find($id);
@@ -34,14 +34,17 @@ class ApiJuegoController extends AbstractController
                 "tamañoTablero" => $juego->getTamanioTablero(),
                 "reservas" => $juego->getReservas(),
                 "eventos" => $juego->getEventos()
-            ], "Success" => true]);
+            ], "Success" => true],200);
         }
     }
 
     #[Route("/juego", name: "postJuego", methods: "POST")]
     public function postJuego(ManagerRegistry $mr, Request $request): Response
     {
-        $datos = json_decode($request->request->get('juego'));
+        $datos = json_decode($request->getContent());
+        $datos = $datos->juego;
+
+
         $juego = new Juego();
         $juego->setNombre($datos->nombre);
         $juego->setMinJugadores($datos->minJugadores);
@@ -80,7 +83,8 @@ class ApiJuegoController extends AbstractController
     #[Route("/juego", name: "putJuego", methods: "PUT")]
     public function putJuego(ManagerRegistry $mr, Request $request): Response
     {
-        $datos = json_decode($request->request->get('juego'));
+        $datos = json_decode($request->getContent());
+        $datos = $datos->juego;
         // Cogemos el ID de el Juego a editar
         $id = $datos->id;
         // Obtenemos el Juego

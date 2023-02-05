@@ -7,9 +7,10 @@ use App\Repository\MesaRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 #[ORM\Entity(repositoryClass: MesaRepository::class)]
-class Mesa
+class Mesa implements JsonSerializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -168,4 +169,17 @@ class Mesa
 
         return $this;
     }
+    public function jsonSerialize(): mixed
+    {
+        $json = [
+            "id" => $this->getId(),
+            "ancho"=>$this->getAncho(),
+            "largo" => $this->getLargo(),
+            "posicion_x" => $this->getPosicionX(),
+            "posicion_y" => $this->getPosicionY(),
+            "sillas" => $this->getSillas(),
+        ];
+        return $json;        
+    }
+
 }

@@ -17,23 +17,29 @@ class ApiMesaController extends AbstractController
     #[Route("/mesa/{id}", name: "getMesa", methods: "GET")]
     public function getMesa(MesaRepository $mr, int $id = null): Response
     {
-
         
         if ($id === null) {
             # Si es null, las quiere todas
             $mesas = $mr->findAll();
-            return $this->json(["mesas" => $mesas,"Success"=>true],400);
+            return $this->json(["mesas" => $mesas,"Success"=>true], 200);
         } else {
             // cogemos la mesa
             $mesa = $mr->find($id);
-            return $this->json(["mesa" => ["id" => $mesa->getId(), "largo" => $mesa->getLargo(), "ancho" => $mesa->getAncho()], "Success" => true]);
+            return $this->json(["mesa" => ["id" => $mesa->getId(),
+            "largo" => $mesa->getLargo(),
+            "ancho" => $mesa->getAncho(),
+            "sillas" => $mesa->getSillas(),
+            "posicion_x" => $mesa->getPosicionX(),
+            "posicion_y" => $mesa->getPosicionY()], "Success" => true], 200);
         }
     }
 
     #[Route("/mesa", name: "postMesa", methods: "POST")]
     public function postMesa(ManagerRegistry $mr, Request $request): Response
     {
-        $datos = json_decode($request->request->get('mesa'));
+        $datos = json_decode($request->getContent());
+        $datos = $datos->mesa;
+    
         $mesa = new Mesa();
         $mesa->setAncho($datos->ancho);
         $mesa->setLargo($datos->largo);
@@ -43,14 +49,16 @@ class ApiMesaController extends AbstractController
 
         $manager = $mr->getManager();
         try {
-            $manager->persist($mesa,true);
+            $manager->persist($mesa);
+            $manager->flush();
         } catch (PDOException $e) {
-            $this->json(['message'=>$e->getMessage(),"Success"=>false],400);$this->json(['message'=>$e->getMessage(),"Success"=>false],400);
+            $this->json(['message'=>$e->getMessage(),"Success"=>false],400);
         }
         $id = $mesa->getId();
         # Creado con éxito => Devolvemos la ID
         return $this->json(
             [
+                "id" => $id,
                 "message" => "Éxito al crear la mesa " . $id,
                 "Success" => true
             ],
@@ -61,7 +69,6 @@ class ApiMesaController extends AbstractController
     #[Route("/mesa", name: "putMesa", methods: "PUT")]
     public function putMesa(ManagerRegistry $mr, Request $request): Response
     {
-
         $datos = json_decode($request->getContent());
         // Cogemos el ID de la mesa a editar
         $mesaNueva = $datos->mesa;
@@ -87,6 +94,7 @@ class ApiMesaController extends AbstractController
         # Creado con éxito => Devolvemos la ID
         return $this->json(
             [
+                "id" => $id,
                 "message" => "Éxito al editar la mesa " . $id,
                 "Success" => true
             ],

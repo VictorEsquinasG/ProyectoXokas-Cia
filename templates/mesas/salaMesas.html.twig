@@ -1,0 +1,76 @@
+{% extends './base.html.twig' %}
+
+{% block javascripts %}
+	{# <script src="{{ asset('js/mesas.js') }}"></script> #}
+{% endblock %}
+
+
+{% block body %}
+	{# En el body #}
+	<h1>A</h1>
+	<h1>B</h1>
+	<div id="container-mesas">
+		<div id="almacen">
+			
+		</div>
+		<div id="sala">
+			
+		</div>
+	</div>
+	<div id="crea-mesas">
+		<form action="" method="POST">
+			<label for="ancho">Ancho:</label>
+			<input type="number" name="ancho" id="ancho">
+			<label for="largo">Largo:</label>
+			<input type="number" name="largo" id="largo">
+			<label for="sillas">Sillas:</label>
+			<input type="number" name="sillas" id="sillas">
+			<input type="submit" id="btnCrear" value="CREAR">
+		</form>
+	</div>
+
+	<style>
+		.mesa {
+			background: url('../images/table.png') no-repeat;
+			background-size: 100%;
+			
+			/*
+			width: 120px;
+			height: 120px;
+			*/
+			margin: 5px;
+			/* Cuando haya chocado */
+			/* border: 1px dotted red; */	
+		}
+		#container-mesas {
+			display: grid;
+			grid-template-rows: [fila] 100%;
+			grid-template-columns: [a] 80% [b] 20%;
+			min-width: 1300px;
+			margin:5px;
+			height: fit-content;
+		}
+		#sala {
+			grid-row: fila;
+			grid-column: a;
+			border: 1.5px solid #332626;
+			width: 98%;
+			min-height: 550px;
+		}
+		#almacen {
+			grid-row: fila;
+			grid-column: b;
+			border: 1.5px solid #84481d;
+			width: 100%;
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+		}
+		#crea-mesas {
+			display: flex;
+			flex-direction: row;
+			margin: 5px;
+		}
+	</style>
+
+{% endblock %}

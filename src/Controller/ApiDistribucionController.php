@@ -40,8 +40,10 @@ class ApiDistribucionController extends AbstractController
     #[Route("/distribucion", name: "postDistribucion", methods: "POST")]
     public function postDistribucion(ManagerRegistry $mr, Request $request): Response
     {
-        $datos = json_decode($request->request->get('distribucion'));
+        $datos = json_decode($request->getContent());
+        $datos = $datos->distribucion;
         $distribucion = new Distribucion();
+        
         $distribucion->setFecha($datos->fecha);
         $distribucion->setMesaId($datos->mesa_id);
         $distribucion->setPosicionX($datos->pos_x);
@@ -65,6 +67,7 @@ class ApiDistribucionController extends AbstractController
         # Creado con éxito => Devolvemos la ID
         return $this->json(
             [
+                "id" => $id,
                 "message" => "Éxito al crear la distribucion " . $id,
                 "Success" => true
             ],
@@ -75,7 +78,8 @@ class ApiDistribucionController extends AbstractController
     #[Route("/distribucion", name: "putDistribucion", methods: "PUT")]
     public function putDistribucion(ManagerRegistry $mr, Request $request): Response
     {
-        $datos = json_decode($request->request->get('distribucion'));
+        $datos = json_decode($request->getContent());
+        $datos = $datos->distribucion;
         // Cogemos el ID de el Distribucion a editar
         $id = $datos->id;
         // Obtenemos el Distribucion
@@ -128,6 +132,7 @@ class ApiDistribucionController extends AbstractController
         # Creado con éxito => Devolvemos la ID
         return $this->json(
             [
+                "id" => $id,
                 "message" => "Éxito al borrar la distribucion " . $id,
                 "Success" => true
             ],
