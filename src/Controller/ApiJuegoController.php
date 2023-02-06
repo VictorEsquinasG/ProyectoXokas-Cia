@@ -123,7 +123,8 @@ class ApiJuegoController extends AbstractController
     #[Route("/juego", name: "deleteJuego", methods: "DELETE")]
     public function delJuego(ManagerRegistry $mr, Request $request): Response
     {
-        $datos = json_decode($request->request->get('juego'));
+        $datos = json_decode($request->getContent());
+        $datos = $datos->juego;
         // Cogemos el ID de el Juego a editar
         $id = $datos->id;
         // Obtenemos el Juego

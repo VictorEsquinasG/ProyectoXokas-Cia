@@ -25,7 +25,7 @@ class MailerController extends AbstractController
         $mail = (new TemplatedEmail())
         ->from('elpatronsupp@gmail.com')
         ->to('dbarote0812@g.educaand.es')
-        ->subject('EMAILEANDO ?!')
+        ->subject('Bienvenido a Xokas & Co.')
         ->text('Quiero suicidarme! pero al menos mando correo')
         ->htmlTemplate('mailer/index.html.twig');
 

@@ -114,7 +114,8 @@ class ApiDistribucionController extends AbstractController
     #[Route("/distribucion", name: "deleteDistribucion", methods: "DELETE")]
     public function delDistribucion(ManagerRegistry $mr, Request $request): Response
     {
-        $datos = json_decode($request->request->get('distribucion'));
+        $datos = json_decode($request->getContent());
+        $datos = $datos->distribucion;
         // Cogemos el ID de el Distribucion a editar
         $id = $datos->id;
         // Obtenemos el Distribucion

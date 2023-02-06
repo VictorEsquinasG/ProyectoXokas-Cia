@@ -79,8 +79,14 @@ $(function () {
                 top: "0",
                 left: "0",
             });
+            let obj = mesa.data('mesa');
+            /* CAMBIAMOS LOS ATRIBUTOS DEL OBJETO */
+            obj.pos_x = 0;
+            obj.pos_y = 0;
             /* LO AÑADIMOS AL ALMACÉN */
             $(this).append(mesa);
+            // Actualizamos su posición en la BD
+            actualizaMesa(mesa);
         }
     }).css({ 'overflow': 'scroll' });
 
@@ -102,8 +108,8 @@ $(function () {
                 var sala = $('#sala').data('sala');
                 // Si es la sala, lo metemos al objeto y la movemos
                 sala
-                .addMesa(mesa.eq(0));
-                
+                    .addMesa(mesa.eq(0));
+
                 // Cambiamos su estilo para poder visualizarla
                 mesa.css({
                     "position": "absolute",
@@ -115,8 +121,8 @@ $(function () {
                 var obj = mesa.data('mesa');
                 obj.pos_x = (mesa.left - sala.difx);
                 obj.pos_y = (mesa.top - sala.dify);
-                
-                // Actualizamos en la BD
+
+                // Actualizamos su posición en la BD
                 actualizaMesa(mesa);
 
                 // mesa.pos_x = mesa.left-;
@@ -138,8 +144,8 @@ $(function () {
         $(mesas).each(function () {
             actual = $(this);
 
-            let idMesa_actual = parseInt(actual.attr('id').split("_")[1]);
-            let idMesa_movida = parseInt(mesa.attr('id').split("_")[1]);
+            let idMesa_actual = actual.data('mesa').id;
+            let idMesa_movida = mesa.eq(0).data('mesa').id;
             // No permitimos que se compare consigo misma
             if (idMesa_actual != idMesa_movida) {
                 // Coordenadas de otra mesa    
@@ -172,13 +178,17 @@ $(function () {
         return ((salidaVertical) || (salidaHorizontal));
     }
 
-    function solapa(mesa1, mesa2) {
+    function solapa(mesa1, mesa2) { //TODO revisar
 
         mesa1.bottom = mesa1.top + mesa1.height();
         mesa1.right = mesa1.left + mesa1.width();
 
         mesa2.bottom = mesa2.top + mesa2.height();
         mesa2.right = mesa2.left + mesa2.width();
+
+        var contiene =
+            (mesa1.left < mesa2.left && mesa1.right > mesa2.right ||
+                mesa1.top < mesa2.top && mesa1.bottom > mesa2.bottom);
 
         var choqueHorizontal =
             (mesa1.right < mesa2.right && mesa1.right > mesa2.left ||
@@ -188,30 +198,30 @@ $(function () {
             (mesa1.top < mesa2.bottom && mesa1.top > mesa2.top ||
                 mesa1.bottom < mesa2.bottom && mesa1.bottom > mesa2.top);
 
-        return (choqueHorizontal && choqueVertical);
+        return ((choqueHorizontal && choqueVertical) || contiene);
     }
 
     /* CUANDO SE MANDA EL FORMULARIO -> SE CREA LA MESA */
-    $('form').submit(function (e) { 
+    $('form').submit(function (e) {
         e.preventDefault();
         // Capturamos los datos del formulario
         var ancho = this.ancho.value;
         var largo = this.largo.value;
         var sillas = this.sillas.value;
-        var mesa = new Mesa(null,ancho,largo,sillas,0,0);    
+        var mesa = new Mesa(null, ancho, largo, sillas, 0, 0);
         creaMesa(mesa);
     });
 
     function creaMesa(mesa) {
         // Guardamos la mesa creada en formato JSON
         var nueva_mesa = {
-            "mesa":{
-                "id":mesa.id,
-                "ancho":mesa.ancho,
-                "largo":mesa.largo,
-                "sillas":mesa.sillas,
-                "posicion_x":mesa.pos_x,
-                "posicion_y":mesa.pos_y,
+            "mesa": {
+                "id": mesa.id,
+                "ancho": mesa.ancho,
+                "largo": mesa.largo,
+                "sillas": mesa.sillas,
+                "posicion_x": mesa.pos_x,
+                "posicion_y": mesa.pos_y,
             }
         };
         console.log(nueva_mesa);
@@ -230,16 +240,15 @@ $(function () {
 
     function actualizaMesa(Objmesa) {
         let mesa = Objmesa.data('mesa');
-        console.log(mesa);
 
         mesa_movida = {
-            "mesa":{
-                "id":mesa.id,
-                "ancho":mesa.ancho,
-                "largo":mesa.largo,
-                "sillas":mesa.sillas,
-                "posicion_x":mesa.pos_x,
-                "posicion_y":mesa.pos_y,
+            "mesa": {
+                "id": mesa.id,
+                "ancho": mesa.ancho,
+                "largo": mesa.largo,
+                "sillas": mesa.sillas,
+                "posicion_x": mesa.pos_x,
+                "posicion_y": mesa.pos_y,
             }
         }
         $.ajax({
@@ -250,7 +259,32 @@ $(function () {
             success: function (respuesta) {
                 console.log(respuesta);
             }
-        });   
+        });
+    }
+    function borraMesa(Objmesa) {
+        let mesa = Objmesa.data('mesa');
+        console.log(mesa);
+
+        mesa_removida = {
+            "mesa": {
+                "id": mesa.id,
+                "ancho": mesa.ancho,
+                "largo": mesa.largo,
+                "sillas": mesa.sillas,
+                "posicion_x": mesa.pos_x,
+                "posicion_y": mesa.pos_y,
+            }
+        }
+        $.ajax({
+            type: "DELETE",
+            url: "/api/mesa",
+            data: JSON.stringify(mesa_removida),
+            dataType: "JSON",
+            success: function (respuesta) {
+                console.log(respuesta);
+                return respuesta.success;
+            }
+        });
     }
 
     function actualizaDisposicion() {
@@ -292,6 +326,33 @@ $(function () {
     }
 
     function creaDiv(mesa) {
+
+        // Icono de papelera
+        var img = $('<img>').attr({
+            src: './images/papelera-de-reciclaje.png',
+            alt: 'Borrar',
+            title: 'Eliminar'
+        }).css({
+            width: '90%',
+            height: '100%',
+        });
+        // SPAN de borrar mesa
+        var span = $('<span/>').append(img).attr('class', 'borrar')
+            .css({
+                float: 'right',
+                width: '35%',
+                marginTop: '-0.75rem',
+                cursor: 'pointer',
+                display: 'none'
+            }).click(function () {
+                // Mandamos la mesa a borrar
+                let borrada = borraMesa($(this).parent());
+                if (borrada) {
+                    // La eliminamos de manera visual
+                    $(this).parent().remove();
+                }
+            });
+
         return $('<div>')
             /* SON CLASE MESA */
             .attr('class', 'mesa')
@@ -303,6 +364,18 @@ $(function () {
             .css({
                 width: mesa.ancho,
                 height: mesa.largo,
+            }).append(span)
+            .hover(function () {
+                // over
+                let clon = $(this);
+                // Hacemos visible el botón de borrar
+                clon.children().eq(0).css({ display: 'block' });
+
+
+            }, function () {
+                // out
+                $(this).children().eq(0).css({ display: 'none' });
+                $(this).css({ backgroundColor: 'transparent' })
             })
             /* LAS MESAS SE PUEDEN ARRASTRAR */
             .draggable({
@@ -313,33 +386,33 @@ $(function () {
                 cursor: "move",
                 start: function (ev, ui) {
                     // Hacemos parcialmente transparente la mesa que estamos moviendo
-                    ui.helper.prevObject.css({ 'opacity': '50%' })
+                    ui.helper.prevObject.css({ 'opacity': '50%' });
+                    $(this).children().eq(0).css({ display: 'none' });
                 },
-                /* drag: function (ev, ui) {
-                    console.log(ui.helper.eq(0));
+                drag: function (ev, ui) {
+                    let clon = ui.helper;
 
-                    ui.helper.css({
-                        // Estilo mientras se arrastra: marcamos el fondo 
-                        'background-color': 'aliceblue', 'opacity': '89%'
-                    })
-                    if (!posicionValida($(ui.helper))) {
+
+                    if (!posicionValida(clon.prevObject)) { //TODO arreglar
                         // Pintamos bordes de rojo
-                        ui.helper.css({
-                            border: '1px dotted red',
+                        clon.css({
+                            'background-color': 'red',
                         });
-                    } else {
-                        ui.helper.css({
+                    }else {
+                        clon.css({
                             'border': '0px',
                             'background-color': 'transparent',
                         });
-
                     }
-                }, */
+
+
+
+                },
                 stop: function (ev, ui) {
                     // Devolvemos su opacidad a la mesa colocada
                     $(ui.helper.prevObject[0]).css({ 'opacity': '100%' })
                 }
-            })
+            });
 
     }
 

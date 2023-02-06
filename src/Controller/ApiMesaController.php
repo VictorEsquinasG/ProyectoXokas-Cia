@@ -105,9 +105,9 @@ class ApiMesaController extends AbstractController
     #[Route("/mesa", name: "deleteMesa", methods: "DELETE")]
     public function delMesa(ManagerRegistry $mr, Request $request): Response
     {
-        $datos = json_decode($request->request->get('mesa'));
+        $datos = json_decode($request->getContent());
         // Cogemos el ID de la mesa a editar
-        $id = $datos->id;
+        $id = $datos->mesa->id;
         // Obtenemos la mesa
         $mesa = $mr->getRepository(Mesa::class)->find($id);
 
@@ -124,6 +124,7 @@ class ApiMesaController extends AbstractController
         # Creado con éxito => Devolvemos la ID
         return $this->json(
             [
+                "id" => $id,
                 "message" => "Éxito al borrar la mesa " . $id,
                 "Success" => true
             ],

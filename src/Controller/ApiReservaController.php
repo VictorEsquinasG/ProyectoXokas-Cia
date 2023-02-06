@@ -117,9 +117,9 @@ class ApiReservaController extends AbstractController
     #[Route("/reserva", name: "deleteReserva", methods: "DELETE")]
     public function delReserva(ManagerRegistry $mr, Request $request): Response
     {
-        $datos = json_decode($request->request->get('reserva'));
+        $datos = json_decode($request->getContent());
         // Cogemos el ID de el Reserva a editar
-        $id = $datos->id;
+        $id = $datos->reserva->id;
         // Obtenemos el Reserva
         $reserva = $mr->getRepository(Reserva::class)->find($id);
 

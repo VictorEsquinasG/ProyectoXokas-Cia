@@ -11,7 +11,7 @@ class GeneralController extends AbstractController
     #[Route('/general', name: 'app_general')]
     public function index(): Response
     {
-        return $this->render('general/index.html.twig', [
+        return $this->render('general/homepage.html.twig', [
             'controller_name' => 'GeneralController',
         ]);
     }
