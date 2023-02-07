@@ -9462,10 +9462,6 @@ Header Style
   padding-right: 30px;
 }
 
-.header-area .main-nav .nav li:nth-child(4) {
-  padding-right: 45px !important;
-}
-
 .header-area .main-nav .nav li a {
   display: block;
   font-weight: 400;
@@ -9521,7 +9517,7 @@ Header Style
   font-size: 12px;
   color: var(--principal);
   position: absolute;
-  right: 30px;
+  right: 3px;
   top: 45px;
 }
 
@@ -10851,6 +10847,19 @@ body {
   overflow-x: hidden;
 }
 
+.c-container--general {
+  margin-top: 8rem;
+}
+.c-container--center {
+  display: flex;
+  justify-content: center;
+}
+@media (min-width: 900px) {
+  .c-container__formu {
+    width: 60%;
+  }
+}
+
 @media (max-width: 767px) {
   .pre-header {
     display: none;
@@ -10860,9 +10869,6 @@ body {
   }
   .main-banner {
     margin-top: 100px;
-  }
-  .header-area .main-nav .nav li:nth-child(4) {
-    padding-right: 0px !important;
   }
   .header-area .main-nav .nav li {
     background: #f7f7f7;

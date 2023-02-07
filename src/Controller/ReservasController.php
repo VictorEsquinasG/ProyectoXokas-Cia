@@ -6,11 +6,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class GeneralController extends AbstractController
+class ReservasController extends AbstractController
 {
-    #[Route('/', name: 'home')]
+    #[Route('/reservar', name: 'reservar')]
     public function index(): Response
     {
-        return $this->render('general/index.html.twig');
+        return $this->render('reservas/index.html.twig', [
+            'controller_name' => 'ReservasController',
+        ]);
     }
 }

@@ -476,9 +476,7 @@ Header Style
   padding-right: 30px;
 }
 
-.header-area .main-nav .nav li:nth-child(4) {
-  padding-right: 45px !important;
-}
+
 
 .header-area .main-nav .nav li a {
   display: block;
@@ -535,7 +533,7 @@ Header Style
   font-size: 12px;
   color: var(--principal);
   position: absolute;
-  right: 30px;
+  right: 3px;
   top: 45px;
 }
 
@@ -885,6 +883,7 @@ Header Style
 
   & ul li {
     display: inline-block;
+
     & a {
       color: $color-secundario;
       transition: all .4s;
@@ -899,6 +898,7 @@ Header Style
 
       & a {
         font-size: 14px;
+
         & i {
           font-size: 18px;
           margin-right: 10px;
@@ -915,10 +915,13 @@ Header Style
 
   & .social-icons {
     text-align: right;
+
     & ul li {
       margin-left: 10px;
+
       & a {
         font-size: 18px;
+
         &:hover {
           color: var(--bg-secundario);
         }
@@ -1949,6 +1952,20 @@ Responsive Style
 body {
   overflow-x: hidden;
 }
+.c-container {
+  &--general{
+    margin-top: 8rem;
+  }
+  &--center {
+    display: flex;
+    justify-content: center;
+  }
+  &__formu {
+    @media (min-width: 900px) {
+      width: 60%;
+    }
+  }
+}
 
 @media (max-width: 767px) {
   .pre-header {
@@ -1961,10 +1978,6 @@ body {
 
   .main-banner {
     margin-top: 100px;
-  }
-
-  .header-area .main-nav .nav li:nth-child(4) {
-    padding-right: 0px !important;
   }
 
   .header-area .main-nav .nav li {

@@ -6,10 +6,13 @@ use App\Repository\UsuarioRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+
 #[ORM\Entity(repositoryClass: UsuarioRepository::class)]
+#[UniqueEntity(fields: ['email'], message: 'Ya hay una cuenta registrada con este email')]
 class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -17,6 +20,7 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
+    
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
@@ -27,12 +31,15 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
+    
     private ?string $password = null;
 
     #[ORM\Column(length: 45)]
+    
     private ?string $nombre = null;
 
     #[ORM\Column(length: 45)]
+    
     private ?string $apellido1 = null;
 
     #[ORM\Column(length: 45, nullable: true)]
@@ -49,6 +56,9 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\ManyToMany(targetEntity: Evento::class, inversedBy: 'usuarios')]
     private Collection $evento;
+
+    #[ORM\Column(type: 'boolean')]
+    private $isVerified = false;
 
     public function __construct()
     {
@@ -239,5 +249,17 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): self
+    {
+        $this->isVerified = $isVerified;
+
+        return $this;
     }
 }

@@ -8,11 +8,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MesasController extends AbstractController
 {
-    #[Route('/mesas', name: 'app_mesas')]
-    public function index(): Response
+    #[Route('/mesas', name: 'mantenimiento_mesas')]
+    public function Mant_mesas(): Response
     {
-        return $this->render('mesas/salaMesas.html.twig', [
-            'controller_name' => 'MesasController',
-        ]);
+        return $this->render('mesas/salaMesas.html.twig');
     }
 }

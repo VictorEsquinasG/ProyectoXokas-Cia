@@ -19,6 +19,10 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+    App\Service\Mailer:
+    # Por defecto, cuenta de correo y contraseña
+        $mail_account: 'elpatronsupp@gmail.com'
+        $mail_passwd: 'qbzyypfssokhgwyo'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

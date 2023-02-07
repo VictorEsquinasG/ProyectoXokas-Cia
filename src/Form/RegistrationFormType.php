@@ -6,7 +6,6 @@ use App\Entity\Usuario;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
@@ -18,6 +17,7 @@ class RegistrationFormType extends AbstractType
     {
         $builder
             ->add('email')
+            
             ->add('plainPassword', PasswordType::class, [
                 // instead of being set onto the object directly,
                 // this is read and encoded in the controller
@@ -35,18 +35,16 @@ class RegistrationFormType extends AbstractType
                     ]),
                 ],
             ])
-            ->add("nombre", TextType::class, [
+            ->add("nombre", null, [
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Escriba su nombre por favor'
-                    ]),
+                    
                     new Length([
                         'max' => 45,
                         'maxMessage' => 'Nombre demasiado largo (máximo {{ limit }} caracteres)'
                     ])
                 ]
             ])
-            ->add("apellido1", TextType::class, [
+            ->add("apellido1", null, [
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Escriba su primer apellido por favor'
@@ -57,7 +55,7 @@ class RegistrationFormType extends AbstractType
                     ])
                 ]
             ])
-            ->add("apellido2", TextType::class, [
+            ->add("apellido2", null, [
                 'constraints' => [
                     new Length([
                         'max' => 45,
@@ -76,13 +74,14 @@ class RegistrationFormType extends AbstractType
                     ])
                 ]
             ])
-            ->add("telegram_id", TextType::class, [
+            ->add("telegram_id", null, [
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Telegram necesario'
                     ])
                 ]
-            ]);
+            ])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
