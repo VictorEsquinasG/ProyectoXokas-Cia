@@ -1958,12 +1958,12 @@ body {
   }
   &--center {
     display: flex;
+    flex-direction: column;
     justify-content: center;
   }
   &__formu {
-    @media (min-width: 900px) {
-      width: 60%;
-    }
+    min-width: 300px;
+    margin: auto;
   }
 }
 

@@ -9,11 +9,7 @@
 	{% endfor %}
 
 	<style>
-		* {
-			/* En general, centramos el contenido */
-			text-align: center;
-			margin: auto;
-		}
+
 		form {
 			background-color:rgba(33, 37, 41, 0.01);
 			padding: 20px 0px;
@@ -35,31 +31,32 @@
 			{{ form_row(registrationForm.email) }}
 			{{ form_row(registrationForm.plainPassword, {
             label: 'Contraseña'
-        }) }}
+			}) }}
 			{{ form_row(registrationForm.nombre,{
-		label: 'Nombre'
-	    }) }}
+			label: 'Nombre'
+			}) }}
 
 			{{ form_row(registrationForm.apellido1,{
-		label: '1er Apellido'
-	    }) }}
+			label: '1er Apellido'
+			}) }}
 
 			{{ form_row(registrationForm.apellido2,{
-		label: '2º Apellido'
-	    }) }}
+			label: '2º Apellido'
+			}) }}
 
 			{{ form_row(registrationForm.telefono,{
-		label: 'Teléfono'
-	    }) }}
+			label: 'Teléfono'
+			}) }}
 
 			{{ form_row(registrationForm.telegram_id,{
-		label: 'Telegram'
-	    }) }}
+			label: 'Telegram'
+			}) }}
 
 			{# <input type="hidden" name="_target_path" value="/mesas"> #}
 
 			<button type="submit" class="btn btn-primary">Registrarme</button>
 			{{ form_end(registrationForm) }}
+			<a href="{{ url('app_login') }}">Ya tengo cuenta</a>
 		</section>
 	</section>
 {% endblock %}

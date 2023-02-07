@@ -10852,12 +10852,12 @@ body {
 }
 .c-container--center {
   display: flex;
+  flex-direction: column;
   justify-content: center;
 }
-@media (min-width: 900px) {
-  .c-container__formu {
-    width: 60%;
-  }
+.c-container__formu {
+  min-width: 300px;
+  margin: auto;
 }
 
 @media (max-width: 767px) {
