@@ -18,6 +18,7 @@ class MailerController extends AbstractController
             'controller_name' => 'MailerController',
         ]);
     }
+    
     #[Route('/mail', name: 'app_mailer')]
     public function send(MailerInterface $correo):Respone
     {   

@@ -5,56 +5,44 @@
  */
 $(function () { // Window.onload
 
+
+    /* PLANTILLAS */
+    var plantillaReserva =
+        `<h1>Haz tu reserva en minutos</h1> <br><br><br>
+        <article>
+            <div>
+                <label for="datePicker">Fecha de reserva:</label>
+                <input type="text" id="datePicker">
+            </div>
+
+            <div>
+                <label for="selecTramos">Tramo horario:</label>
+                <select name="" id="selecTramos">
+                    <option value="-1" disabled selected></option>
+                    <option value="a">a</option>
+                </select>
+            </div>
+
+            <input type="hidden" name="_target_path" value="/">
+
+            <button type="submit" class="btn btn-primary">RESERVAR</button>
+        </aritcle>
+        `
+    // Lo convertimos en JQuery
+    var JplantillaReserva = $(plantillaReserva);
+
+    // El dialog
+    var dialog = $('<div />');
+
     // USAMOS 1 BOTON PARA ABRIR LA VENTANA MODAL
-    $("#abreModal").click(function() {
-        
-        var contenedor = $("<div />").css({
-            'z-index':'997',
-            'position':'absolute',
-            'top':'0',
-            'left':'0',
-            'padding':'0',
-            'margin':'0',
-            'opacity':'50%',
-            'background-color':'#757575',
-            'width':'100vw',
-            'height':'100vh'
-        }).attr('id','modal');
-        
-        var ventana = $("<div />").css({
-            'z-index':'998',
-            'position':'relative',
-            'top':'25%',
-            'left':'35%',
-            'padding':'0',
-            'margin':'0',
-            'background-color':'#ffffff',
-            'border-radius':'5px',
-            'width':'30%',
-            'height':'400px'
-        });
+    $("#creaReserva").click(function (ev) {
+        ev.preventDefault();
+        /* CREAMOS UN MODAL  */
+        dialog.dialog({
+            modal: true,
+            width: "700px",
+            title: "Reservar mesa 📆🎲",
+        }).append(JplantillaReserva);
 
-        ventana.appendTo(contenedor);
-        contenedor.appendTo($("body"));
-
-        /* var cerrar = */ 
-        $('<div />').css({
-            'z-index':'999',
-            'cursor':'pointer',
-            'position':'absolute',
-            'top':'1',
-            'right':'0',
-            'margin':'3.5px',
-            'padding':'1px 3.5px',
-            'border-radius':'10px',
-            'font-size':'bold',
-            'font-family':'Montserrat,monospace',
-            'color':'white',
-            'background-color':'#961212'
-        }).text('X').click(function() {
-            $('#modal').remove();
-        }).appendTo(ventana);
-
-    }) /* BORRAR (FIN DEL BOTON ACCIONADOR) */
-
-});
+    });
+})  

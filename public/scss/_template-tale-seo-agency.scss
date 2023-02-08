@@ -440,10 +440,23 @@ Header Style
   -moz-transition: all 0.3s ease 0s;
   -o-transition: all 0.3s ease 0s;
   transition: all 0.3s ease 0s;
+  
+  @media (max-width: 990px) {
+    margin-top: 31px;
+  }
+
+  @media (max-width:766px) {
+    margin-top: 20px;
+    width: 234px;
+  }
+  @media (max-width:300px) {
+    width: auto;
+  }
 }
 
 .background-header .main-nav .logo {
   margin-top: 10px;
+
 }
 
 .header-area .main-nav .nav {
@@ -463,9 +476,24 @@ Header Style
   justify-content: right;
 }
 
-.header-area .main-nav .nav li:first-child {
-  padding-left: 60px;
+.l-mantenimiento {
+  &-xs {
+    display: block;
+    @media (min-width:770px) {
+      display: none;
+    }
+  }
+  &-md {
+    display: block;
+    @media (max-width:770px) {
+      display: none;
+    }
+  }
 }
+
+// .header-area .main-nav .nav li:first-child {
+//   padding-left: 60px;
+// }
 
 .header-area .main-nav .nav li:last-child {
   padding-right: 0px;
@@ -492,6 +520,9 @@ Header Style
   line-height: 110px;
   border: transparent;
   letter-spacing: 1px;
+  @media (max-width: 765px) {
+    color:#076203
+  }
 }
 
 .background-header .main-nav .nav li a {
@@ -527,7 +558,7 @@ Header Style
   padding-right: 15px;
 }
 
-.header-area .main-nav .nav li.has-sub:after {
+/* .header-area .main-nav .nav li.has-sub:after {
   font-family: FontAwesome;
   content: "\f107";
   font-size: 12px;
@@ -535,7 +566,7 @@ Header Style
   position: absolute;
   right: 3px;
   top: 45px;
-}
+} */
 
 .background-header .main-nav .nav li.has-sub:after {
   top: 32px;
@@ -1964,6 +1995,12 @@ body {
   &__formu {
     min-width: 300px;
     margin: auto;
+  }
+  &__carousel {
+    @media (min-width:800px) {
+      width: 70%;
+      margin: auto;
+    }
   }
 }
 

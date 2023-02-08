@@ -8,8 +8,8 @@
 	{# ESTILOS #}
 	<style>
 		form {
-			background-color:rgba(33, 37, 41, 0.01);
-			padding: 20px 0px;
+			background-color: rgba(33, 37, 41, 0.01);
+			padding: 20px 0;
 			border-radius: 14px;
 		}
 
@@ -18,32 +18,16 @@
 		}
 	</style>
 
-	{# ERRORES #}
-	{% if error %}
-		<div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+	{# Si está logeado #}
+	{% if is_granted('ROLE_USER') %}
+		<a id="fuera" href="{{ url('app_logout') }}"></a>
+		<script>
+			$('#fuera').click();
+		</script>
+	{# Si no lo está #}
+	{% else %}
+		{% include "components/login-form.html.twig" %}
 	{% endif %}
 
-	{# FORMULARIO #}
-	<section class="c-container--center">
-		<section class="c-container__formu">
-			<form action="{{ path('app_login') }}" method="post">
-			
-				<div>
-					<label for="username">Correo electrónico:</label>
-					<input type="email" id="username" name="_username" value="{{ last_username }}">
-				</div>
-				
-				<div>
-					<label for="password">Contraseña:</label>
-					<input type="password" id="password" name="_password">
-				</div>
 
-				{# LA URL A LA QUE IRÁ #}
-				<input type="hidden" name="_target_path" value="/">
-
-				<button type="submit" class="btn btn-primary">Iniciar sesión</button>
-			</form>
-			<a href="{{ url('registro') }}" >¿No estás registrado aún? <em>Crear cuenta</em></a>
-		</section>
-	</section>
 {% endblock %}

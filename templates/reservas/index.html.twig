@@ -1,38 +1,26 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	Reservar mesa
+	Reservas
 {% endblock %}
 
 {% block body %}
 
-
 	<section class="c-container--center">
 
-		<section class="c-container__formu">
-			<h1>Haz tu reserva en minutos</h1>
-			<form action="{{ path('reservar') }}" method="post">
+		{# {% include "components/banner.html.twig" %} #}
+		<div style="margin-top:0">
+			<h1 style="padding-left:40%;margin-bottom:15px">
+				Mis reservas
+			</h1>
+		</div>
+		
+		{% include "components/carousel-reservas.html.twig" %}
 
-				<div>
-					<label for="datePicker">Fecha de reserva:</label>
-					<input type="text" id="datePicker">
-				</div>
-
-				<div>
-					<label for="selecTramos">Tramo horario:</label>
-					<select name="" id="selecTramos">
-						<option value="-1" disabled selected></option>
-						<option value="a">a</option>
-					</select>
-				</div>
-
-				<input type="hidden" name="_target_path" value="/">
-
-				<button type="submit" class="btn btn-primary">RESERVAR</button>
-			</form>
-		</section>
 	</section>
 
 	<!-- EL DATEPICKER -->
 	<script src="{{ asset('js/DatePicker.js') }}"></script>
+	<!-- EL CARRUSEL -->
+	<script src="{{ asset('assets/js/owl-carousel.js') }}"></script>
 {% endblock %}

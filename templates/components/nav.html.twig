@@ -1,0 +1,86 @@
+<!-- ***** Header Area Start ***** -->
+<header class="header-area header-sticky">
+	<div class="container">
+		<div class="row">
+			<div class="col-12">
+				<nav
+					class="main-nav">
+					<!-- ***** Logo Start ***** -->
+					<a href="{{ url('home') }}" class="logo">
+						<img src="images/logo3.png" alt="" style="max-width: 40%;">
+					</a>
+					<!-- ***** Logo End ***** -->
+
+					<!-- ***** Menu Start ***** -->
+					<ul class="nav">
+
+						<li class="scroll-to-section">
+							<a href="{{ url('reservar') }}">Reservas</a>
+						</li>
+						<li class="scroll-to-section">
+							<a href="#projects">Juegos</a>
+						</li>
+
+						{% if is_granted('ROLE_SUPER_ADMIN_1') %}
+							<li class="l-mantenimiento-xs">
+								<a href="{{ url('app_mantenimiento') }}">MANTENIMIENTO</a>
+							</li>
+							<li class="has-sub l-mantenimiento-md">
+								<a href="javascript:void(0)">Mantenimiento
+									<i class="fa fa-chevron-down" id="c-submenu__bjo"></i>
+									<i class="fa-solid fa-chevron-left" id="c-submenu__izrda" style="display:none"></i>
+								</a>
+								<ul class="sub-menu">
+									<li>
+										<a href="{{ url('mantenimiento_mesas') }}">Organizar sala</a>
+									</li>
+									<li>
+										<a href="{{ url('mantenimiento_juegos') }}">Juegos</a>
+									</li>
+									<li>
+										<a href="{{ url('mantenimiento_eventos') }}">Eventos</a>
+									</li>
+									<li>
+										<a href="{{ url('mantenimiento_reservas') }}">Reservas</a>
+									</li>
+									<li>
+										<a href="{{ url('mantenimiento_usuarios') }}">Usuarios</a>
+									</li>
+								</ul>
+							</li>
+						{% endif %}
+
+						<li class="scroll-to-section">
+							<a href="#infos">Infos</a>
+						</li>
+
+						<li class="scroll-to-section">
+
+							{% if is_granted('ROLE_SUPER_ADMIN_1') %}
+								<a class="nav-link" href="#">Administrador</a>
+							{% endif %}
+							{% if is_granted('ROLE_USER') %}
+								<a class="nav-link" href="{{ url('app_logout') }}">
+									<img src="" alt="Profile.pic">
+									Cerrar Sesión
+								</a>
+							{% else %}
+								<a class="nav-link" href="{{ url('app_login') }}">Iniciar Sesión</a>
+
+							{% endif %}
+
+
+						</li>
+					</ul>
+					<a class='menu-trigger'>
+						<span>Menú</span>
+					</a>
+					<!-- ***** Menu End ***** -->
+				</nav>
+			</div>
+		</div>
+	</div>
+</header>
+<!-- ***** Header Area End ***** -->
+
+<script src="{{ asset('js/flechita-submenu.js') }}"></script>
