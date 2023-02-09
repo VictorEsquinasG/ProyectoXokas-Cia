@@ -7,16 +7,19 @@
 					class="main-nav">
 					<!-- ***** Logo Start ***** -->
 					<a href="{{ url('home') }}" class="logo">
-						<img src="images/logo3.png" alt="" style="max-width: 40%;">
+						<img src="{{ asset('images/logo3.png') }}" alt="" style="max-width: 40%;">
 					</a>
 					<!-- ***** Logo End ***** -->
 
 					<!-- ***** Menu Start ***** -->
 					<ul class="nav">
 
-						<li class="scroll-to-section">
-							<a href="{{ url('reservar') }}">Reservas</a>
-						</li>
+						{% if is_granted('ROLE_USER') %}
+							<!-- Si está logueado, ve sus reservas -->
+							<li class="scroll-to-section">
+								<a href="{{ url('reservar') }}">Reservas</a>
+							</li>
+						{% endif %}
 						<li class="scroll-to-section">
 							<a href="#projects">Juegos</a>
 						</li>
@@ -28,11 +31,14 @@
 							<li class="has-sub l-mantenimiento-md">
 								<a href="javascript:void(0)">Mantenimiento
 									<i class="fa fa-chevron-down" id="c-submenu__bjo"></i>
-									<i class="fa-solid fa-chevron-left" id="c-submenu__izrda" style="display:none"></i>
+									<i class="fa fa-chevron-left" id="c-submenu__izrda" style="display:none"></i>
 								</a>
 								<ul class="sub-menu">
 									<li>
-										<a href="{{ url('mantenimiento_mesas') }}">Organizar sala</a>
+										<a href="{{ url('mueve_mesas') }}">Organizar sala</a>
+									</li>
+									<li>
+										<a href="{{ url('mantenimiento_mesas') }}">Mesas</a>
 									</li>
 									<li>
 										<a href="{{ url('mantenimiento_juegos') }}">Juegos</a>

@@ -5,9 +5,10 @@ namespace App\Entity;
 use App\Repository\ReservaRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 #[ORM\Entity(repositoryClass: ReservaRepository::class)]
-class Reserva
+class Reserva implements JsonSerializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -109,5 +110,20 @@ class Reserva
         $this->Mesa = $Mesa;
 
         return $this;
+    }
+
+    function jsonSerialize(): mixed
+    {
+        $json =
+        [
+            "id" => $this->getId(),
+            "fecha_reserva" => $this->getFechaReserva(),
+            "juego" => $this->getJuego(),
+            "mesa" => $this->getMesa(),
+            "usuario" => $this->getUsuario(),
+            "asiste" => $this->isAsiste(),
+            "fecha_cancelacion" => $this->getFechaCancelacion(),
+        ];
+        return $json;
     }
 }

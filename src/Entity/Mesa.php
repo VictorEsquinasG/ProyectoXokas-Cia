@@ -107,7 +107,7 @@ class Mesa implements JsonSerializable
     /**
      * @return Collection<int, Distribucion>
      */
-    public function getdistribuciones(): Collection
+    public function getDistribuciones(): Collection
     {
         return $this->distribuciones;
     }
@@ -122,7 +122,7 @@ class Mesa implements JsonSerializable
         return $this;
     }
 
-    public function removedistribucion(Distribucion $distribucion): self
+    public function removeDistribucion(Distribucion $distribucion): self
     {
         if ($this->distribuciones->removeElement($distribucion)) {
             // set the owning side to null (unless already changed)
@@ -169,17 +169,50 @@ class Mesa implements JsonSerializable
 
         return $this;
     }
+
+    public function getDistribucionesNotLazy()
+    {
+        $return = [];
+        $array = $this->getDistribuciones();
+        # 
+        foreach ($array as $elemento) {
+
+            $elemento = json_encode($elemento);
+
+            $return[] = $elemento;
+        }
+        // dd($return);
+
+        return $return;
+    }
+
+    public function getReservasNotLazy()
+    {
+        $return = [];
+        $array = $this->getReservas();
+        # 
+        foreach ($array as $elemento) {
+            
+            $elemento = json_encode($elemento);
+
+            $return[] = $elemento;
+        }
+        // dd($return);
+        return $return;
+    }
+
     public function jsonSerialize(): mixed
     {
         $json = [
             "id" => $this->getId(),
-            "ancho"=>$this->getAncho(),
+            "ancho" => $this->getAncho(),
             "largo" => $this->getLargo(),
             "posicion_x" => $this->getPosicionX(),
             "posicion_y" => $this->getPosicionY(),
             "sillas" => $this->getSillas(),
+            "distribuciones" => $this->getDistribucionesNotLazy(),
+            "reservas" => $this->getReservasNotLazy(),
         ];
-        return $json;        
+        return $json;
     }
-
 }

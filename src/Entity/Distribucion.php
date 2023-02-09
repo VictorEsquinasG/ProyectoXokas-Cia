@@ -5,9 +5,11 @@ namespace App\Entity;
 use App\Repository\DistribucionRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
+use stdClass;
 
 #[ORM\Entity(repositoryClass: DistribucionRepository::class)]
-class Distribucion
+class Distribucion implements JsonSerializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -27,9 +29,12 @@ class Distribucion
     #[ORM\JoinColumn(nullable: false)]
     private ?Mesa $mesa_id = null;
 
-    
+
     #[ORM\Column(nullable: true)]
     private ?bool $reservada = null;
+
+    #[ORM\Column(length: 35)]
+    private ?string $alias = null;
 
     public function getId(): ?int
     {
@@ -94,5 +99,42 @@ class Distribucion
         $this->reservada = $reservada;
 
         return $this;
+    }
+
+    public function getAlias(): ?string
+    {
+        return $this->alias;
+    }
+
+    public function setAlias(string $alias): self
+    {
+        $this->alias = $alias;
+
+        return $this;
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        // $json = new stdClass();
+
+        // $json->id = $this->getId();
+        // $json->mesa = $this->getMesaId()->getId();
+        // $json->fecha = $this->getFecha();
+        // $json->pos_x = $this->getPosicionX();
+        // $json->pos_y = $this->getPosicionY();
+        // $json->alias = $this->getAlias();
+        // $json->reservada = $this->isReservada();
+
+        $json = [
+            "id" => $this->getId(),
+            "mesa" => $this->getMesaId()->getId(),
+            "fecha" => $this->getFecha(),
+            "pos_x" => $this->getPosicionX(),
+            "pos_y" => $this->getPosicionY(),
+            "alias" => $this->getAlias(),
+            "reservada" => $this->isReservada(),
+        ];
+
+        return $json;
     }
 }

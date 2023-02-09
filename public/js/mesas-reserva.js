@@ -9,15 +9,13 @@ $(function () {
 
     class Mesa {
 
-        constructor(iden, anch, larg, sillas, x, y, distribuciones, reservas) {
+        constructor(iden, anch, larg, sillas, x, y) {
             this.id = iden;
             this.ancho = anch;
             this.largo = larg;
             this.sillas = sillas;
             this.pos_x = x;
             this.pos_y = y;
-            this.disposiciones = distribuciones;
-            this.reservas = reservas;
         }
 
 
@@ -47,39 +45,52 @@ $(function () {
         }
     }
 
-    class Distribucion {
-        constructor(id, mesa, fecha, posX, posY, alias, reservada) {
-            this.id = id;
-            this.mesa_id = mesa;
-            this.fecha = fecha;
-            this.pos_x = posX;
-            this.pos_y = posY;
-            this.alias = alias;
-            this.reservada = reservada;
-        }
-    }
-
-    /* VARIABLES 'GLOBALES' */
-    var all_distribuciones = []
-
     /* PETICIÓN AJAX */
-    disposicionEstandar();
-    getDisposiciones();
+    $.ajax({
+        url: "/api/mesa",
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            mesas = data.mesas;
+            if (mesas != null) {
+                // Hay mesas
+                $(mesas).each(function (ev, mesa) {
+                    var Objeto_Mesa = new Mesa(mesa.id, mesa.ancho, mesa.largo, mesa.sillas, mesa.posicion_x, mesa.posicion_y);
+                    coloca(Objeto_Mesa);
+                });
+            }
+        }
+    });
 
     /* CREAMOS LA SALA */
     new Sala($('#sala'));
-    console.log(all_distribuciones);
 
 
     /* EL ALMACÉN */
     // var stock =
     $("#almacen").droppable({
         drop: function (ev, ui) {
-            //TODO Comprobamos que NO esté reservada
-            if (true) {
-                // La mandamos a guardar
-                guardaMesa(this, ui);
-            }
+            let mesa = ui.draggable;
+            /* LO SACAMOS DEL ARRAY DE MESAS DE LA SALA */
+            $('#sala').data('sala').removeMesa(mesa);
+            /* CREAMOS EL TEXTO CON SU TAMAÑO */
+            var textTamanio = creaTextTamanio(mesa.data('mesa'));
+            /* LE DAMOS EL MISMO ESTILO A TODAS LAS MESAS E INDICAMOS SU TAMAÑO */
+            mesa.css({
+                position: "relative",
+                width: '100px',
+                height: '100px',
+                top: "0",
+                left: "0",
+            }).append(textTamanio);
+            let obj = mesa.data('mesa');
+            /* CAMBIAMOS LOS ATRIBUTOS DEL OBJETO */
+            obj.pos_x = -1;
+            obj.pos_y = -1;
+            /* LO AÑADIMOS AL ALMACÉN */
+            $(this).append(mesa);
+            // Actualizamos su posición en la BD
+            actualizaMesa(mesa);
         }
     }).css({ 'overflow': 'scroll' });
 
@@ -100,81 +111,35 @@ $(function () {
             } else {
                 var sala = $('#sala').data('sala');
                 // Si es la sala, lo metemos al objeto y la movemos
-                appendSala(sala, mesa);
-                // Comprobamos la disposición
-                let dispActual = $('select[name="dispo"]').val();
-                if (dispActual != -1) {
-                    let $disp = getDisposicion(dispActual, mesa.data('mesa').id);
-                    let $objDisp = new Distribucion($disp.id, $disp.mesa, $disp.fecha.date, $disp.pos_x, $disp.pos_y,$disp.alias, $disp.reservada);
-                    // Anotamos su posición 
-                    $objDisp.pos_x = (mesa.left - sala.difx);
-                    $objDisp.pos_y = (mesa.top - sala.dify);
-                    // La posición la actualizamos ese día
-                    actualizaDisposicion($objDisp)
-                } else {
-                    // Posición BASE / ESTÁNDAR
-                    // Actualizamos su posición en la BD
-                    actualizaMesa(mesa);
-                }
+                sala
+                    .addMesa(mesa.eq(0));
+                let objmesa = mesa.data('mesa')
+                // Cambiamos su estilo para poder visualizarla
+                mesa.css({
+                    "position": "absolute",
+                    top: mesa.top + "px",
+                    left: mesa.left + "px",
+                    width: objmesa.ancho + "px",
+                    height: objmesa.largo + "px"
+                })
+                /* ELIMINAMOS EL TEXTO INFORMATIVO */
+                .children('p').remove();
+                // Actualizamos su posición guardada en el objeto
+                var obj = mesa.data('mesa');
+                obj.pos_x = (mesa.left - sala.difx);
+                obj.pos_y = (mesa.top - sala.dify);
 
+                // Actualizamos su posición en la BD
+                actualizaMesa(mesa);
+
+                // mesa.pos_x = mesa.left-;
+                // mesa.pos_y = top;
             }
+
         }
 
+
     });
-
-    function appendSala(sala, mesa) {
-        sala
-            .addMesa(mesa.eq(0));
-        let objmesa = mesa.data('mesa');
-        // Cambiamos su estilo para poder visualizarla
-        mesa.css({
-            "position": "absolute",
-            top: mesa.top + "px",
-            left: mesa.left + "px",
-            width: objmesa.ancho + "px",
-            height: objmesa.largo + "px"
-        })
-            /* ELIMINAMOS EL TEXTO INFORMATIVO */
-            .children('p').remove();
-        // Actualizamos su posición guardada en el objeto
-        var obj = mesa.data('mesa');
-        obj.pos_x = (mesa.left - sala.difx);
-        obj.pos_y = (mesa.top - sala.dify);
-
-    }
-
-    function getDisposicion(alias, mesa_id) {
-        let distribucion;
-        
-        // Buscamos nuestra mesa
-        $.each(all_distribuciones, function (i, v) {
-            // Nuestra mesa = nuestra distribucion
-            if (v.mesa == mesa_id && v.alias == alias) {
-                distribucion = v;
-                return false; // Rompemos el bucle
-            }
-        });
-        // La devolvemos
-        return distribucion;
-    }
-
-    function actualizaDisposicion(disp) {
-
-        let dist = {};
-        dist.distribucion = disp;
-        dist.distribucion.fecha = dist.distribucion.fecha.substr(0,10); //19
-        console.log(dist);
-        $.ajax({
-            type: "PUT",
-            url: "/api/distribucion",
-            data: JSON.stringify(dist),
-            dataType: "json",
-            success: function (response) {
-                console.log("mesa " + response.id + " actualizada");
-            }
-        });
-        // debugger;
-    }
 
 
     function posicionValida(mesa) {
@@ -285,18 +250,18 @@ $(function () {
 
     function creaTextTamanio(mesa) {
         return $('<p>')
-            .html(
-                mesa.ancho +
-                " x " +
-                mesa.largo +
-                " cm"
-            ).css({
-                width: '100%',
-                height: '26px',
-                'vertical-align': 'top',
-                'text-align': 'center',
-                backgroundColor: 'rgba(55, 56, 55,0.8)'
-            });
+        .html(
+            mesa.ancho +
+            " x " +
+            mesa.largo +
+            " cm"
+        ).css({
+            width:'100%',
+            height:'26px',
+            'vertical-align':'top',
+            'text-align':'center',
+            backgroundColor: 'rgba(55, 56, 55,0.8)'
+        });
     }
 
     function actualizaMesa(Objmesa) {
@@ -324,6 +289,8 @@ $(function () {
     }
     function borraMesa(Objmesa) {
         let mesa = Objmesa.data('mesa');
+        var success = false;
+        console.log(mesa);
 
         mesa_removida = {
             "mesa": {
@@ -350,63 +317,23 @@ $(function () {
         return true;
     }
 
-    // Capturamos el SELECT que definirá el cambio
-    $('#selDisposicion').change(function (e) {
-        e.preventDefault();
-
-        // Cogemos el valor seleccionado
-        var disposicion_seleccionada = $('select[name="dispo"]').val();
-
-        if (disposicion_seleccionada !== -1) {
-            // Mandamos a actualizar
-            cambiaDisposicion(disposicion_seleccionada);
-        } else {
-
-        }
-    });
-
-    function cambiaDisposicion(selected) {
-        // // Guardamos la distribución actual
-        // var array_mesas = $("#sala").data('sala').mesas;
-
-        // Vaciamos la sala
-        vaciaSala();
-
+    function actualizaDisposicion() {
+        // Guardamos la distribución actual
+        var array_mesas = $("#sala").data('sala').mesas;
+        //TODO
         $.ajax({
+            url: "/api/distribucion",
             type: "GET",
-            url: "/api/mesa",
-            success: function (data) {
-                let mesas = data.mesas;
-                $.each(mesas, function (i, v) {
-                    let mesaActual = v;
-                    let distribuciones = v.distribuciones;
-
-                    $.each(distribuciones, function (i, v) {
-                        v = JSON.parse(v);
-                        let nombre = v.alias;
-
-                        if (nombre == selected) {
-                            // Es la distribucion que queremos
-                            let posX = v.pos_x;
-                            let posY = v.pos_y;
-                            // creamos el objeto mesa y la pintamos
-                            let objeto_Mesa = new Mesa(mesaActual.id, mesaActual.ancho, mesaActual.largo, mesaActual.sillas, posX, posY, mesaActual.distribuciones, mesaActual.reservas);
-                            coloca(objeto_Mesa);
-                        }
-                    });
-                });
+            // data: array_mesas,
+            // dataType: "json",
+            success: function (respuesta) {
+                console.log(respuesta);
             }
         });
-    }
 
-    function vaciaSala() {
-        // Eliminamos todas las mesas de la página
-        let todasmesas = $('.mesa');
-        $.each(todasmesas, function (i, v) {
-            // Eliminamos cada mesa 
-            $(v).remove();
-        });
     }
+    //TODO actualizar realmente la posición
+    actualizaDisposicion();
 
     function coloca(mesa) {
         var sala = $('#sala').data('sala');
@@ -432,7 +359,6 @@ $(function () {
             }).append(textTamanio)
                 .appendTo($('#almacen'));
         }
-        console.log("Colocada " + mesa.id);
     }
 
     function creaDiv(mesa) {
@@ -509,72 +435,5 @@ $(function () {
             });
 
     }
-    /**
-     * Para la distribución BASE
-     * 
-     * 
-     */
-    function disposicionEstandar() {
-        $.ajax({
-            url: "/api/mesa",
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                let mesas = data.mesas;
-                if (mesas != null) {
-                    // Hay mesas
-                    $(mesas).each(function (ev, mesa) {
 
-                        var objeto_Mesa = new Mesa(mesa.id, mesa.ancho, mesa.largo, mesa.sillas, mesa.posicion_x, mesa.posicion_y, mesa.distribuciones, mesa.reservas);
-
-                        coloca(objeto_Mesa);
-                    });
-                }
-            }
-        });
-    }
-
-    /**
-     * Guardamos las mesas en el almacen
-     * @param {*} este 
-     * @param {*} ui 
-     * @param {*} creaTextTamanio 
-     * @param {*} actualizaMesa 
-     */
-    function guardaMesa(este, ui) {
-        let mesa = ui.draggable;
-        /* LO SACAMOS DEL ARRAY DE MESAS DE LA SALA */
-        $('#sala').data('sala').removeMesa(mesa);
-        /* CREAMOS EL TEXTO CON SU TAMAÑO */
-        var textTamanio = creaTextTamanio(mesa.data('mesa'));
-        /* LE DAMOS EL MISMO ESTILO A TODAS LAS MESAS E INDICAMOS SU TAMAÑO */
-        mesa.css({
-            position: "relative",
-            width: '100px',
-            height: '100px',
-            top: "0",
-            left: "0",
-        }).append(textTamanio);
-        let obj = mesa.data('mesa');
-        /* CAMBIAMOS LOS ATRIBUTOS DEL OBJETO */
-        obj.pos_x = -1;
-        obj.pos_y = -1;
-        /* LO AÑADIMOS AL ALMACÉN */
-        $(este).append(mesa);
-        // Actualizamos su posición en la BD
-        actualizaMesa(mesa);
-    }
-
-    function getDisposiciones() {
-
-        $.getJSON("/api/distribucion",
-            function (data) {
-                $.each(data.distribuciones, function (i, v) {
-                    all_distribuciones.push(v);
-                });
-            }
-        );
-    }
 });
-
-

@@ -38,6 +38,25 @@ class ReservaRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+    
+   /*  public function getMiReservas(Reserva $entity, bool $flush = false,int $idUser): void
+    {
+        $mias = [];
+        $rep = $this->getEntityManager()->getRepository($entity::class);
+
+        $reservas = $rep->findAll();
+        $usuario = $this->getEntityManager()->getRepository(Usuario::class)->find($idUser);
+        foreach ($reservas as $reserva) {
+            # Añadimos cada reserva
+            if ($reserva->getUsuario() === $usuario) {
+                $mias []= $reserva;
+            }
+        }
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    } */
 
 //    /**
 //     * @return Reserva[] Returns an array of Reserva objects

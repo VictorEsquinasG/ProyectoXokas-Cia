@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Distribucion;
 use App\Repository\DistribucionRepository;
+use DateTimeInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use PDOException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,26 +15,27 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api', name: 'api_distribucion')]
 class ApiDistribucionController extends AbstractController
 {
+
     #[Route("/distribucion/{id}", name: "getDistribucion", methods: "GET")]
-    public function getDistribucion(DistribucionRepository $mr, int $id): Response
+    public function getDistribucion(DistribucionRepository $mr, int $id = null): Response
     {
 
-        
         if ($id === null) {
             $distribuciones = $mr->findAll();
             # Si es null, los quiere todos
-            return $this->json(["Distribucion" => $distribuciones,"Success"=>true], 202);
+            return $this->json(["distribuciones" => $distribuciones, "Success" => true], 202);
         } else {
             // La distribucion
             $distribucion = $mr->find($id);
-            return $this->json(["Distribucion" => [
+            return $this->json(["distribucion" => [
                 "id" => $distribucion->getId(),
                 "pos_x" => $distribucion->getPosicionX(),
                 "pos_y" => $distribucion->getPosicionY(),
                 "fecha" => $distribucion->getFecha(),
-                "mesa_id" => $distribucion->getMesaId(),
+                "mesa" => $distribucion->getMesaId()->getId(),
+                "alias" => $distribucion->getAlias(),
                 "reservada" => $distribucion->isReservada()
-            ], "Success" => true]);
+            ], "Success" => true], 200);
         }
     }
 
@@ -43,15 +45,16 @@ class ApiDistribucionController extends AbstractController
         $datos = json_decode($request->getContent());
         $datos = $datos->distribucion;
         $distribucion = new Distribucion();
-        
+
         $distribucion->setFecha($datos->fecha);
         $distribucion->setMesaId($datos->mesa_id);
         $distribucion->setPosicionX($datos->pos_x);
         $distribucion->setPosicionY($datos->pos_y);
+        $distribucion->setAlias($datos->alias);
         if (isset($datos->reservada)) {
             # Si sabemos si está reservada o no
             $distribucion->setReservada($datos->reservada);
-        }else {
+        } else {
             # Por defecto, está libre
             $distribucion->setReservada(false);
         }
@@ -61,7 +64,7 @@ class ApiDistribucionController extends AbstractController
             $manager->persist($distribucion);
             $manager->flush();
         } catch (PDOException $e) {
-            $this->json(['message'=>$e->getMessage(),"Success"=>false],400);
+            $this->json(['message' => $e->getMessage(), "Success" => false], 400);
         }
         $id = $distribucion->getId();
         # Creado con éxito => Devolvemos la ID
@@ -85,11 +88,11 @@ class ApiDistribucionController extends AbstractController
         // Obtenemos el Distribucion
         $distribucion = $mr->getRepository(Distribucion::class)->find($id);
         // Cambiamos todos sus campos
-        $distribucion->setNombre($datos->nombre);
         $distribucion->setPosicionX($datos->pos_x);
         $distribucion->setPosicionY($datos->pos_y);
-        $distribucion->setFecha($datos->fecha);
+        $distribucion->setFecha( (DateTimeInterface::class) ($datos->fecha));
         $distribucion->setMesaId($datos->mesa_id);
+        $distribucion->setAlias($datos->alias);
         $distribucion->setReservada($datos->reservada);
 
         $manager = $mr->getManager();
@@ -98,7 +101,7 @@ class ApiDistribucionController extends AbstractController
             $manager->persist($distribucion);
             $manager->flush();
         } catch (PDOException $e) {
-            $this->json(['message'=>$e->getMessage(),"Success"=>false],400);
+            $this->json(['message' => $e->getMessage(), "Success" => false], 400);
         }
 
         # Creado con éxito => Devolvemos la ID
@@ -127,7 +130,7 @@ class ApiDistribucionController extends AbstractController
             $manager->remove($distribucion);
             $manager->flush();
         } catch (PDOException $e) {
-            $this->json(['message'=>$e->getMessage(),"Success"=>false],400);
+            $this->json(['message' => $e->getMessage(), "Success" => false], 400);
         }
 
         # Creado con éxito => Devolvemos la ID
@@ -139,5 +142,24 @@ class ApiDistribucionController extends AbstractController
             ],
             202 // Aceptado
         );
+    }
+
+    /* OTROS */
+
+    /**
+     * Método que devuelve todas las distribuciones con el nombre dado
+     */
+    #[Route("/distribucion/alias/{name}", name: "getDistribucionByName", methods: "GET")]
+    public function getDistribucionByName(DistribucionRepository $mr, string $name): Response
+    {
+        // Las distribuciones que se nos pide
+        $distribuciones = $mr->findBy([
+            "alias" => $name
+        ]);
+
+        return $this->json([
+            "distribuciones" => $distribuciones,
+            "Success" => true
+        ], 200);
     }
 }

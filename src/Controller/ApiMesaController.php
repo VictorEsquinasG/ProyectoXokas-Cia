@@ -11,26 +11,35 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route("/api",name:"api_mesa")]
+#[Route("/api", name: "api_mesa")]
 class ApiMesaController extends AbstractController
 {
     #[Route("/mesa/{id}", name: "getMesa", methods: "GET")]
     public function getMesa(MesaRepository $mr, int $id = null): Response
     {
-        
+
         if ($id === null) {
             # Si es null, las quiere todas
             $mesas = $mr->findAll();
-            return $this->json(["mesas" => $mesas,"Success"=>true], 200);
+            
+            return $this->json(["mesas" => $mesas, "Success" => true], 200);
         } else {
             // cogemos la mesa
             $mesa = $mr->find($id);
-            return $this->json(["mesa" => ["id" => $mesa->getId(),
-            "largo" => $mesa->getLargo(),
-            "ancho" => $mesa->getAncho(),
-            "sillas" => $mesa->getSillas(),
-            "posicion_x" => $mesa->getPosicionX(),
-            "posicion_y" => $mesa->getPosicionY()], "Success" => true], 200);
+            
+            return $this->json([
+                "mesa" => [
+                    "id" => $mesa->getId(),
+                    "largo" => $mesa->getLargo(),
+                    "ancho" => $mesa->getAncho(),
+                    "sillas" => $mesa->getSillas(),
+                    "posicion_x" => $mesa->getPosicionX(),
+                    "posicion_y" => $mesa->getPosicionY(),
+                    "distribuciones" => $mesa->getDistribucionesNotLazy(),
+                    "reservas" => $mesa->getReservasNotLazy()
+                ],
+                "Success" => true 
+            ], 200);
         }
     }
 
@@ -39,7 +48,7 @@ class ApiMesaController extends AbstractController
     {
         $datos = json_decode($request->getContent());
         $datos = $datos->mesa;
-    
+
         $mesa = new Mesa();
         $mesa->setAncho($datos->ancho);
         $mesa->setLargo($datos->largo);
@@ -52,7 +61,7 @@ class ApiMesaController extends AbstractController
             $manager->persist($mesa);
             $manager->flush();
         } catch (PDOException $e) {
-            $this->json(['message'=>$e->getMessage(),"Success"=>false],400);
+            $this->json(['message' => $e->getMessage(), "Success" => false], 400);
         }
         $id = $mesa->getId();
         # Creado con éxito => Devolvemos la ID
@@ -73,9 +82,9 @@ class ApiMesaController extends AbstractController
         // Cogemos el ID de la mesa a editar
         $mesaNueva = $datos->mesa;
         $id = $mesaNueva->id;
-            // Obtenemos la mesa
+        // Obtenemos la mesa
         $mesa = $mr->getRepository(Mesa::class)->find($id);
-            // Cambiamos todos sus campos
+        // Cambiamos todos sus campos
         $mesa->setAncho($mesaNueva->ancho);
         $mesa->setLargo($mesaNueva->largo);
         $mesa->setSillas($mesaNueva->sillas);
@@ -88,7 +97,7 @@ class ApiMesaController extends AbstractController
             $manager->persist($mesa);
             $manager->flush();
         } catch (PDOException $e) {
-            $this->json(['message'=>$e->getMessage(),"Success"=>false],400);
+            $this->json(['message' => $e->getMessage(), "Success" => false], 400);
         }
 
         # Creado con éxito => Devolvemos la ID
@@ -118,7 +127,7 @@ class ApiMesaController extends AbstractController
             $manager->remove($mesa);
             $manager->flush();
         } catch (PDOException $e) {
-            $this->json(['message'=>$e->getMessage(),"Success"=>false],400);
+            $this->json(['message' => $e->getMessage(), "Success" => false], 400);
         }
 
         # Creado con éxito => Devolvemos la ID

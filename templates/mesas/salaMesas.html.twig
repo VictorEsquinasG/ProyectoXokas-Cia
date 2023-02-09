@@ -10,14 +10,23 @@
 
 {% block body %}
 	{# En el body #}
-	
+	<div class="col-12 p-2" style="height: fit-content; border: 1px solid gray;margin:0 5px;">
+
+		<form action="" method="post">
+			<label for='selDisposicion'>Disposición de la sala</label>
+			<select
+				name="dispo" id="selDisposicion" style="position: absolute;left: 50%;transform: translate(-50%, 0);">
+				{# Como mínimo tiene la estándar #}
+				<option value="-1" selected>Estándar</option>
+				{% for opt in disposiciones %}
+					<option value="{{opt.value}}">{{opt.name}}</option>
+				{% endfor %}
+			</select>
+		</form>
+	</div>
 	<div id="container-mesas">
-		<div id="almacen">
-			
-		</div>
-		<div id="sala">
-			
-		</div>
+		<div id="almacen"></div>
+		<div id="sala"></div>
 	</div>
 	<div id="crea-mesas">
 		<form action="" method="POST">
@@ -35,21 +44,21 @@
 		.mesa {
 			background: url('../images/table.png') no-repeat;
 			background-size: 100%;
-			
+
 			/*
 			width: 120px;
 			height: 120px;
 			*/
 			margin: 5px;
 			/* Cuando haya chocado */
-			/* border: 1px dotted red; */	
+			/* border: 1px dotted red; */
 		}
 		#container-mesas {
 			display: grid;
 			grid-template-rows: [fila] 100%;
 			grid-template-columns: [a] 80% [b] 20%;
 			min-width: 1300px;
-			margin:5px;
+			margin: 5px;
 			height: fit-content;
 		}
 		#sala {
@@ -75,6 +84,7 @@
 		}
 	</style>
 
-
+	{# BASE #}
 	<script src="{{ asset('js/mesas.js') }}"></script>
+
 {% endblock %}

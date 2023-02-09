@@ -4,6 +4,29 @@
 {% endblock %}
 
 {% block body %}
-{# TODO #}
-<p>SI</p>
+	{# TODO #}
+	<h1>Haz tu reserva en minutos</h1>
+	<br><br><br>
+	<article>
+		<div>
+			<label for="datePicker">Fecha de reserva:</label>
+			<input type="text" id="datePicker">
+		</div>
+
+		<div>
+			<label for="selecTramos">Tramo horario:</label>
+			<select name="" id="selecTramos">
+				<option value="-1" disabled selected></option>
+                {% for hora in tramos %}
+				    <option value="{{hora}}">{{hora}}</option>
+                {% endfor %}
+			</select>
+		</div>
+
+		<input type="hidden" name="_target_path" value="/">
+
+		<button type="submit" class="btn btn-primary">RESERVAR</button>
+	</aritcle>
+
+    <script src="js/DatePicker.js"></script>
 {% endblock %}

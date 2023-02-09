@@ -39,6 +39,18 @@ class DistribucionRepository extends ServiceEntityRepository
         }
     }
 
+   /**
+    * Método hecho por mí
+    * @return Distribucion[] Returns an array of Distribucion objects
+    */
+   public function getOrderedByName(): array
+   {
+       return $this->createQueryBuilder('d')
+           ->orderBy('d.alias', 'ASC')
+           ->getQuery()
+           ->getResult()
+       ;
+   }
 //    /**
 //     * @return Distribucion[] Returns an array of Distribucion objects
 //     */
