@@ -25,8 +25,6 @@ class Juego
     #[ORM\Column]
     private ?int $max_jugadores = null;
 
-    #[ORM\Column(type: Types::ARRAY)]
-    private array $tamanio_tablero = [];
 
     #[ORM\ManyToMany(targetEntity: Evento::class, inversedBy: 'juegos')]
     private Collection $Eventos;
@@ -36,6 +34,15 @@ class Juego
 
     #[ORM\Column(type: Types::BLOB)]
     private $imagen = null;
+
+    #[ORM\Column]
+    private ?int $anchoTablero = null;
+
+    #[ORM\Column]
+    private ?int $largoTablero = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $descripcion = null;
 
     public function __construct()
     {
@@ -84,17 +91,6 @@ class Juego
         return $this;
     }
 
-    public function getTamanioTablero(): array
-    {
-        return $this->tamanio_tablero;
-    }
-
-    public function setTamanioTablero(array $tamanio_tablero): self
-    {
-        $this->tamanio_tablero = $tamanio_tablero;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, Evento>
@@ -158,6 +154,42 @@ class Juego
     public function setImagen($imagen): self
     {
         $this->imagen = $imagen;
+
+        return $this;
+    }
+
+    public function getAnchoTablero(): ?int
+    {
+        return $this->anchoTablero;
+    }
+
+    public function setAnchoTablero(int $anchoTablero): self
+    {
+        $this->anchoTablero = $anchoTablero;
+
+        return $this;
+    }
+
+    public function getLargoTablero(): ?int
+    {
+        return $this->largoTablero;
+    }
+
+    public function setLargoTablero(int $largoTablero): self
+    {
+        $this->largoTablero = $largoTablero;
+
+        return $this;
+    }
+
+    public function getDescripcion(): ?string
+    {
+        return $this->descripcion;
+    }
+
+    public function setDescripcion(string $descripcion): self
+    {
+        $this->descripcion = $descripcion;
 
         return $this;
     }

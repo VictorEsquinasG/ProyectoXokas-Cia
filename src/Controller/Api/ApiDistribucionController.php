@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Api;
 
 use App\Entity\Distribucion;
 use App\Repository\DistribucionRepository;
-use DateTimeInterface;
+use App\Repository\MesaRepository;
+use DateTime;
+
 use Doctrine\Persistence\ManagerRegistry;
 use PDOException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -79,7 +81,7 @@ class ApiDistribucionController extends AbstractController
     }
 
     #[Route("/distribucion", name: "putDistribucion", methods: "PUT")]
-    public function putDistribucion(ManagerRegistry $mr, Request $request): Response
+    public function putDistribucion(ManagerRegistry $mr, Request $request, MesaRepository $mesaRepository): Response
     {
         $datos = json_decode($request->getContent());
         $datos = $datos->distribucion;
@@ -90,8 +92,15 @@ class ApiDistribucionController extends AbstractController
         // Cambiamos todos sus campos
         $distribucion->setPosicionX($datos->pos_x);
         $distribucion->setPosicionY($datos->pos_y);
-        $distribucion->setFecha( (DateTimeInterface::class) ($datos->fecha));
-        $distribucion->setMesaId($datos->mesa_id);
+        // La fecha
+        $datetime = new DateTime();
+        $fecha = $datetime->createFromFormat('Y-m-d H:i:s.u',$datos->fecha);
+        // dd(["original" => $datos->fecha, "fecha" => $fecha]);
+        $distribucion->setFecha($fecha);
+        //
+        $distribucion->setMesaId(
+            $mesaRepository->find($datos->mesa_id)            
+        );
         $distribucion->setAlias($datos->alias);
         $distribucion->setReservada($datos->reservada);
 

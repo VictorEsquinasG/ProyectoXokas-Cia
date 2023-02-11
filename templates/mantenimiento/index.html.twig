@@ -23,6 +23,18 @@
 							</div>
 						</div>
 						{# Las opciones #}
+						{% if is_granted('ROLE_SUPER_ADMIN') %}
+							<div class="col-lg-6 col-sm-6">
+								<div class="service-item">
+									<a href="{{ url('admin') }}">
+										<div class="icon">
+											<i class="fa fa-cogs"></i>
+										</div>
+										<h4>GESTIÓN PRO</h4>
+									</a>
+								</div>
+							</div>
+						{% endif %}
 						<div class="col-lg-6 col-sm-6">
 							<div class="service-item">
 								<a href="{{ url('mantenimiento_juegos') }}">

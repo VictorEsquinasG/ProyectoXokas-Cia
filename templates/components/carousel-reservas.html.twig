@@ -13,7 +13,7 @@
 		</a>
 
 		{% for reserva in reservas %}
-			<a href="{{ url({{reserva.url}}) }}">
+			<a href="{{ url('reserva/'+{{reserva.id}}) }}">
 				<div class="item">
 					<img src="/images/{{reserva.img}}" alt="">
 					<div class="down-content">

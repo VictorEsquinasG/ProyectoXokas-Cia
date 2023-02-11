@@ -49,7 +49,7 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $telefono = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $telegram_id = null;
 
     #[ORM\OneToMany(mappedBy: 'Usuario', targetEntity: Reserva::class)]
@@ -111,6 +111,12 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getNombreCompleto()
+    {
+        # Devolvemos el nombre completo
+        return $this->getNombre()." ".$this->getApellido1()." ".$this->getApellido2();
+    }
+
     public function getEmail(): ?string
     {
         return $this->email;
@@ -145,6 +151,11 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
         $this->telegram_id = $telegram_id;
 
         return $this;
+    }
+
+    public function getAdmin()
+    {
+        return in_array('ROLE_ADMIN',$this->roles);
     }
 
     /**
