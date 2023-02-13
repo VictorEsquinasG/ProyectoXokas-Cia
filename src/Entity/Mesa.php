@@ -215,4 +215,9 @@ class Mesa implements JsonSerializable
         ];
         return $json;
     }
+
+    public function __toString(): string
+    {
+        return $this->getId() . " - " . $this->getAncho() . " x " . $this->getLargo();
+    }
 }

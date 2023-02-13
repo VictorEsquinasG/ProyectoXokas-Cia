@@ -1,0 +1,26 @@
+{# TOOS LOS JUEGOS EN UNA CARD #}
+<div style="display:flex;flex-direction:row;flex-wrap:wrap;flex:1 1 100%; gap: 1.5rem; margin:5%;">
+	{% for juego in juegos %}
+		<div class="card" style="width: 18rem;">
+			<img class="card-img-top" src="{{juego.img}}" alt="{{ 'Imagen de ' ~ juego.nombre }}">
+			<div class="card-body">
+				<h5 class="card-title">{{juego.nombre}}</h5>
+				<p class="card-text">
+					{# <b>Descripcion</b>:
+					{{juego.desc}}
+                    <br/> #}
+					<b>Tamaño del tablero</b>:
+					{{juego.tablero.ancho}}
+					x
+					{{juego.tablero.largo}}
+                    <br/>
+					<b>Jugadores</b>:
+					{{juego.jugadores.min}}
+					-
+					{{juego.jugadores.max}}
+				</p>
+				<a href="#" class="btn btn-primary" id="{{ 'juego_' ~ juego.id }}">Ver más</a>
+			</div>
+		</div>
+	{% endfor %}
+</div>

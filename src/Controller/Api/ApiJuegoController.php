@@ -26,12 +26,18 @@ class ApiJuegoController extends AbstractController
         } else {
             // Cogemos el juego
             $juego = $jr->find($id);
-            return $this->json(["Juego" => [
+            return $this->json(["juego" => [
                 "id" => $juego->getId(),
                 "nombre" => $juego->getNombre(),
-                "minJugadores" => $juego->getMinJugadores(),
-                "maxJugadores" => $juego->getMaxJugadores(),
-                "tamañoTablero" => $juego->getTamanioTablero(),
+                "imagen" => null, //TODO
+                "jugadores" => [
+                    "min" => $juego->getMinJugadores(),
+                    "max" => $juego->getMaxJugadores(),
+                ],
+                "tamañoTablero" => [
+                    "ancho" => $juego->getAnchoTablero(),
+                    "largo" => $juego->getLargoTablero()
+                ],
                 "reservas" => $juego->getReservas(),
                 "eventos" => $juego->getEventos()
             ], "Success" => true],200);
@@ -47,10 +53,15 @@ class ApiJuegoController extends AbstractController
 
         $juego = new Juego();
         $juego->setNombre($datos->nombre);
-        $juego->setMinJugadores($datos->minJugadores);
-        $juego->setMaxJugadores($datos->maxJugadores);
-        $juego->setTamanioTablero($datos->tamañoTablero);
-        $reservas = $datos->reservas;
+        $juego->setImagen($datos->imagen);
+        $jugadores = $datos->jugadores;
+        $juego->setMinJugadores($jugadores->min);
+        $juego->setMaxJugadores($jugadores->max);
+        $tablero = $datos->tablero;
+        $juego->setAnchoTablero($tablero->ancho);
+        $juego->setLargoTablero($tablero->largo);
+        
+        /* $reservas = $datos->reservas;
         foreach ($reservas as $reserva) {
             # Añadimos cada una de las reservas
             $juego->addReserva($reserva);
@@ -59,7 +70,7 @@ class ApiJuegoController extends AbstractController
         foreach ($eventos as $evento) {
             # Añadimos cada evento en el array
             $juego->addEvento($evento); 
-        }
+        } */
 
         $manager = $mr->getManager();
         try {
@@ -67,7 +78,9 @@ class ApiJuegoController extends AbstractController
             $manager->persist($juego);
             $manager->flush();
         } catch (PDOException $e) {
-            $this->json(['message'=>$e->getMessage(),"Success"=>false],400);
+            $this->json(['message'=>$e->getMessage(),
+            "Success"=>false
+        ],400);
         }
         $id = $juego->getId(); 
         # Creado con éxito => Devolvemos la ID
@@ -91,10 +104,13 @@ class ApiJuegoController extends AbstractController
         $juego = $mr->getRepository(Juego::class)->find($id);
         // Cambiamos todos sus campos
         $juego->setNombre($datos->nombre);
-        $juego->setMinJugadores($datos->minJugadores);
-        $juego->setMaxJugadores($datos->maxJugadores);
-        $juego->setTamanioTablero($datos->tamañoTablero);
-        $reservas = $datos->reservas;
+        $juego->setImagen($datos->imagen);
+        $juego->setMinJugadores($datos->jugadores->min);
+        $juego->setMaxJugadores($datos->jugadores->max);
+        $juego->setAnchoTablero($datos->tablero->ancho);
+        $juego->setLargoTablero($datos->tablero->largo);
+        
+        /* $reservas = $datos->reservas;
         foreach ($reservas as $reserva) {
             # Añadimos cada una de las reservas
             $juego->addReserva($reserva);
@@ -103,7 +119,7 @@ class ApiJuegoController extends AbstractController
         foreach ($eventos as $evento) {
             # Añadimos cada evento en el array
             $juego->addEvento($evento); 
-        }
+        } */
 
         $manager = $mr->getManager();
         // Lo mandamos a actualizar
@@ -135,7 +151,10 @@ class ApiJuegoController extends AbstractController
             // La mandamos a borrar
             $manager->remove($juego, true);
         } catch (PDOException $e) {
-            return $this->json(['message'=>'Error al borrar juego '.$id."\n".$e->getMessage(),"Success"=>false],400);
+            return $this->json([
+                'message'=>'Error al borrar juego '.$id."\n".$e->getMessage(),
+                "Success"=>false
+            ],400);
         }
 
         # Creado con éxito => Devolvemos la ID

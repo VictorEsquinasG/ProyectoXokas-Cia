@@ -65,6 +65,7 @@ class UsuarioCrudController extends AbstractCrudController
                 "apellido1",
                 "apellido2",
                 BooleanField::new('Admin')
+                ->setDisabled(true)
                 // Boolean ('Admin')
             ];
         }

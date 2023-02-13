@@ -5,9 +5,11 @@ namespace App\Entity;
 use App\Repository\TramosRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
+use stdClass;
 
 #[ORM\Entity(repositoryClass: TramosRepository::class)]
-class Tramos
+class Tramos implements JsonSerializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -47,5 +49,20 @@ class Tramos
         $this->hora_fin = $hora_fin;
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->hora_inicio . " - " . $this->hora_fin;
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        $json = new stdClass();
+        
+        $json->horaInicio = $this->getHoraFin();
+        $json->horaFin = $this->getHoraFin();
+
+        return $json;
     }
 }

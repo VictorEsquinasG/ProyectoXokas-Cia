@@ -2,3 +2,22 @@
 
 {% block title %}Catálogo
 {% endblock %}
+
+{% block body %}
+
+    <h2>
+        Estos son nuestros Juegos
+        {# Si está logueado le llamamos por su nombre #}
+        {% if app.user %}
+            {{ app.user.getNombre }}
+        {% endif %}
+        !
+    </h2>
+    <h4>¿Qué te parece?</h4>
+
+    {# CARDS DE JUEGOS #}
+    {% include "components/cards-juegos.html.twig" %}
+    
+    {# EL MODAL #}
+    <script src="{{ asset('js/ventanaEmergente.js') }}"></script>
+{% endblock %}

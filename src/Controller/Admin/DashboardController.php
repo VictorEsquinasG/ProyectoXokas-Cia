@@ -4,9 +4,11 @@ namespace App\Controller\Admin;
 
 use App\Entity\Distribucion;
 use App\Entity\Evento;
+use App\Entity\FechasFestivos;
 use App\Entity\Juego;
 use App\Entity\Mesa;
 use App\Entity\Reserva;
+use App\Entity\Tramos;
 use App\Entity\Usuario;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -62,8 +64,12 @@ class DashboardController extends AbstractDashboardController
                 MenuItem::linkToCrud('Mesas','fa fa-clone', Mesa::class),
                 // MenuItem::linkToCrud('Distribuciones','fa fa-object-group', Distribucion::class),
             ]),
+            MenuItem::section('Fechas', 'fa fa-calendar'),
+            MenuItem::linkToCrud('Festividades','fa fa-calendar-times-o',FechasFestivos::class),
+            MenuItem::linkToCrud('Tramos horarios','fa fa-clock',Tramos::class),
             MenuItem::section('Extras', 'fa fa-ellipsis-h'),
             MenuItem::linkToUrl('Buscar con google', 'fab fa-google', 'https://google.com'),
+            MenuItem::linkToRoute('Volver al inicio', 'fa fa-reply', 'home'),
         ];
         // yield MenuItem::linkToCrud('Mesas', 'fas fa-list', Mesa::class);
         // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);

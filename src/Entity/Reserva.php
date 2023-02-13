@@ -112,6 +112,11 @@ class Reserva implements JsonSerializable
         return $this;
     }
 
+    public function __toString(): string
+    {
+        return $this->fecha_reserva . "";
+    }
+
     function jsonSerialize(): mixed
     {
         $json =

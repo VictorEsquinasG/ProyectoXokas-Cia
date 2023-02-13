@@ -113,6 +113,11 @@ class Distribucion implements JsonSerializable
         return $this;
     }
 
+    public function __toString(): string
+    {
+        return $this->getAlias();
+    }
+
     public function jsonSerialize(): mixed
     {
         // $json = new stdClass();

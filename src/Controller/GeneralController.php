@@ -49,7 +49,7 @@ class GeneralController extends AbstractController
         foreach ($data as $datos) {
             # Rellenamos con el juego actual
             $juegos[] = [
-                'url' => $datos->getId() . '', //TODO página de JUEGO_ID
+                'id' => $datos->getId() . '', //TODO página de JUEGO_ID
                 'nombre' => $datos->getNombre() . '',
                 'desc' => $datos->getDescripcion() . '',
                 'img' => $datos->getImagen() . '',
@@ -67,17 +67,11 @@ class GeneralController extends AbstractController
             'juegos' => $juegos,
         ]);
     }
-
-    #[Route('/reserva/{id}')]
+    
+    #[Route('/reserva/{id}', name: 'reserva_concreta')]
     public function reservaConcreta(int $id)
     {
         # TODO La página sobre la reserva original
     }
 
-    #[Route('/reserva/new', name: 'make_reserva')]
-    public function newReserva(): Response
-    {
-
-        return $this->render('reservas/nueva.html.twig');
-    }
 }

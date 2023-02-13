@@ -1,7 +1,8 @@
 /**
  * LIBRERÍA QUE PERMITE ARRASTRAR LAS MESAS ALMACENADAS EN BASE DE DATOS
  * MEDIANTE AJAX
- * UTILIZA JQUERY & UI
+ * @use UTILIZA JQUERY & UI
+ * @author Víctor Esquinas
  */
 $(function () {
 
@@ -105,11 +106,11 @@ $(function () {
                 let dispActual = $('select[name="dispo"]').val();
                 if (dispActual != -1) {
                     let $disp = getDisposicion(dispActual, mesa.data('mesa').id);
-                    console.log($disp);
-                    let $objDisp = new Distribucion($disp.id, $disp.mesa, $disp.fecha.date, $disp.pos_x, $disp.pos_y,$disp.alias, $disp.reservada);
-                    // Anotamos su posición 
-                    $objDisp.pos_x = (mesa.left - sala.difx);
-                    $objDisp.pos_y = (mesa.top - sala.dify);
+                    
+                    let $objDisp = {};
+                    // Anotamos su nueva posición 
+                    $objDisp.distribucion = new Distribucion($disp.id, $disp.mesa, $disp.fecha.date, (mesa.left - sala.difx), (mesa.top - sala.dify),$disp.alias, $disp.reservada);
+                    console.log($objDisp);
                     // La posición la actualizamos ese día
                     actualizaDisposicion($objDisp)
                 } else {
@@ -161,16 +162,15 @@ $(function () {
 
     function actualizaDisposicion(disp) {
 
-        let dist = {};
-        dist.distribucion = disp;
         // dist.distribucion.fecha = dist.distribucion.fecha.substr(0,10); //19
         $.ajax({
             type: "PUT",
             url: "/api/distribucion",
-            data: JSON.stringify(dist),
+            data: JSON.stringify(disp),
             dataType: "json",
             success: function (response) {
-                console.log("mesa " + response.id + " actualizada");
+                console.log(response);
+                console.log("Posición de la mesa " + response.id + " actualizada");
             }
         });
         // debugger;

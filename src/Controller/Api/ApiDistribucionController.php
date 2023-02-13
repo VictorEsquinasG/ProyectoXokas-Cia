@@ -3,6 +3,7 @@
 namespace App\Controller\Api;
 
 use App\Entity\Distribucion;
+use App\Entity\Mesa;
 use App\Repository\DistribucionRepository;
 use App\Repository\MesaRepository;
 use DateTime;
@@ -25,7 +26,10 @@ class ApiDistribucionController extends AbstractController
         if ($id === null) {
             $distribuciones = $mr->findAll();
             # Si es null, los quiere todos
-            return $this->json(["distribuciones" => $distribuciones, "Success" => true], 202);
+            return $this->json([
+                "distribuciones" => $distribuciones,
+                "Success" => true
+            ], 202);
         } else {
             // La distribucion
             $distribucion = $mr->find($id);
@@ -48,11 +52,17 @@ class ApiDistribucionController extends AbstractController
         $datos = $datos->distribucion;
         $distribucion = new Distribucion();
 
-        $distribucion->setFecha($datos->fecha);
-        $distribucion->setMesaId($datos->mesa_id);
+        $rep = $mr->getRepository(Mesa::class);
+        $mesa = $rep->find($datos->mesa_id); 
+        $distribucion->setMesaId($mesa);
         $distribucion->setPosicionX($datos->pos_x);
         $distribucion->setPosicionY($datos->pos_y);
         $distribucion->setAlias($datos->alias);
+        $datetime = new DateTime();
+        
+        $fecha = $datetime->createFromFormat('Y-m-d H:i:s.u',$datos->fecha);
+        $distribucion->setFecha($fecha);
+
         if (isset($datos->reservada)) {
             # Si sabemos si está reservada o no
             $distribucion->setReservada($datos->reservada);
@@ -110,12 +120,15 @@ class ApiDistribucionController extends AbstractController
             $manager->persist($distribucion);
             $manager->flush();
         } catch (PDOException $e) {
-            $this->json(['message' => $e->getMessage(), "Success" => false], 400);
+            $this->json(['message' => $e->getMessage(),
+            "Success" => false
+        ], 400);
         }
 
         # Creado con éxito => Devolvemos la ID
         return $this->json(
             [
+                "id" => $id,
                 "message" => "Éxito al editar la distribucion " . $id,
                 "Success" => true
             ],

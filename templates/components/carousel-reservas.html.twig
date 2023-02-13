@@ -2,7 +2,7 @@
 
 	<div class="owl-features owl-carousel">
 
-		<a href="{{ url('make_reserva') }}" id="creaReserva">
+		<a href="#" id="creaReserva" data="">
 			<div class="item">
 				<img src="assets/images/add.png" alt="">
 				<div class="down-content">
@@ -13,7 +13,7 @@
 		</a>
 
 		{% for reserva in reservas %}
-			<a href="{{ url('reserva/'+{{reserva.id}}) }}">
+			<a href="{{ url('reserva/{{ reserva.id }}') }}">
 				<div class="item">
 					<img src="/images/{{reserva.img}}" alt="">
 					<div class="down-content">

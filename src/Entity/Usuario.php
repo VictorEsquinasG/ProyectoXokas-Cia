@@ -21,7 +21,7 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    
+
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
@@ -32,15 +32,15 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
-    
+
     private ?string $password = null;
 
     #[ORM\Column(length: 45)]
-    
+
     private ?string $nombre = null;
 
     #[ORM\Column(length: 45)]
-    
+
     private ?string $apellido1 = null;
 
     #[ORM\Column(length: 45, nullable: true)]
@@ -114,7 +114,7 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     public function getNombreCompleto()
     {
         # Devolvemos el nombre completo
-        return $this->getNombre()." ".$this->getApellido1()." ".$this->getApellido2();
+        return $this->getNombre() . " " . $this->getApellido1() . " " . $this->getApellido2();
     }
 
     public function getEmail(): ?string
@@ -155,7 +155,7 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getAdmin()
     {
-        return in_array('ROLE_ADMIN',$this->roles);
+        return in_array('ROLE_ADMIN', $this->roles);
     }
 
     /**
@@ -288,5 +288,10 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
         $this->imagen = $imagen;
 
         return $this;
+    }
+   
+    public function __toString(): string
+    {
+        return $this->getNombreCompleto();
     }
 }

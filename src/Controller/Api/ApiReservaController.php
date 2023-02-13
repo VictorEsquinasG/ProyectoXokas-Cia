@@ -2,8 +2,10 @@
 
 namespace App\Controller\Api;
 
+use App\Entity\Juego;
 use App\Entity\Reserva;
 use App\Repository\ReservaRepository;
+use DateTime;
 use Doctrine\Persistence\ManagerRegistry;
 use PDOException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,20 +23,25 @@ class ApiReservaController extends AbstractController
         if ($id === null) {
             # Si es null, las quiere todas
             $reservas = $rr->findAll();
-            return $this->json(["reservas" => $reservas,"Success"=>true], 200);
+            return $this->json(["reservas" => $reservas, "Success" => true], 200);
         } else {
             // LA RESERVA
             $reserva = $rr->find($id);
-            return $this->json(["Reserva" => [
-                "id" => $reserva->getId(),
-                "juego" => $reserva->getJuego(),
-                "mesa" => $reserva->getMesa(),
-                "fecha" => $reserva->getFechaReserva(),
-                "fecha_cancelacion" => $reserva->getFechaCancelacion(),
-                "user" => $reserva->getUsuario(),
-                "asiste" => $reserva->isAsiste()
-            ], "Success" => true],
-            200);
+            return $this->json(
+                [
+                    "Reserva" => [
+                        "id" => $reserva->getId(),
+                        "juego" => $reserva->getJuego(),
+                        "mesa" => $reserva->getMesa(),
+                        "fecha" => $reserva->getFechaReserva(),
+                        "fecha_cancelacion" => $reserva->getFechaCancelacion(),
+                        "user" => $reserva->getUsuario(),
+                        "asiste" => $reserva->isAsiste()
+                    ],
+                    "Success" => true
+                ],
+                200
+            );
         }
     }
 
@@ -45,17 +52,28 @@ class ApiReservaController extends AbstractController
         $datos = $datos->reserva;
         $reserva = new Reserva();
 
-        $reserva->setFechaReserva($datos->fecha);
+        $datetime = new DateTime();
+        $fecha = $datetime->createFromFormat('Y-m-d H:i:s.u', $datos->fecha);
+
+        $reserva->setFechaReserva($fecha);
         $reserva->setAsiste($datos->asiste);
+
         if ($datos->asiste === true) {
             $reserva->setFechaCancelacion(null);
-        }else {
+        } else {
             # Si no asiste
-            $reserva->setFechaCancelacion($datos->fechaCancelacion);
+            $datetime = new DateTime();
+            $fecha = $datetime->createFromFormat('Y-m-d H:i:s.u', $datos->fechaCancelacion);
+
+            $reserva->setFechaCancelacion($fecha);
         }
-        $reserva->setMesa($datos->mesa);
-        $reserva->setJuego($datos->juego);
-        $reserva->setFechaReserva($datos->fechaReserva);
+
+        $reserva->setMesa(
+            $mr->getRepository(Mesa::class)->find($datos->mesa)
+        );
+        $reserva->setJuego(
+            $mr->getRepository(Juego::class)->find($datos->juego)
+        );
 
         try {
             // La creamos
@@ -63,7 +81,10 @@ class ApiReservaController extends AbstractController
             $manager->persist($reserva);
             $manager->flush();
         } catch (PDOException $e) {
-            $this->json(['message'=>$e->getMessage(),"Success"=>false],400);
+            $this->json([
+                'message' => $e->getMessage(),
+                "Success" => false
+            ], 400);
         }
         $id = $reserva->getId();
         # Creado con éxito => Devolvemos la ID
@@ -100,7 +121,7 @@ class ApiReservaController extends AbstractController
             $manager->persist($reserva);
             $manager->flush();
         } catch (PDOException $e) {
-            $this->json(['message'=>$e->getMessage(),"Success"=>false],400);
+            $this->json(['message' => $e->getMessage(), "Success" => false], 400);
         }
 
         # Creado con éxito => Devolvemos la ID
@@ -129,7 +150,7 @@ class ApiReservaController extends AbstractController
             $manager->remove($reserva);
             $manager->flush();
         } catch (PDOException $e) {
-            $this->json(['message'=>$e->getMessage(),"Success"=>false],400);
+            $this->json(['message' => $e->getMessage(), "Success" => false], 400);
         }
 
         # Creado con éxito => Devolvemos la ID

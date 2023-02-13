@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType;
@@ -34,14 +35,14 @@ class JuegoCrudController extends AbstractCrudController
                 // IdField::new('id')
                 // ->hideOnForm(),
                 TextField::new('nombre'),
-                TextEditorField::new('descripcion'),
+                TextareaField::new('descripcion'),
                 IntegerField::new('anchoTablero'),
                 IntegerField::new('largoTablero'),
                 IntegerField::new('minJugadores'),
                 IntegerField::new('maxJugadores'),
-                ImageField::new('imagen')
-                    ->setBasePath('images/uploads/')    
-                    ->setUploadDir('public/images/uploads/')
+                // ImageField::new('imagen')
+                //     ->setBasePath('images/uploads/')    
+                //     ->setUploadDir('public/images/uploads/')
                 // ->setUploadedFileNamePattern('[slug]-[timestamp].[extension]'),
 
             ];

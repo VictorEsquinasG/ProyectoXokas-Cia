@@ -32,7 +32,7 @@ class Juego
     #[ORM\OneToMany(mappedBy: 'Juego', targetEntity: Reserva::class)]
     private Collection $reservas;
 
-    #[ORM\Column(type: Types::BLOB)]
+    #[ORM\Column(type: Types::BLOB, nullable: true)]
     private $imagen = null;
 
     #[ORM\Column]
@@ -192,5 +192,10 @@ class Juego
         $this->descripcion = $descripcion;
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->nombre;
     }
 }

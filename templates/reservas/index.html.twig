@@ -15,7 +15,7 @@
 			</h1>
 		</div>
 		
-		{# TODO se le pasan los datos desde el controlador, a lo mejor hay que traer la plantilla AQUÍ (en lugar de include) #}
+		
 		{% include "components/carousel-reservas.html.twig" %}
 
 	</section>
@@ -24,4 +24,6 @@
 	<script src="{{ asset('js/DatePicker.js') }}"></script>
 	<!-- EL CARRUSEL -->
 	<script src="{{ asset('assets/js/owl-carousel.js') }}"></script>
+	<!-- EL MODAL -->
+    <script src="{{ asset('js/ventanaEmergente.js') }}"></script>
 {% endblock %}

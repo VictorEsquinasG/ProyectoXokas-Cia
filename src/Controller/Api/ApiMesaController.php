@@ -22,7 +22,10 @@ class ApiMesaController extends AbstractController
             # Si es null, las quiere todas
             $mesas = $mr->findAll();
             
-            return $this->json(["mesas" => $mesas, "Success" => true], 200);
+            return $this->json([
+                "mesas" => $mesas,
+                "Success" => true
+            ], 200);
         } else {
             // cogemos la mesa
             $mesa = $mr->find($id);
