@@ -42,6 +42,7 @@ $(function () {
         }
 
         removeMesa = function (mesa) {
+            
             var id = mesa.id;
             // Lo borramos del array mesas
             this.mesas.splice(id, id);
@@ -104,13 +105,12 @@ $(function () {
                 appendSala(sala, mesa);
                 // Comprobamos la disposición
                 let dispActual = $('select[name="dispo"]').val();
-                if (dispActual != -1) {
+                if (dispActual !== '-1') {
                     let $disp = getDisposicion(dispActual, mesa.data('mesa').id);
                     
                     let $objDisp = {};
                     // Anotamos su nueva posición 
-                    $objDisp.distribucion = new Distribucion($disp.id, $disp.mesa, $disp.fecha.date, (mesa.left - sala.difx), (mesa.top - sala.dify),$disp.alias, $disp.reservada);
-                    console.log($objDisp);
+                    $objDisp = new Distribucion($disp.id, $disp.mesa, $disp.fecha.date, (mesa.left - sala.difx), (mesa.top - sala.dify),$disp.alias, $disp.reservada);
                     // La posición la actualizamos ese día
                     actualizaDisposicion($objDisp)
                 } else {
@@ -125,10 +125,9 @@ $(function () {
     });
 
     function appendSala(sala, mesa) {
-        sala
-            .addMesa(mesa.eq(0));
         let objmesa = mesa.data('mesa');
         // Cambiamos su estilo para poder visualizarla
+        
         mesa.css({
             "position": "absolute",
             top: mesa.top + "px",
@@ -139,10 +138,11 @@ $(function () {
             /* ELIMINAMOS EL TEXTO INFORMATIVO */
             .children('p').remove();
         // Actualizamos su posición guardada en el objeto
-        var obj = mesa.data('mesa');
-        obj.pos_x = (mesa.left - sala.difx);
-        obj.pos_y = (mesa.top - sala.dify);
+        objmesa.pos_x = (mesa.left - sala.difx);
+        objmesa.pos_y = (mesa.top - sala.dify);
 
+        sala    
+            .addMesa(objmesa);
     }
 
     function getDisposicion(alias, mesa_id) {
@@ -150,6 +150,7 @@ $(function () {
         
         // Buscamos nuestra mesa
         $.each(all_distribuciones, function (i, v) {
+            debugger
             // Nuestra mesa = nuestra distribucion
             if (v.mesa == mesa_id && v.alias == alias) {
                 distribucion = v;
@@ -162,11 +163,14 @@ $(function () {
 
     function actualizaDisposicion(disp) {
 
+        let dist = {};
+        dist.distribucion = disp;
+        console.log(dist);
         // dist.distribucion.fecha = dist.distribucion.fecha.substr(0,10); //19
         $.ajax({
             type: "PUT",
             url: "/api/distribucion",
-            data: JSON.stringify(disp),
+            data: JSON.stringify(dist),
             dataType: "json",
             success: function (response) {
                 console.log(response);
@@ -312,6 +316,7 @@ $(function () {
                 "posicion_y": mesa.pos_y,
             }
         }
+
         $.ajax({
             type: "PUT",
             url: "/api/mesa",
@@ -386,16 +391,14 @@ $(function () {
                         let nombre = v.alias;
                         // Hablamos de la misma distribucion (mismo nombre o misma fecha)
                         if (nombre == selected) {
-                            // capturamos la mesa y la colocamos
-                            let mesa = $('#almacen > .mesa[id=mesa_'+mesaActual.id+']');
                             // Guardamos sus coordenadas actuales
-                            mesa.posicionXAnterior = mesa.pos_x;
-                            mesa.posicionYAnterior = mesa.pos_y;
+                            mesaActual.posicionXAnterior = mesa.pos_x;
+                            mesaActual.posicionYAnterior = mesa.pos_y;
                             // Es la distribucion que queremos
-                            mesa.pos_y = v.pos_y;
-                            mesa.pos_x = v.pos_x;
+                            mesaActual.pos_y = v.pos_y;
+                            mesaActual.pos_x = v.pos_x;
                             // La mandamos a pintar
-                            recoloca(mesa);
+                            recoloca(mesaActual);
                         }
                     });
                 });
@@ -409,7 +412,7 @@ $(function () {
         let sala = $('#sala').data('sala');
         $.each(mesasSala, function (i, v) {
             
-            sala.removeMesa(v);
+            sala.removeMesa($(v).data('mesa'));
             if (borrado) {
                 // Borramos las mesas
                 $('#sala').children('.mesa[id=mesa_'+v.id+']').remove();
@@ -420,11 +423,15 @@ $(function () {
         });
     }
 
+    /**
+     * Almacena una mesa sin cambiar su posición en la base de datos
+     * @param {*} mesa 
+     */
     function almacena(mesa) {
-        /* LO SACAMOS DEL ARRAY DE MESAS DE LA SALA */
-        $('#sala').data('sala').removeMesa(mesa);
+        let obj = mesa.data('mesa');
+
         /* CREAMOS EL TEXTO CON SU TAMAÑO */
-        var textTamanio = creaTextTamanio(mesa.data('mesa'));
+        var textTamanio = creaTextTamanio(obj);
         /* LE DAMOS EL MISMO ESTILO A TODAS LAS MESAS E INDICAMOS SU TAMAÑO */
         mesa.css({
             position: "relative",
@@ -438,7 +445,6 @@ $(function () {
             // No tiene la etiqueta
             mesa.append(textTamanio);
         }
-        let obj = mesa.data('mesa');
         /* CAMBIAMOS LOS ATRIBUTOS DEL OBJETO */
         obj.pos_x = -1;
         obj.pos_y = -1;
@@ -448,7 +454,7 @@ $(function () {
 
 
     function recoloca(mesa) {
-    
+        debugger
         var top = parseInt(mesa.pos_y);
         var left = parseInt(mesa.pos_x);
 
@@ -582,12 +588,12 @@ $(function () {
             $.each(mesas, function (i, mesa) { 
                 // Le pasamos la mesa
                 if ((typeof mesa.posicionXAnterior !== 'undefined') && (mesa.posicionXAnterior !== null)) {
-                    debugger
+                    
                     // Si existe esta propiedad es que está colocada en la disposición BASE original
                     mesa.pos_x = mesa.posicionXAnterior;
                     mesa.pos_y = mesa.posicionYAnterior;
                     // HAY QUE REASIGNAR SUS COORDENADAS Y MANDARLA A PINTARSE
-                    recoloca($(mesa));
+                    recoloca(mesa);
                 }
             });
         }else {
@@ -624,7 +630,7 @@ $(function () {
     function guardaMesa(div, ui) {
         let mesa = ui.draggable;
         /* LO SACAMOS DEL ARRAY DE MESAS DE LA SALA */
-        $('#sala').data('sala').removeMesa(mesa);
+        $('#sala').data('sala').removeMesa(mesa.data('mesa'));
         /* CREAMOS EL TEXTO CON SU TAMAÑO */
         var textTamanio = creaTextTamanio(mesa.data('mesa'));
         /* LE DAMOS EL MISMO ESTILO A TODAS LAS MESAS E INDICAMOS SU TAMAÑO */

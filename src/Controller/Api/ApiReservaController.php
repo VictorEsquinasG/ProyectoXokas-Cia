@@ -3,6 +3,7 @@
 namespace App\Controller\Api;
 
 use App\Entity\Juego;
+use App\Entity\Mesa;
 use App\Entity\Reserva;
 use App\Repository\ReservaRepository;
 use DateTime;
@@ -23,10 +24,16 @@ class ApiReservaController extends AbstractController
         if ($id === null) {
             # Si es null, las quiere todas
             $reservas = $rr->findAll();
-            return $this->json(["reservas" => $reservas, "Success" => true], 200);
+            return $this->json(
+                [
+                    "reservas" => $reservas,
+                    "Success" => true
+                ],
+                200
+            );
         } else {
             // LA RESERVA
-            $reserva = $rr->find($id);
+            $reserva = $rr->find($id);  
             return $this->json(
                 [
                     "Reserva" => [
@@ -108,12 +115,29 @@ class ApiReservaController extends AbstractController
         // Obtenemos el Reserva
         $reserva = $mr->getRepository(Reserva::class)->find($id);
         // Cambiamos todos sus campos
-        $reserva->setNombre($datos->nombre);
-        $reserva->setPosicionX($datos->pos_x);
-        $reserva->setPosicionY($datos->pos_y);
-        $reserva->setFecha($datos->fecha);
-        $reserva->setMesaId($datos->mesa_id);
-        $reserva->setReservada($datos->reservada);
+
+        $datetime = new DateTime();
+        $fecha = $datetime->createFromFormat('Y-m-d H:i:s.u', $datos->fecha);
+
+        $reserva->setFechaReserva($fecha);
+        $reserva->setAsiste($datos->asiste);
+
+        if ($datos->asiste === true) {
+            $reserva->setFechaCancelacion(null);
+        } else {
+            # Si no asiste
+            $datetime = new DateTime();
+            $fecha = $datetime->createFromFormat('Y-m-d H:i:s.u', $datos->fechaCancelacion);
+
+            $reserva->setFechaCancelacion($fecha);
+        }
+
+        $reserva->setMesa(
+            $mr->getRepository(Mesa::class)->find($datos->mesa)
+        );
+        $reserva->setJuego(
+            $mr->getRepository(Juego::class)->find($datos->juego)
+        );
 
         $manager = $mr->getManager();
         try {
@@ -121,7 +145,10 @@ class ApiReservaController extends AbstractController
             $manager->persist($reserva);
             $manager->flush();
         } catch (PDOException $e) {
-            $this->json(['message' => $e->getMessage(), "Success" => false], 400);
+            $this->json([
+                'message' => $e->getMessage(),
+                "Success" => false
+            ], 400);
         }
 
         # Creado con éxito => Devolvemos la ID

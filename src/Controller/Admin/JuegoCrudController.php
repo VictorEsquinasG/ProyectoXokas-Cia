@@ -40,10 +40,10 @@ class JuegoCrudController extends AbstractCrudController
                 IntegerField::new('largoTablero'),
                 IntegerField::new('minJugadores'),
                 IntegerField::new('maxJugadores'),
-                // ImageField::new('imagen')
-                //     ->setBasePath('images/uploads/')    
-                //     ->setUploadDir('public/images/uploads/')
-                // ->setUploadedFileNamePattern('[slug]-[timestamp].[extension]'),
+                ImageField::new('imagen')
+                    ->setBasePath('images/uploads/')
+                    ->setUploadDir('public/images/uploads/')
+                    ->setUploadedFileNamePattern('[slug]-[timestamp].[extension]'),
 
             ];
     }

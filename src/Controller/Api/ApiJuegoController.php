@@ -86,6 +86,7 @@ class ApiJuegoController extends AbstractController
         # Creado con éxito => Devolvemos la ID
         return $this->json(
             [
+                "id" => $id,
                 "message" => "Éxito al crear el Juego " . $id,
                 "Success" => true
             ],
@@ -105,10 +106,12 @@ class ApiJuegoController extends AbstractController
         // Cambiamos todos sus campos
         $juego->setNombre($datos->nombre);
         $juego->setImagen($datos->imagen);
-        $juego->setMinJugadores($datos->jugadores->min);
-        $juego->setMaxJugadores($datos->jugadores->max);
-        $juego->setAnchoTablero($datos->tablero->ancho);
-        $juego->setLargoTablero($datos->tablero->largo);
+        $jugadores = $datos->jugadores;
+        $juego->setMinJugadores($jugadores->min);
+        $juego->setMaxJugadores($jugadores->max);
+        $tablero = $datos->tablero;
+        $juego->setAnchoTablero($tablero->ancho);
+        $juego->setLargoTablero($tablero->largo);
         
         /* $reservas = $datos->reservas;
         foreach ($reservas as $reserva) {
@@ -129,6 +132,7 @@ class ApiJuegoController extends AbstractController
         # Creado con éxito => Devolvemos la ID
         return $this->json(
             [
+                "id" => $id,
                 "message" => "Éxito al editar el Juego " . $id,
                 "Success" => true
             ],
@@ -152,6 +156,7 @@ class ApiJuegoController extends AbstractController
             $manager->remove($juego, true);
         } catch (PDOException $e) {
             return $this->json([
+                "id" => $id,
                 'message'=>'Error al borrar juego '.$id."\n".$e->getMessage(),
                 "Success"=>false
             ],400);

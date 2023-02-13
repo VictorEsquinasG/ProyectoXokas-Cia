@@ -7,9 +7,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 #[ORM\Entity(repositoryClass: JuegoRepository::class)]
-class Juego
+class Juego implements JsonSerializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -32,7 +33,7 @@ class Juego
     #[ORM\OneToMany(mappedBy: 'Juego', targetEntity: Reserva::class)]
     private Collection $reservas;
 
-    #[ORM\Column(type: Types::BLOB, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private $imagen = null;
 
     #[ORM\Column]
@@ -197,5 +198,38 @@ class Juego
     public function __toString(): string
     {
         return $this->nombre;
+    }
+
+    public function jsonSerialize(): mixed
+    {
+
+        $reservas = [];
+        $eventos = [];
+        $r = $this->getReservas();
+        $e = $this->getEventos();
+        foreach ($r as $reserva) {
+            $reservas[] = $reserva;
+        }
+        foreach ($e as $evento) {
+            $eventos[] = $evento;
+        }
+
+        $json = [
+            "id" => $this->getId(),
+            "nombre" => $this->getNombre(),
+            "descripcion" => $this->getDescripcion(),
+            "tablero" => [
+                "ancho" => $this->getAnchoTablero(),
+                "largo" => $this->getLargoTablero()
+            ],
+            "jugadores" => [
+                "min" => $this->getMinJugadores(),
+                "max" => $this->getMaxJugadores()
+            ],
+            "imagen" => $this->getImagen(),
+            "reservas" => $reservas,
+            "eventos" => $eventos
+        ];
+        return $json;
     }
 }

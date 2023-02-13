@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mantenimiento ⚙🔨
+{% endblock %}
+
+{% block body %}
+
+
+	<div class="services section" id="services">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-6 offset-lg-6">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="section-heading">
+								<h2>Todo
+									<em>el mantenimiento</em>
+									&amp;
+									<span>la gestión</span>
+									a tu alcance con un clic
+								</h2>
+								<div class="line-dec"></div>
+								<p>Selecciona una opción para gestionarla.</p>
+							</div>
+						</div>
+						{# Las opciones #}
+						{% if is_granted('ROLE_SUPER_ADMIN') %}
+							<div class="col-lg-6 col-sm-6">
+								<div class="service-item">
+									<a href="{{ url('admin') }}">
+										<div class="icon">
+											<img src="assets/images/services-01.jpg" alt="Gestión PRO" class="templatemo-feature">
+										</div>
+										<h4>Gestión PRO</h4>
+									</a>
+								</div>
+							</div>
+						{% endif %}
+
+						<div class="col-lg-6 col-sm-6">
+							<div class="service-item">
+								<a href="{{ url('mantenimiento_juegos') }}">
+									<div class="icon">
+										<img src="assets/images/services-01.jpg" alt="discover SEO" class="templatemo-feature">
+									</div>
+									<h4>JUEGOS</h4>
+								</a>
+							</div>
+						</div>
+
+						<div class="col-lg-6 col-sm-6">
+							<div class="service-item">
+								<a href="{{ url('mantenimiento_reservas') }}">
+									<div class="icon">
+										<img src="assets/images/services-02.jpg" alt="data analysis" class="templatemo-feature">
+									</div>
+									<h4>RESERVAS</h4>
+								</a>
+							</div>
+						</div>
+						<div class="col-lg-6 col-sm-6">
+							<div class="service-item">
+								<a href="{{ url('mantenimiento_mesas') }}">
+									<div class="icon">
+										<img src="assets/images/services-03.jpg" alt="precise data" class="templatemo-feature">
+									</div>
+									<h4>MESAS</h4>
+								</a>
+							</div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- EL DATEPICKER -->
+	<script src="{{ asset('js/DatePicker.js') }}"></script>
+	<!-- EL CARRUSEL -->
+	<script src="{{ asset('assets/js/owl-carousel.js') }}"></script>
+	<!-- EL MODAL -->
+	<script src="{{ asset('js/ventanaEmergente.js') }}"></script>
+{% endblock %}

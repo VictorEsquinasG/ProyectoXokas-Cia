@@ -26,7 +26,7 @@
 
 						{% if is_granted('ROLE_ADMIN') %}
 							<li class="l-mantenimiento-xs">
-								<a href="{{ url('admin') }}">MANTENIMIENTO</a>
+								<a href="{{ url('app_mantenimiento') }}">MANTENIMIENTO</a>
 							</li>
 							<li class="has-sub l-mantenimiento-md">
 								<a href="javascript:void(0)">Mantenimiento
@@ -41,6 +41,10 @@
 									<li>
 										<a href="{{ url('mueve_mesas') }}">Organizar sala</a>
 									</li>
+									
+									<li>
+										<a href="{{ url('mantenimiento_juegos') }}">Juegos</a>
+									</li>
 								</ul>
 							</li>
 						{% endif %}
@@ -53,11 +57,10 @@
 
 							{% if is_granted('ROLE_USER') %}
 								<span class="nav-link">
-									<a href="" style="height:30px;line-height:100px;">
-										{# TODO TAMAÑO IMAGEN #}
-										<img src="{{'data:image/png;base64,' ~ app.user.imagen }}" alt="Profile.pic">
+									<a href="" style="height:50px;display:flex;justify-content:center; flex: 1 1 100%">
+										<img src="{{'images/uploads/' ~ app.user.imagen }}" style="width:50px;border-radius:50%;" alt="Profile.pic">
 									</a>
-									<a href="{{ url('app_logout') }}" style="height:30px;">
+									<a href="{{ url('app_logout') }}" style="height:30px;line-height: 50px;">
 										Cerrar Sesión
 									</a>
 								</span>

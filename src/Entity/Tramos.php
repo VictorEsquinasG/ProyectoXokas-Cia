@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TramosRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
@@ -21,6 +23,18 @@ class Tramos implements JsonSerializable
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]
     private ?\DateTimeInterface $hora_fin = null;
+
+    #[ORM\OneToMany(mappedBy: 'tramo', targetEntity: Evento::class)]
+    private Collection $eventos;
+
+    #[ORM\OneToMany(mappedBy: 'tramo', targetEntity: Reserva::class)]
+    private Collection $reservas;
+
+    public function __construct()
+    {
+        $this->eventos = new ArrayCollection();
+        $this->reservas = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -53,7 +67,7 @@ class Tramos implements JsonSerializable
 
     public function __toString(): string
     {
-        return $this->hora_inicio . " - " . $this->hora_fin;
+        return $this->hora_inicio->format('H:i') . " - " . $this->hora_fin->format('H:i');
     }
 
     public function jsonSerialize(): mixed
@@ -65,4 +79,65 @@ class Tramos implements JsonSerializable
 
         return $json;
     }
+
+    /**
+     * @return Collection<int, Evento>
+     */
+    public function getEventos(): Collection
+    {
+        return $this->eventos;
+    }
+
+    public function addEvento(Evento $evento): self
+    {
+        if (!$this->eventos->contains($evento)) {
+            $this->eventos->add($evento);
+            $evento->setTramo($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvento(Evento $evento): self
+    {
+        if ($this->eventos->removeElement($evento)) {
+            // set the owning side to null (unless already changed)
+            if ($evento->getTramo() === $this) {
+                $evento->setTramo(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Reserva>
+     */
+    public function getReservas(): Collection
+    {
+        return $this->reservas;
+    }
+
+    public function addReserva(Reserva $reserva): self
+    {
+        if (!$this->reservas->contains($reserva)) {
+            $this->reservas->add($reserva);
+            $reserva->setTramo($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReserva(Reserva $reserva): self
+    {
+        if ($this->reservas->removeElement($reserva)) {
+            // set the owning side to null (unless already changed)
+            if ($reserva->getTramo() === $this) {
+                $reserva->setTramo(null);
+            }
+        }
+
+        return $this;
+    }
+
 }

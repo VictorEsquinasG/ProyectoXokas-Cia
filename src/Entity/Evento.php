@@ -31,6 +31,10 @@ class Evento
     #[ORM\ManyToMany(targetEntity: Usuario::class, mappedBy: 'evento')]
     private Collection $usuarios;
 
+    #[ORM\ManyToOne(inversedBy: 'eventos')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Tramos $tramo = null;
+
     public function __construct()
     {
         $this->juegos = new ArrayCollection();
@@ -135,5 +139,17 @@ class Evento
     public function __toString(): string
     {
         return $this->getNombre();
+    }
+
+    public function getTramo(): ?Tramos
+    {
+        return $this->tramo;
+    }
+
+    public function setTramo(?Tramos $tramo): self
+    {
+        $this->tramo = $tramo;
+
+        return $this;
     }
 }

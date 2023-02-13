@@ -35,6 +35,10 @@ class Reserva implements JsonSerializable
     #[ORM\JoinColumn(nullable: false)]
     private ?Mesa $Mesa = null;
 
+    #[ORM\ManyToOne(inversedBy: 'reservas')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Tramos $tramo = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -130,5 +134,17 @@ class Reserva implements JsonSerializable
             "fecha_cancelacion" => $this->getFechaCancelacion(),
         ];
         return $json;
+    }
+
+    public function getTramo(): ?Tramos
+    {
+        return $this->tramo;
+    }
+
+    public function setTramo(?Tramos $tramo): self
+    {
+        $this->tramo = $tramo;
+
+        return $this;
     }
 }

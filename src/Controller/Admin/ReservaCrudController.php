@@ -3,12 +3,10 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Reserva;
-use App\Entity\Usuario;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -43,14 +41,16 @@ class ReservaCrudController extends AbstractCrudController
                 ->setRequired(false),
                 BooleanField::new('asiste'),
 
-                AssociationField::new('usuario')
-                // ->setRequired(true)
+                AssociationField::new('tramo'),
+
+                AssociationField::new('Usuario')
+                ->setRequired(true)
                 ,
-                AssociationField::new('juego')
-                // ->setRequired(true)
+                AssociationField::new('Juego')
+                ->setRequired(true)
                 ,
-                AssociationField::new('mesa')
-                // ->setRequired(true)
+                AssociationField::new('Mesa')
+                ->setRequired(true)
                 ,
                 
             ];
@@ -63,9 +63,10 @@ class ReservaCrudController extends AbstractCrudController
                 ->setLabel('Fecha de cancelación'),
                 BooleanField::new('asiste')
                 ->setDisabled(true),
-                ChoiceField::new('usuario'),
-                ChoiceField::new('juego'),
-                ChoiceField::new('mesa'),
+                TextField::new('tramo'),
+                TextField::new('usuario'),
+                TextField::new('juego'),
+                TextField::new('mesa'),
             ];
         }
     }

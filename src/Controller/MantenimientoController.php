@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\DistribucionRepository;
+use App\Repository\JuegoRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -11,12 +12,16 @@ use Symfony\Component\Routing\Annotation\Route;
 class MantenimientoController extends AbstractController
 {
 
+    #[Route('/', name: 'app_mantenimiento')]
+    public function mantenimiento(): Response
+    {
+        return $this->render('mantenimiento/index.html.twig');
+    }
+
     #[Route('/reservar', name: 'mantenimiento_reservas')]
     public function mant_reservas(): Response
     {
-        return $this->render('reservas/index.html.twig', [
-            'controller_name' => 'ReservasController',
-        ]);
+        return $this->render('reservas/index.html.twig');
     }
 
     #[Route('/sala', name: 'mueve_mesas')]
@@ -40,6 +45,14 @@ class MantenimientoController extends AbstractController
 
         return $this->render('mesas/salaMesas.html.twig', [
             "disposiciones" => $disposiciones
+        ]);
+    }
+
+    #[Route('/juegos', name: 'mantenimiento_juegos')]
+    public function mant_juegos(JuegoRepository $jr): Response
+    {
+        return $this->render('mantenimiento/juegos.html.twig', [
+            "juegos" => $jr->findAll()
         ]);
     }
 }
