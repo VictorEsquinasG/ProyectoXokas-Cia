@@ -1,5 +1,5 @@
 <?php
-
+//TODO
 namespace App\Command;
 
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -12,7 +12,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'evento-maker',
-    description: 'Add a short description for your command',
+    description: 'Un comando que crea un evento',
 )]
 class EventoMakerCommand extends Command
 {
@@ -41,4 +41,5 @@ class EventoMakerCommand extends Command
 
         return Command::SUCCESS;
     }
+    
 }

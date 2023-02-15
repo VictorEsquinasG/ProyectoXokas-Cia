@@ -325,32 +325,32 @@
 	}, {
 		filter: [ 'items', 'settings' ],
 		run: function() {
-			var clones = [],
-				items = this._items,
-				settings = this.settings,
-				// TODO: Should be computed from number of min width items in stage
-				view = Math.max(settings.items * 2, 4),
-				size = Math.ceil(items.length / 2) * 2,
-				repeat = settings.loop && items.length ? settings.rewind ? view : Math.max(view, size) : 0,
-				append = '',
-				prepend = '';
+		// 	var clones = [],
+		// 		items = this._items,
+		// 		settings = this.settings,
+		// 		// TODO: Should be computed from number of min width items in stage
+		// 		view = Math.max(settings.items * 2, 4),
+		// 		size = Math.ceil(items.length / 2) * 2,
+		// 		repeat = settings.loop && items.length ? settings.rewind ? view : Math.max(view, size) : 0,
+		// 		append = '',
+		// 		prepend = '';
 
-			repeat /= 2;
+		// 	repeat /= 2;
 
-			while (repeat > 0) {
-				// Switch to only using appended clones
-				clones.push(this.normalize(clones.length / 2, true));
-				append = append + items[clones[clones.length - 1]][0].outerHTML;
-				clones.push(this.normalize(items.length - 1 - (clones.length - 1) / 2, true));
-				prepend = items[clones[clones.length - 1]][0].outerHTML + prepend;
-				repeat -= 1;
-			}
+		// 	while (repeat > 0) {
+		// 		// Switch to only using appended clones
+		// 		clones.push(this.normalize(clones.length / 2, true));
+		// 		append = append + items[clones[clones.length - 1]][0].outerHTML;
+		// 		clones.push(this.normalize(items.length - 1 - (clones.length - 1) / 2, true));
+		// 		prepend = items[clones[clones.length - 1]][0].outerHTML + prepend;
+		// 		repeat -= 1;
+		// 	}
 
-			this._clones = clones;
+		// 	this._clones = clones;
 
-			$(append).addClass('cloned').appendTo(this.$stage);
-			$(prepend).addClass('cloned').prependTo(this.$stage);
-		}
+		// 	$(append).addClass('cloned').appendTo(this.$stage);
+		// 	$(prepend).addClass('cloned').prependTo(this.$stage);
+		}	
 	}, {
 		filter: [ 'width', 'items', 'settings' ],
 		run: function() {

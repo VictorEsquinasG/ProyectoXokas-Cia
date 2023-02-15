@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
+use App\Repository\EventoRepository;
 use App\Repository\JuegoRepository;
 use App\Repository\UsuarioRepository;
-use PhpParser\Node\Stmt\Foreach_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,9 +13,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class GeneralController extends AbstractController
 {
     #[Route('/', name: 'home')]
-    public function index(): Response
+    public function index(EventoRepository $eventoRepository): Response
     {
-        return $this->render('general/index.html.twig');
+        $eventos = $eventoRepository->findAll();
+        return $this->render('general/index.html.twig', [
+            "eventos" => $eventos
+        ]);
     }
 
     #[Route('/reservas', name: 'reservar')]
@@ -26,12 +29,15 @@ class GeneralController extends AbstractController
 
         $data = $usuarioRepository->find($idUser)->getReservas();
 
+
+
         foreach ($data as $datos) {
             # Rellenamos
             $reservas[] = [
-                'url' => $datos . '', //TODO página de RESERVA_ID
+                'id' => $datos->getId(),
+                'img' => $datos->getJuego()->getImagen(),
                 'juego' => $datos->getJuego() . '',
-                'title' => $datos->getFechaReserva() . '',
+                'title' => $datos,
                 'mesa' => $datos->getMesa()->getId() . '',
             ];
         }
@@ -40,11 +46,11 @@ class GeneralController extends AbstractController
         ]);
     }
     #[Route('/juegos', name: 'juegos')]
-    public function juegos(JuegoRepository $juegoRepository, Security $security): Response
+    public function juegos(JuegoRepository $juegoRepository): Response
     {
         $juegos = [];
 
-        $data = $juegoRepository->findAll();
+        $data = $juegoRepository->findAll(); //TODO crear juego, editar, eliminar
 
         foreach ($data as $datos) {
             # Rellenamos con el juego actual
@@ -71,6 +77,13 @@ class GeneralController extends AbstractController
     #[Route('/reserva/{id}', name: 'reserva_concreta')]
     public function reservaConcreta(int $id)
     {
+        # TODO La página sobre la reserva original
+    }
+    
+    #[Route('/evento/{id}', name: 'reserva_concreto')]
+    public function eventoConcreto(int $id)
+    {
+        die("SI ".$id);
         # TODO La página sobre la reserva original
     }
 

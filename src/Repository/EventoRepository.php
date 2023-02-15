@@ -39,6 +39,18 @@ class EventoRepository extends ServiceEntityRepository
         }
     }
 
+/**
+    * @return Evento[] Returns an array of Evento objects
+    */
+   public function getPage(): array
+   {
+       return $this->createQueryBuilder('e')
+           ->setMaxResults(10)
+           ->getQuery()
+           ->getResult();
+       ;
+   }
+
 //    /**
 //     * @return Evento[] Returns an array of Evento objects
 //     */

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Usuario;
 use App\Form\RegistrationFormType;
 use App\Security\EmailVerifier;
+use App\Service\Mailer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,7 +25,7 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/registro', name: 'registro')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher,Mailer $correo, EntityManagerInterface $entityManager): Response
     {
         $user = new Usuario();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -41,7 +42,8 @@ class RegistrationController extends AbstractController
 
             $entityManager->persist($user);
             $entityManager->flush();
-
+            // TODO poner plantilla HTML
+            $correo->setAsunto('Bienvenido a XOKAS & CO.')->setDestinatario($user->getEmail())->setMensaje('XD')->send();
             // do anything else you need here, like send an email
 
             return $this->redirectToRoute('home');

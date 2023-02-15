@@ -64,6 +64,9 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $imagen = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $puntos = null;
+
     public function __construct()
     {
         $this->reservas = new ArrayCollection();
@@ -293,5 +296,17 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     public function __toString(): string
     {
         return $this->getNombreCompleto();
+    }
+
+    public function getPuntos(): ?float
+    {
+        return $this->puntos;
+    }
+
+    public function setPuntos(?float $puntos): self
+    {
+        $this->puntos = $puntos;
+
+        return $this;
     }
 }

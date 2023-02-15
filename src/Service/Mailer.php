@@ -31,26 +31,30 @@ class Mailer
     /**
      * Añade texto plano al correo
      */
-    public function setMensaje(string $msg)
+    public function setMensaje(string $msg):self
     {
         # Guardamos el valor
         $this->mensaje = $msg;
         # Lo añadimos al correo
         $this->mail->text($msg);
+        
+        return $this;
     }
 
     /**
      * Añade un título o Asunto al correo electrónico
      */
-    public function setAsunto(string $subject)
+    public function setAsunto(string $subject):self
     {
         $this->mail->subject($subject);
+
+        return $this;
     }
 
     /**
      * Añade la dirección o direcciones a las que enviará el correo
      */
-    public function setDestinatario($to)
+    public function setDestinatario($to):self
     {
         if (is_array($to)) {
             # Si es un array FOREACH
@@ -61,17 +65,21 @@ class Mailer
             # 1 destinatario
             $this->mail->to($to);
         }
+
+        return $this;
     }
 
     /**
      * Añade una plantilla HTML al correo
      */
-    public function setHTML($html)
+    public function setHTML($html):self
     {
         # Guardamos el html
         $this->html = $html;
         # Seteamos el HTML
         $this->mail->html($html);
+
+        return $this;
     }
 
     /**

@@ -47,7 +47,7 @@ class UsuarioCrudController extends AbstractCrudController
                             'type' => PasswordType::class,
                             'first_options' => ['label' => 'Contraseña'],
                             'second_options' => ['label' => 'Repita su contraseña   '],
-                            'mapped' => false,
+                            // 'mapped' => false,
                         ]),
                     ChoiceField::new('roles')
                         ->setChoices([
@@ -70,6 +70,7 @@ class UsuarioCrudController extends AbstractCrudController
                     ->setBasePath('images/uploads/')
                     ->setUploadDir('public/images/uploads/')
                     ->setUploadedFileNamePattern('[slug]-[timestamp].[extension]'),
+                "puntos"
             ];
         }
     }

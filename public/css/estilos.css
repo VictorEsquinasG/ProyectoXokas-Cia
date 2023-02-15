@@ -9295,7 +9295,7 @@ Pre-loader Style
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.99);
+  background-color: rgba(234, 233, 233, 0.79);
   display: -webkit-box;
   display: flex;
   -webkit-box-align: center;
@@ -10891,6 +10891,9 @@ body {
 .c-container__formu {
   min-width: 300px;
   margin: auto;
+}
+.c-container__carousel {
+  flex-direction: row;
 }
 @media (min-width: 800px) {
   .c-container__carousel {

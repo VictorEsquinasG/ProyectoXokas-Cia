@@ -302,7 +302,7 @@ Pre-loader Style
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.99);
+  background-color: rgba(234, 233, 233, 0.79);
   display: -webkit-box;
   display: flex;
   -webkit-box-align: center;
@@ -440,7 +440,7 @@ Header Style
   -moz-transition: all 0.3s ease 0s;
   -o-transition: all 0.3s ease 0s;
   transition: all 0.3s ease 0s;
-  
+
   @media (max-width: 990px) {
     margin-top: 31px;
   }
@@ -449,6 +449,7 @@ Header Style
     margin-top: 20px;
     width: 234px;
   }
+
   @media (max-width:300px) {
     width: auto;
   }
@@ -479,12 +480,15 @@ Header Style
 .l-mantenimiento {
   &-xs {
     display: block;
+
     @media (min-width:770px) {
       display: none;
     }
   }
+
   &-md {
     display: block;
+
     @media (max-width:770px) {
       display: none;
     }
@@ -520,8 +524,9 @@ Header Style
   line-height: 110px;
   border: transparent;
   letter-spacing: 1px;
+
   @media (max-width: 765px) {
-    color:#076203
+    color: #076203
   }
 }
 
@@ -1983,20 +1988,25 @@ Responsive Style
 body {
   overflow-x: hidden;
 }
+
 .c-container {
-  &--general{
+  &--general {
     margin-top: 8rem;
   }
+
   &--center {
     display: flex;
     flex-direction: column;
     justify-content: center;
   }
+
   &__formu {
     min-width: 300px;
     margin: auto;
   }
+
   &__carousel {
+    flex-direction: row;
     @media (min-width:800px) {
       width: 70%;
       margin: auto;

@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Reserva;
+use Doctrine\DBAL\Query\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -41,17 +42,26 @@ class ReservaCrudController extends AbstractCrudController
                 ->setRequired(false),
                 BooleanField::new('asiste'),
 
-                AssociationField::new('tramo'),
+                AssociationField::new('tramo')
+                //TODO tramo disponible
+                // ->setQueryBuilder()
+                ,
 
                 AssociationField::new('Usuario')
                 ->setRequired(true)
+                ->autocomplete()
                 ,
                 AssociationField::new('Juego')
                 ->setRequired(true)
+                ->autocomplete()
                 ,
                 AssociationField::new('Mesa')
                 ->setRequired(true)
+                //TODO mesa con tamaño suficiente para el juego
+                // ->setQueryBuilder(tramoDisponible(QueryBuilder $qb))
+                ->autocomplete()
                 ,
+                AssociationField::new('tramo')
                 
             ];
         }else {
@@ -61,14 +71,20 @@ class ReservaCrudController extends AbstractCrudController
                 ->setLabel('Fecha de la reserva'),
                 DateField::new('fechaCancelacion')
                 ->setLabel('Fecha de cancelación'),
+                AssociationField::new('tramo'),
                 BooleanField::new('asiste')
                 ->setDisabled(true),
-                TextField::new('tramo'),
-                TextField::new('usuario'),
-                TextField::new('juego'),
-                TextField::new('mesa'),
+
+                AssociationField::new('Usuario'),
+                AssociationField::new('Juego'),
+                AssociationField::new('Mesa'),
             ];
         }
+    }
+
+    public function tramoDisponible(QueryBuilder $qb)
+    {
+        # code...
     }
    
 }

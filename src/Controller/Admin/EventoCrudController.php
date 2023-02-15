@@ -6,6 +6,7 @@ use App\Entity\Evento;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
@@ -34,12 +35,14 @@ class EventoCrudController extends AbstractCrudController
                 ->setDisabled(),
             TextField::new('nombre')
                 ->setRequired(false),
-            DateTimeField::new('fecha'),
-            IntegerField::new('numMaxAsistentes')
+            DateField::new('fecha'),
+            IntegerField::new('num_max_asistentes')
                 ->setRequired(true),
             AssociationField::new('usuarios')
+                ->autocomplete()
                 ->setRequired(true),
             AssociationField::new('juegos')
+                ->autocomplete()
                 ->setRequired(true),
             AssociationField::new('tramo'),
         ];

@@ -1,15 +1,33 @@
 <div class="c-container__carousel">
 
-	<div class="owl-features owl-carousel">
+	<div
+		class="owl-features owl-carousel">
+
+		{# COMO MÍNIMO EL PROMOCIONAL #}
+		<div class="btn" style="background-color:#45E04D;">
+			<div class="item">
+				<img src="{{asset('/images/logo1.png')}}" style="height:160px;" alt="">
+				<div class="down-content">
+					<h4>EVENTOS</h4>
+					<p style="color:white;">Reserva mesas, gana puntos y serás invitado a nuestros eventos</p>
+					<i class="fa-regular fa-eye"></i>
+				</div>
+			</div>
+		</div>
 
 
 		{% for evento in eventos %}
-			<a href="{{ url({{evento.url}}) }}">
+			<a href="{{'/evento/' ~ evento.id}}" class="btn" style="background-color:#45E04D;">
 				<div class="item">
-					<img src="/images/{{evento.img}}" alt="">
+					{% set juego = evento.juegos|first %}
+					<img src="{{asset('/images/' ~ juego)}}" style="height:160px;" alt="">
 					<div class="down-content">
-						<h4>{{evento.title}}</h4>
-						<i class="fa-regular fa-eye"></i>
+						<h4>{{evento.nombre}}</h4>
+						<span>
+							{{evento.usuarios|length}}/
+							{{ evento.numMaxAsistentes }}
+							<i class="fa fa-users"></i>
+						</span>
 					</div>
 				</div>
 			</a>

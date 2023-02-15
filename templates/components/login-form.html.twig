@@ -3,25 +3,41 @@
 	<div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
 {% endif %}
 
+{# ESTILOS #}
+<style>
+
+.c-form__campo {
+	display:grid;
+	grid-template-columns: repeat(2,50%);
+}
+.c-container--center {
+	@media (max-width:650px) {
+		display:block;
+	}
+}
+
+</style>
+
 {# FORMULARIO #}
 <section class="c-container--center">
 	<section class="c-container__formu">
-		<form action="{{ path('app_login') }}" method="post">
+		<form action="{{ path('app_login') }}" class="mt-4" method="post">
 
-			<div>
+			<div class="row c-form__campo">
 				<label for="username">Correo electrónico:</label>
 				<input type="email" id="username" name="_username" value="{{ last_username }}">
 			</div>
 
-			<div>
+			<div class="row c-form__campo">
 				<label for="password">Contraseña:</label>
 				<input type="password" id="password" name="_password">
 			</div>
 
 			{# LA URL A LA QUE IRÁ #}
 			<input type="hidden" name="_target_path" value="/">
-
-			<button type="submit" class="btn btn-primary">Iniciar sesión</button>
+			<div class="row mt-5" style="display:flex;justify-content:center;">
+				<button type="submit" class="btn btn-primary">Iniciar sesión</button>
+			</div>
 		</form>
 
 		<span>¿No estás registrado aún?</span>

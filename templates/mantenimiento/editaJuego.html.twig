@@ -1,0 +1,82 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+	<style>
+		form {
+			padding: 20px 5px;
+			border-radius: 15px;
+			background-color: #cccfcc;
+		}
+		.c-cont__botones {
+			display: flex;
+			justify-content: center;
+			gap: 10%;
+		}
+		.row > div {
+			display: grid;
+			grid-template-columns: repeat(2, 45%);
+			grid-gap: 5px 20px;
+		}
+	</style>
+
+	<section class="c-container--center">
+		<section class="c-container__formu">
+			<h1 class="mb-2">Editar juego:
+				{{juego.nombre}}</h1>
+
+			{{ form_start(juegoForm) }}
+
+			<div class="row">
+				{{ form_row(juegoForm.nombre) }}
+			</div>
+			<div class="row">
+				{{ form_row(juegoForm.descripcion) }}
+			</div>
+			<div class="row">
+				{{ form_row(juegoForm.minJugadores,{
+                    label: 'Mínimo de jugadores'
+                }) }}
+				{{ form_row(juegoForm.maxJugadores,{
+                    label: 'Máximo de jugadores'
+                }) }}
+			</div>
+
+			<div class="row"></div>
+			{{ form_row(juegoForm.anchoTablero,{
+                label: 'Ancho del tablero'
+            }) }}
+
+			{{ form_row(juegoForm.largoTablero,{
+                label: 'Largo del tablero'
+            }) }}
+			<div class="row">
+				{% if juegoForm.imagen|length %}
+					<img src="{{asset('images/uploads/' ~ juegoForm.imagen)}}">
+				{% else %}
+					{{ form_row(juegoForm.imagen)}}
+				{% endif %}
+
+			</div>
+
+			<br>
+			<input type="hidden" name="_target_path" value="/mantenimiento/juegos">
+
+			<div class="c-cont__botones">
+
+				<button type="submit" class="btn btn-primary col-6 col-md-3">
+					<i class="fa fa-check"></i><br>
+					Guardar cambios
+				</button>
+
+				<a class="btn btn-info col-6 col-md-3" href="{{ url('mantenimiento_juegos') }}">
+					<i class="fa fa-backward"></i><br>
+					Volver atrás
+				</a>
+			</div>
+			{{ form_end(juegoForm) }}
+
+		</section>
+	</section>
+
+{% endblock %}

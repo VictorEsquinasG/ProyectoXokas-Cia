@@ -41,7 +41,7 @@
 									<li>
 										<a href="{{ url('mueve_mesas') }}">Organizar sala</a>
 									</li>
-									
+
 									<li>
 										<a href="{{ url('mantenimiento_juegos') }}">Juegos</a>
 									</li>
@@ -49,39 +49,43 @@
 							</li>
 						{% endif %}
 
-						<li class="scroll-to-section">
-							<a href="#infos">Infos</a>
+						<li
+							class="scroll-to-section">
+							{# TODO #}
+							<a href="#">Eventos</a>
 						</li>
 
-						<li class="scroll-to-section">
-
+						<li>
 							{% if is_granted('ROLE_USER') %}
-								<span class="nav-link">
-									<a href="" style="height:50px;display:flex;justify-content:center; flex: 1 1 100%">
-										<img src="{{'images/uploads/' ~ app.user.imagen }}" style="width:50px;border-radius:50%;" alt="Profile.pic">
+								<li class="has-sub">
+									
+									<a class="mt-1" style="height:50px;">
+										<img src="{{ asset('images/uploads/' ~ app.user.imagen) }}" style="width:50px;border-radius:50%;" alt="Profile.pic">
+										<i class="fa fa-chevron-down"></i>
 									</a>
-									<a href="{{ url('app_logout') }}" style="height:30px;line-height: 50px;">
-										Cerrar Sesión
-									</a>
-								</span>
-							{% else %}
 
-								<a class="nav-link" href="{{ url('app_login') }}">Iniciar Sesión</a>
+									<ul class="sub-menu mt-0">
+										<li>
+											<a class="mt-0" href="{{ url('app_logout') }}">Cerrar Sesión</a>
+										</li>
+									</ul>
+
+								</li>
+
+							{% else %}
+								<a href="{{ url('app_login') }}">Iniciar Sesión</a>
 
 							{% endif %}
-
-
 						</li>
-					</ul>
-					<a class='menu-trigger'>
-						<span>Menú</span>
-					</a>
-					<!-- ***** Menu End ***** -->
-				</nav>
-			</div>
-		</div>
-	</div>
-</header>
-<!-- ***** Header Area End ***** -->
+					</li>
 
-<script src="{{ asset('js/flechita-submenu.js') }}"></script>
+
+				</li>
+			</ul>
+			<a class='menu-trigger'>
+				<span>Menú</span>
+			</a>
+			<!-- ***** Menu End ***** -->
+		</nav>
+	</div>
+</div></div></header><!-- ***** Header Area End ***** --><script src="{{ asset('js/flechita-submenu.js') }}"></script>
