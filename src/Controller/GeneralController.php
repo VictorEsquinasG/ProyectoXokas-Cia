@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Repository\EventoRepository;
 use App\Repository\JuegoRepository;
 use App\Repository\UsuarioRepository;
+use App\Service\PdfMaker;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,13 +19,13 @@ class GeneralController extends AbstractController
         $events = [];
         $eventos = $eventoRepository->findAll();
         foreach ($eventos as $evento) {
-            $events[]= [
-                "id" =>$evento->getId(),
-                "nombre"=>$evento->getNombre(),
-                "juego"=> ($juegoRepository->find($evento->getJuegos()->first())->getImagen()),
-                "fecha"=>$evento->getFecha(),
-                "participantes"=>$evento->getUsuarios(),
-                "numMaxAsistentes"=>$evento->getNumMaxAsistentes(),
+            $events[] = [
+                "id" => $evento->getId(),
+                "nombre" => $evento->getNombre(),
+                "juego" => ($juegoRepository->find($evento->getJuegos()->first())->getImagen()),
+                "fecha" => $evento->getFecha(),
+                "participantes" => $evento->getUsuarios(),
+                "numMaxAsistentes" => $evento->getNumMaxAsistentes(),
             ];
         }
         return $this->render('general/index.html.twig', [
@@ -74,7 +75,7 @@ class GeneralController extends AbstractController
                 ],
                 'jugadores' => [
                     'min' => $datos->getMinJugadores() . '',
-                    'max' => $datos->getMaxJugadores(). ''
+                    'max' => $datos->getMaxJugadores() . ''
                 ],
             ];
         }
@@ -82,18 +83,37 @@ class GeneralController extends AbstractController
             'juegos' => $juegos,
         ]);
     }
-    
+
     #[Route('/reserva/{id}', name: 'reserva_concreta')]
     public function reservaConcreta(int $id)
     {
         # TODO La página sobre la reserva original
     }
-    
+
     #[Route('/evento/{id}', name: 'reserva_concreto')]
     public function eventoConcreto(int $id)
     {
-        die("SI ".$id);
+        die("SI " . $id);
         # TODO La página sobre la reserva original
     }
 
+    #[Route('/pdf/prueba', name: 'prueba_pdf')]
+    public function pdf(PdfMaker $dompdf)
+    {       
+
+        // Retrieve the HTML generated in our twig file
+        $html = $this->renderView('pdf/mypdf.html.twig', [
+            'title' => "Welcome to our PDF Test"
+        ]);
+
+        // Cargamos el HTML al Dompdf
+        $pdf = $dompdf->sethtml($html)
+        ->renderizar()
+        ->recargaForzada("mypdf.pdf", [
+            "Attachment" => true
+        ]);
+        
+        return new Response($pdf);
+
+    }
 }
