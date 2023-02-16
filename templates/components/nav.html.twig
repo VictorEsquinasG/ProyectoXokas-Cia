@@ -59,7 +59,7 @@
 							{% if is_granted('ROLE_USER') %}
 								<li class="has-sub">
 									
-									<a class="mt-1" style="height:50px;">
+									<a class="mt-1" id="FotoPerfil" style="height:50px;">
 										<img src="{{ asset('images/uploads/' ~ app.user.imagen) }}" style="width:50px;border-radius:50%;" alt="Profile.pic">
 										<i class="fa fa-chevron-down"></i>
 									</a>
@@ -88,4 +88,8 @@
 			<!-- ***** Menu End ***** -->
 		</nav>
 	</div>
-</div></div></header><!-- ***** Header Area End ***** --><script src="{{ asset('js/flechita-submenu.js') }}"></script>
+</div>
+</div>
+</header>
+<!-- ***** Header Area End ***** -->
+<script src="{{ asset('js/flechita-submenu.js') }}"></script>

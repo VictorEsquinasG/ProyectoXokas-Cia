@@ -17,7 +17,6 @@ class ApiJuegoController extends AbstractController
     #[Route("/juego/{id}", name: "getJuego", methods: "GET")]
     public function getJuego(JuegoRepository $jr, int $id = null): Response
     {
-
         
         if ($id === null) {
             # Si es null, los quiere todos

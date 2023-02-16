@@ -19,12 +19,11 @@
 		{% for evento in eventos %}
 			<a href="{{'/evento/' ~ evento.id}}" class="btn" style="background-color:#45E04D;">
 				<div class="item">
-					{% set juego = evento.juegos|first %}
-					<img src="{{asset('/images/' ~ juego)}}" style="height:160px;" alt="">
+					<img src="{{asset('/images/uploads/' ~ evento.juego)}}" style="height:160px;" alt="">
 					<div class="down-content">
 						<h4>{{evento.nombre}}</h4>
 						<span>
-							{{evento.usuarios|length}}/
+							{{evento.participantes|length}}/
 							{{ evento.numMaxAsistentes }}
 							<i class="fa fa-users"></i>
 						</span>

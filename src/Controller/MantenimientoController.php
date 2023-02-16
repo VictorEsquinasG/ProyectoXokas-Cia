@@ -111,4 +111,41 @@ class MantenimientoController extends AbstractController
         # Por último, lo reenviamos al listado
         return $this->redirectToRoute('mantenimiento_juegos');
     }
+    
+    #[Route('/juego/crear', name: 'app_juego_nuevo')]
+    public function crea_juego(EntityManagerInterface $entityManager, Request $request)
+    {
+        # Creamos el objeto y su formulario
+        $juego = new Juego();
+        $form = $this->createForm(JuegoFormType::class, $juego);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            # Si ha subido una foto
+            if ($file = $form['imagen']->getData()) {
+                $nombreFichero = $file->getClientOriginalName();
+                // Cogemos la imagen que ha subido
+                $file->move('images/uploads', $nombreFichero);
+                // Apuntamos a la imagen
+                $juego->setImagen($nombreFichero);
+            }
+            
+            // Lo persistimos
+            $entityManager->persist($juego);
+            $entityManager->flush();
+
+            // Damos feedback 
+            $this->addFlash(
+                'notice',
+                'Juego creado con éxito!'
+            );
+
+            return $this->redirectToRoute('mantenimiento_juegos');
+        }
+        /* FORMULARIO PARA CREAR UN JUEGO NUEVO */
+        return $this->render('mantenimiento/editaJuego.html.twig', [
+            "juego" => $juego,
+            "juegoForm" => $form->createView()
+        ]);
+    }
 }

@@ -14329,4 +14329,9 @@ body {
     animation: unset !important;
     transition: none !important;
   }
+}
+@media (max-width: 900px) {
+  #FotoPerfil {
+    display: none;
+  }
 }/*# sourceMappingURL=estilos.css.map */

@@ -11,6 +11,8 @@ class Mailer
     private $correo;
     private $mail;
     private $psswd;
+    private  $adjunto;
+    private  $to;
     private  $from;
     private  $mensaje;
     private  $html;
@@ -26,25 +28,26 @@ class Mailer
         # Por defecto el correo es vacío y no se escribe ni con texto ni con HTML
         $this->mensaje = null;
         $this->html = null;
+        $this->adjunto = null;
     }
 
     /**
      * Añade texto plano al correo
      */
-    public function setMensaje(string $msg):self
+    public function setMensaje(string $msg): self
     {
         # Guardamos el valor
         $this->mensaje = $msg;
         # Lo añadimos al correo
         $this->mail->text($msg);
-        
+
         return $this;
     }
 
     /**
      * Añade un título o Asunto al correo electrónico
      */
-    public function setAsunto(string $subject):self
+    public function setAsunto(string $subject): self
     {
         $this->mail->subject($subject);
 
@@ -54,17 +57,24 @@ class Mailer
     /**
      * Añade la dirección o direcciones a las que enviará el correo
      */
-    public function setDestinatario($to):self
+    public function setDestinatario($to): self
     {
-        if (is_array($to)) {
-            # Si es un array FOREACH
-            foreach ($to as $dest) {
-                $this->mail->to($dest);
-            }
-        } else {
-            # 1 destinatario
-            $this->mail->to($to);
-        }
+        $this->to = $to;
+        # Los destinatarios
+        $this->mail->to($to);
+
+        return $this;
+    }
+
+    /**
+     * Añade un fichero adjunto al correo
+     */
+    public function setAdjunto($adjunto): self
+    {
+        # Guardamos el fichero
+        $this->adjunto = $adjunto;
+        # Seteamos el adjunto
+        $this->mail->attach($adjunto);
 
         return $this;
     }
@@ -72,7 +82,7 @@ class Mailer
     /**
      * Añade una plantilla HTML al correo
      */
-    public function setHTML($html):self
+    public function setHTML($html): self
     {
         # Guardamos el html
         $this->html = $html;

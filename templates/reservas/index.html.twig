@@ -6,23 +6,25 @@
 
 {% block body %}
 
-	<section class="c-container--center">
+	<section
+		class="c-container--center">
 
 		{# {% include "components/banner.html.twig" %} #}
-		<div style="margin-top:0">
-			<h1 style="padding-left:40%;margin-bottom:15px">
+		<div class="mt-0">
+			<h1 style="margin-left:0;padding-left:40%;margin-bottom:15px">
 				Mis reservas
 			</h1>
 		</div>
-		
+
 		{% include "components/carousel-reservas.html.twig" %}
 
 	</section>
 
 	<!-- EL DATEPICKER -->
 	<script src="{{ asset('js/DatePicker.js') }}"></script>
+	
 	<!-- EL CARRUSEL -->
 	<script src="{{ asset('assets/js/owl-carousel.js') }}"></script>
 	<!-- EL MODAL -->
-    <script src="js/ventanaEmergente.js"></script>
+	<script src="{{ asset('js/ventanaEmergente.js') }}"></script>
 {% endblock %}

@@ -42,14 +42,15 @@
                 }) }}
 			</div>
 
-			<div class="row"></div>
-			{{ form_row(juegoForm.anchoTablero,{
+			<div class="row">
+				{{ form_row(juegoForm.anchoTablero,{
                 label: 'Ancho del tablero'
-            }) }}
+            		}) }}
 
-			{{ form_row(juegoForm.largoTablero,{
-                label: 'Largo del tablero'
-            }) }}
+				{{ form_row(juegoForm.largoTablero,{
+                	label: 'Largo del tablero'
+            	}) }}
+			</div>
 			<div class="row">
 				{% if juegoForm.imagen|length %}
 					<img src="{{asset('images/uploads/' ~ juegoForm.imagen)}}">
@@ -64,15 +65,15 @@
 
 			<div class="c-cont__botones">
 
-				<button type="submit" class="btn btn-primary col-6 col-md-3">
-					<i class="fa fa-check"></i><br>
-					Guardar cambios
-				</button>
-
 				<a class="btn btn-info col-6 col-md-3" href="{{ url('mantenimiento_juegos') }}">
 					<i class="fa fa-backward"></i><br>
 					Volver atrás
 				</a>
+
+				<button type="submit" class="btn btn-primary col-6 col-md-3">
+					<i class="fa fa-check"></i><br>
+					Guardar cambios
+				</button>
 			</div>
 			{{ form_end(juegoForm) }}
 

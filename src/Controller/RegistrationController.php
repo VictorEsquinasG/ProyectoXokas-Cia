@@ -43,7 +43,10 @@ class RegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
             // TODO poner plantilla HTML
-            $correo->setAsunto('Bienvenido a XOKAS & CO.')->setDestinatario($user->getEmail())->setMensaje('XD')->send();
+            $correo->setAsunto('Bienvenido a XOKAS & CO.')
+            ->setDestinatario($user->getEmail())
+            ->setMensaje('Estamos encantados de contar contigo. Empieza a reservar mesa para jugar ya y gana puntos para poder participar en nuestros eventos.')
+            ->send();
             // do anything else you need here, like send an email
 
             return $this->redirectToRoute('home');

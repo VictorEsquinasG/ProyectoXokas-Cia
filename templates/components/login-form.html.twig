@@ -6,22 +6,24 @@
 {# ESTILOS #}
 <style>
 
-.c-form__campo {
-	display:grid;
-	grid-template-columns: repeat(2,50%);
-}
-.c-container--center {
-	@media (max-width:650px) {
-		display:block;
+	.c-form__campo {
+		display: grid;
+		grid-template-columns: repeat(2, 50%);
 	}
-}
-
+	.c-container--center {
+		@media(max-width:650px) {
+			display: block;
+		}
+	}
 </style>
 
 {# FORMULARIO #}
 <section class="c-container--center">
 	<section class="c-container__formu">
 		<form action="{{ path('app_login') }}" class="mt-4" method="post">
+			<div class="row">
+				<h3 class="col-12 mb-3 text-center">Bienvenido de nuevo</h3>
+			</div>
 
 			<div class="row c-form__campo">
 				<label for="username">Correo electrónico:</label>

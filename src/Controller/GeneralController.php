@@ -13,11 +13,22 @@ use Symfony\Component\Routing\Annotation\Route;
 class GeneralController extends AbstractController
 {
     #[Route('/', name: 'home')]
-    public function index(EventoRepository $eventoRepository): Response
+    public function index(EventoRepository $eventoRepository, JuegoRepository $juegoRepository): Response
     {
+        $events = [];
         $eventos = $eventoRepository->findAll();
+        foreach ($eventos as $evento) {
+            $events[]= [
+                "id" =>$evento->getId(),
+                "nombre"=>$evento->getNombre(),
+                "juego"=> ($juegoRepository->find($evento->getJuegos()->first())->getImagen()),
+                "fecha"=>$evento->getFecha(),
+                "participantes"=>$evento->getUsuarios(),
+                "numMaxAsistentes"=>$evento->getNumMaxAsistentes(),
+            ];
+        }
         return $this->render('general/index.html.twig', [
-            "eventos" => $eventos
+            "eventos" => $events
         ]);
     }
 
@@ -28,8 +39,6 @@ class GeneralController extends AbstractController
         $idUser = $security->getUser()->getId();
 
         $data = $usuarioRepository->find($idUser)->getReservas();
-
-
 
         foreach ($data as $datos) {
             # Rellenamos

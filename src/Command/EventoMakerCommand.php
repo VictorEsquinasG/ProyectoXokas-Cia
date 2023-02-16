@@ -1,43 +1,110 @@
 <?php
-//TODO
+
 namespace App\Command;
 
+use App\Entity\Evento;
+use App\Entity\Tramos;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Validator\Constraints\Choice;
 
 #[AsCommand(
-    name: 'evento-maker',
+    name: 'do:evento',
     description: 'Un comando que crea un evento',
+    hidden: false,
+    aliases: ['eventoMaker']
 )]
 class EventoMakerCommand extends Command
 {
+
+    private $manager;
+
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        parent::__construct();
+        
+        $this->manager = $entityManager;
+    }
+
     protected function configure(): void
     {
+        
         $this
-            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
+            ->setHelp('Este comando te permite crear un evento, se le dice do:evento NOMBRE-EVENTO y un asistente te ayuda a crearlo')
+            ->addArgument('nombre', InputArgument::OPTIONAL, 'El nombre del evento')
             ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
+            ->addArgument('tramo')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $arg1 = $input->getArgument('arg1');
+        $progressBar = new ProgressBar($output);
+        
 
-        if ($arg1) {
-            $io->note(sprintf('You passed an argument: %s', $arg1));
+        $evento = new Evento();
+        $output->writeln([
+            'Creador de Evento',
+            '=================',
+            '',
+        ]);
+
+        $progressBar->start(100);
+        $nombre = $input->getArgument('nombre');
+
+        /* NOMBRE */
+        if (!$nombre) {
+            // Si no nos ha dicho ya el nombre, se lo pedimos
+            $nombre = $io->ask("¿Cómo se llamará el evento?");
+        }
+        $evento->setNombre($nombre);
+        $progressBar->advance(33);
+        $output->writeln(''); //Salto de línea
+        
+        /* NÚMERO DE ASISTENTES */
+        $max = $io->ask("¿Cuál es el aforo máximo?","10");
+        $evento->setNumMaxAsistentes(intval($max));
+        $progressBar->advance(33);
+        $output->writeln(''); //Salto de línea
+        
+        /* TRAMO HORARIO */
+        $tramos = $this->manager->getRepository(Tramos::class)->findAll();
+        foreach ($tramos as $tramo) {
+            # Los imprimimos como opciones
+            $output->writeln($tramo->getId().' - '.$tramo);
         }
 
-        if ($input->getOption('option1')) {
-            // ...
-        }
+        $tramoElegido = $io->ask("¿Durante qué tramo será?");
+        $input->setInteractive(true);
+        $tramo = $this->manager->getRepository(Tramos::class)->find($tramoElegido);
+        $evento->setTramo($tramo);
+        $progressBar->advance(30);
+        $io->writeln('');
+        
 
-        $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
+        $output->writeln('Nombre del evento: '.$nombre);
+        $output->writeln('Participantes: '.$max);
+        $output->writeln('Tramo: '.$tramo);
+
+        $progressBar->finish();
+        $io->writeln('');
+        $this->manager->persist($evento);
+        $this->manager->flush();
+    
+        $io->writeln('Muy bien');
+        $io->writeln('Ya hemos acabado!');
+
+        $output->writeln('');
+
+        $io->success('Evento creado! Echa un vistazo! Escribe do:evento para crear otro.');
 
         return Command::SUCCESS;
     }

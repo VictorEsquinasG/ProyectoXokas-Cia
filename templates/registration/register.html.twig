@@ -11,9 +11,13 @@
 	<style>
 
 		form {
-			background-color:rgba(33, 37, 41, 0.01);
-			padding: 20px 0px;
+			background-color: rgba(33, 37, 41, 0.01);
+			padding: 20px 0;
 			border-radius: 14px;
+		}
+		.row > div {
+			display:grid;
+			grid-template-columns: [a] 30% [b] 70%;
 		}
 
 		input {
@@ -25,38 +29,62 @@
 
 	<section class="c-container--center">
 		<section class="c-container__formu">
-			<h1>Nueva cuenta</h1>
+			<div class="row">
+				<h1 class="text-center col-12">Nueva cuenta</h1>
+			</div>
 
 			{{ form_start(registrationForm) }}
-			{{ form_row(registrationForm.email) }}
-			{{ form_row(registrationForm.plainPassword, {
-            label: 'Contraseña'
-			}) }}
-			{{ form_row(registrationForm.nombre,{
-			label: 'Nombre'
-			}) }}
+			
+			<div class="row">
+				{{ form_row(registrationForm.email) }}
+			</div>
+			
+			<div class="row">
+				{{ form_row(registrationForm.plainPassword, {
+				label: 'Contraseña'
+				}) }}
+			</div>
+			
+			<div class="row">
+				{{ form_row(registrationForm.nombre,{
+				label: 'Nombre'
+				}) }}
+			</div>
+			
+			<div class="row">
+				{{ form_row(registrationForm.apellido1,{
+				label: '1er Apellido'
+				}) }}
+			</div>
+			
+			<div class="row">
+				{{ form_row(registrationForm.apellido2,{
+				label: '2º Apellido'
+				}) }}
+			</div>
+			
+			<div class="row">
+				{{ form_row(registrationForm.telefono,{
+				label: 'Teléfono'
+				}) }}
+			</div>
 
-			{{ form_row(registrationForm.apellido1,{
-			label: '1er Apellido'
-			}) }}
-
-			{{ form_row(registrationForm.apellido2,{
-			label: '2º Apellido'
-			}) }}
-
-			{{ form_row(registrationForm.telefono,{
-			label: 'Teléfono'
-			}) }}
-
-			{{ form_row(registrationForm.telegram_id,{
-			label: 'Telegram'
-			}) }}
+			<div class="row">
+				{{ form_row(registrationForm.telegram_id,{
+				label: 'Telegram'
+				}) }}
+			</div>
 
 			{# <input type="hidden" name="_target_path" value="/mesas"> #}
 
-			<button type="submit" class="btn btn-primary">Registrarme</button>
-			{{ form_end(registrationForm) }}
-			<a href="{{ url('app_login') }}">Ya tengo cuenta</a>
+			<div class="row">
+				<button type="submit" class="btn btn-primary col-12">Registrarme</button>
+				{{ form_end(registrationForm) }}
+			</div>
+			<span class="text-center">
+				Ya tengo cuenta
+				<a href="{{ url('app_login') }}">entrar</a>
+			</span>
 		</section>
 	</section>
 {% endblock %}
