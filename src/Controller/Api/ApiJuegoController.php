@@ -28,7 +28,8 @@ class ApiJuegoController extends AbstractController
             return $this->json(["juego" => [
                 "id" => $juego->getId(),
                 "nombre" => $juego->getNombre(),
-                "imagen" => null, //TODO
+                "descripcion" => $juego->getDescripcion(),
+                "imagen" => ($juego->getImagen() !== null)?$juego->getImagen():null,
                 "jugadores" => [
                     "min" => $juego->getMinJugadores(),
                     "max" => $juego->getMaxJugadores(),

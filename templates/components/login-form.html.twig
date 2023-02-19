@@ -1,8 +1,3 @@
-{# ERRORES #}
-{% if error %}
-	<div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-{% endif %}
-
 {# ESTILOS #}
 <style>
 
@@ -35,17 +30,24 @@
 				<input type="password" id="password" name="_password">
 			</div>
 
+			{# ERRORES #}
+			{% if error %}
+				<span class="text-center">
+					{{ error.messageKey|trans(error.messageData, 'security') }}
+				</span>
+			{% endif %}
+
 			{# LA URL A LA QUE IRÁ #}
 			<input type="hidden" name="_target_path" value="/">
 			<div class="row mt-5" style="display:flex;justify-content:center;">
 				<button type="submit" class="btn btn-primary">Iniciar sesión</button>
 			</div>
+			<span>¿No estás registrado aún?</span>
+			<a href="{{ url('registro') }}">
+				<em>Crear cuenta</em>
+			</a>
 		</form>
 
-		<span>¿No estás registrado aún?</span>
-		<a href="{{ url('registro') }}">
-			<em>Crear cuenta</em>
-		</a>
 
 	</section>
 </section>

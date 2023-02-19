@@ -227,8 +227,26 @@ class Juego implements JsonSerializable
                 "max" => $this->getMaxJugadores()
             ],
             "imagen" => $this->getImagen(),
-            "reservas" => $reservas,
-            "eventos" => $eventos
+            "reservas" => $this->reservas->map(function (Reserva $reserva) {
+                return [
+                    'id' => $reserva->getId(),
+                    'fechaReserva' => $reserva->getFechaReserva(),
+                    'mesa' => $reserva->getMesa(),
+                    'tramo' => $reserva->getTramo(),
+                    'usuario' => $reserva->getUsuario(),
+                ];
+            })->toArray(),
+            "eventos" => $this->Eventos->map(function (Evento $evento)
+            {
+                return [
+                  "id" => $evento->getId(),
+                  "nombre" => $evento->getNombre(),  
+                  "fecha" => $evento->getFecha(),
+                  "tramo" => $evento->getTramo(),  
+                  "numMaxAsistentes" => $evento->getNumMaxAsistentes(),  
+                ];
+            })->toArray(),
+            "string" => $this->__toString()
         ];
         return $json;
     }

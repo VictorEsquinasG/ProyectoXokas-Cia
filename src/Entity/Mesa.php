@@ -212,6 +212,7 @@ class Mesa implements JsonSerializable
             "sillas" => $this->getSillas(),
             "distribuciones" => $this->getDistribucionesNotLazy(),
             "reservas" => $this->getReservasNotLazy(),
+            "string" => $this->__toString()
         ];
         return $json;
     }

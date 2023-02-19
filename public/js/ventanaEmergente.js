@@ -15,55 +15,53 @@ $(function () { // Window.onload
 
     /* PLANTILLAS */
     var plantillaReserva =
-        `<h1>Haz tu reserva en minutos</h1> <br><br><br>
-        <article>
-            <div class="col-12 col-md-6">
-                <label for="datePicker">Fecha de reserva:</label>
-                <input type="text" id="datePicker">
+        `<h1>Haz tu reserva en minutos</h1>
+        <div>
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <label for="datePicker">Fecha de reserva:</label>
+                </div>
+                <div class="col-12 col-md-6">
+                    <input type="text" id="datePicker">
+                </div>
             </div>
-
-            <div class="col-12 col-md-6">
-                <label for="selecTramos">Tramo horario:</label>
-                <select name="" id="selecTramos">                    
-                    <option value="-1" disabled selected></option>`;
-    // $.each(allTramos, function (i, v) {
-    //     plantillaReserva += `<option value="` + v.id + `">` + v + `</option>`;
-    // });
-    plantillaReserva += `
-                </select>
+                
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <label for="selecTramos">Tramo horario:</label>
+                </div>
+                <div class="col-12 col-md-6">
+                    <select name="tramo" id="selecTramos"></select>
+                </div>
             </div>
             
-            <div class="col-12 col-md-6">
-                <label for="selecJuego">Juego:</label>
-                <select name="" id="selecJuego">                    
-                    <option value="-1" disabled selected></option>`;
-    // $.each(allJuegos, function (i, v) {
-    //     plantillaReserva += `<option value="` + v.id + `">` + v + `</option>`;
-    // });
-
-    plantillaReserva += `
-                </select>
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <label for="selecJuego">Juego:</label>
+                </div>
+                <div class="col-12 col-md-6">
+                    <select name="juego" id="selecJuego"></select>
+                </div>
             </div>
-            <div class="col-12 col-md-6">
-                <label for="selecMesa">Mesa:</label>
-                <select name="" id="selecMesa">
-                    <option value="-1" disabled selected></option>`;
-    // $.each(allMesas, function (i, v) {
-    //     plantillaReserva += `<option value="` + v.id + `">` + v + `</option>`;
-    // });
-    plantillaReserva += `
-                </select>
+
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <label for="selecMesa">Mesa:</label>
+                </div>
+                <div class="col-12 col-md-6">
+                    <select name="" id="selecMesa"></select>
+                </div>
             </div>
 
             <input type="hidden" name="_target_path" value="/">
 
             <button type="submit" class="btn btn-primary">RESERVAR</button>
-        </aritcle>
+        </div>
         `
 
     var plantillaJuego =
         `
-        <article>
+        <div>
             <div class="row">
                 <h5 class="nombre"></h5>
             </div>
@@ -71,10 +69,10 @@ $(function () { // Window.onload
                 <div class="col-12 col-md-6">
                     <img class="img" alt=""></img>
                 </div>
-                <div class="col-12 col-md-3">
+                <div style="margin:auto;" class="col-12 col-md-3 text-center">
                     <p class="num_jugadores"></p>
                 </div>
-                <div class="col-12 col-md-3">
+                <div style="margin:auto;" class="col-12 col-md-3 text-center">
                     <p class="tamaniotablero"></p>
                 </div>
             </div>
@@ -84,12 +82,12 @@ $(function () { // Window.onload
                 <p class="desc"><p>
             </div>
 
-            <h5>Haz tu reserva y juegalo con tus amigos</h5>
+            <p style="font-size:20px">¡Haz tu reserva y juegalo con tus amigos!</p>
 
             <input type="hidden" name="_target_path" value="/">
 
             <button type="submit" class="btn btn-primary">RESERVAR</button>
-        </aritcle>
+        </div>
         ` //TODO El value debe llevarte a hacer una reserva con el juego seleccionado
 
 
@@ -103,9 +101,8 @@ $(function () { // Window.onload
     var dialog = $('<div />');
 
     // USAMOS 1 BOTON PARA ABRIR LA VENTANA MODAL
-    debugger;
     $("#creaReserva").click(function (ev) {
-        debugger;
+
         ev.preventDefault();
         var allTramos = getTramos();
         var allJuegos = getJuegos();
@@ -116,23 +113,49 @@ $(function () { // Window.onload
             DEL CUAL COGEREMOS LOS CAMPOS QUE TENGA SELECCIONADOS
         */
         let info = $(this).data('reserva');
-        var optTramos = [];
-        var optJuegos = [];
-        var optMesas = [];
         console.log(info);
 
-        $.each(allTramos, function (i, v) {
-            optTramos += $('</option>').val(v.id).html(v);
+        /* RELLENAMOS LOS SELECTS */
+        let selecTramos = JplantillaReserva.find('#selecTramos');
+        selecTramos
+                .append('<option value="-1" disabled selected></option>');
+        $.each(allTramos.responseJSON.tramos, function (i, v) {
+            
+            selecTramos
+                .append(
+                    $('<option/>')
+                        .data(v)
+                        .val(v.id)
+                        .html(v.string)
+                );
         });
-        $.each(allJuegos, function (i, v) {
-            optJuegos += $('</option>').val(v.id).html(v);
+        // debugger
+        let selecJuegos = JplantillaReserva.find('#selecJuego');
+        selecJuegos
+                .append('<option value="-1" disabled selected></option>');
+        $.each(allJuegos.responseJSON.juegos, function (i, v) {
+
+            selecJuegos
+                .append(
+                    $('<option/>')
+                        .data(v)
+                        .val(v.id)
+                        .html(v.string)
+                );
         });
-        $.each(allMesas, function (i, v) {
-            optMesas += $('</option>').val(v.id).html(v);
+        let selecMesas = JplantillaReserva.find('#selecMesa');
+        selecMesas
+                .append('<option value="-1" disabled selected></option>');
+        $.each(allMesas.responseJSON.mesas, function (i, v) {
+
+            selecMesas
+                .append(
+                    $('<option/>')
+                        .data(v)
+                        .val(v.id)
+                        .html(v.string)
+                );
         });
-        JplantillaReserva.find('#selecTramos').html(optTramos);
-        JplantillaReserva.find('#selecJuego').html(optJuegos);
-        JplantillaReserva.find('#selecMesa').html(optMesas);
 
 
         /* CREAMOS UN MODAL  */
@@ -140,17 +163,20 @@ $(function () { // Window.onload
             modal: true,
             width: "700px",
             title: "Reservar mesa 📆🎲",
-            // autoOpen: true,
-            // show: {
-            //     effect: "blind",
-            //     duration: 1000
-            // },
-            // hide: {
-            //     effect: "explode",
-            //     duration: 1000
-            // }
+            show: {
+                effect: "blind",
+                duration: 1000
+            },
+            hide: {
+                effect: "blind",
+                duration: 500
+            }
         })
-            // .append(JplantillaReserva)
+            .append(JplantillaReserva)
+            .submit(function (e) { 
+                e.preventDefault();
+                //TODO creamos la reserva  
+            });
             ;
 
     });
@@ -185,82 +211,83 @@ $(function () { // Window.onload
         ev.preventDefault();
         // Averiguamos qué juego es
         let id = this.id.split('_')[1];
-        $.ajax({
-            type: "GET",
-            url: "/api/juego/" + id,
-        })
-            .done(function (jogo) {
-                let juego = jogo.juego;
+        let juego = getJuego(id);
+        juego = juego.responseJSON.juego;
+        console.log(juego);
 
-                // Adaptamos la plantilla
-                JplantillaJuego.find('.nombre').html(juego.nombre);
-                JplantillaJuego.find('.img').attr("src", juego.imagen);
-                JplantillaJuego.find('.desc').html(juego.descripcion);
-                JplantillaJuego.find('.num_jugadores').html("Entre " + juego.jugadores.min + " y " + juego.jugadores.max);
-                JplantillaJuego.find('.tamaniotablero').html(juego.tamañoTablero.ancho + "cm x " + juego.tamañoTablero.largo + "cm");
+        // Adaptamos la plantilla
+        JplantillaJuego.find('.nombre').html(juego.nombre);
+        JplantillaJuego.find('.img').attr("src", '../images/uploads/' + juego.imagen);
+        JplantillaJuego.find('.desc').html(juego.descripcion);
+        JplantillaJuego.find('.num_jugadores').html("Entre " + juego.jugadores.min + " y " + juego.jugadores.max);
+        JplantillaJuego.find('.tamaniotablero').html(juego.tamañoTablero.ancho + "cm x " + juego.tamañoTablero.largo + "cm");
 
-                dialog.dialog({
-                    modal: true,
-                    width: "700px",
-                    title: "Juega a " + juego.nombre + "🎲♟️",
-                }).append(JplantillaJuego);
-            });
+        dialog.dialog({
+            modal: true,
+            width: "700px",
+            title: "Juega a " + juego.nombre + "🎲♟️",
+        }).append(JplantillaJuego);
+
     });
 
 
 
-
-})
+});
 
 /* FUNCIONES */
 function getTramos() {
-    var get = [];
     return $.ajax({
         type: "GET",
         url: "api/tramo/",
         async: false,
     })
         .done(function (respuesta) {
-            console.log(respuesta);
             let tramos = respuesta.tramos;
-            $.each(tramos, function (i, v) {
-                get.push(v);
-            });
-            return get;
-        });
+
+            return tramos;
+        })
+        ;
 
 }
 function getJuegos() {
-    var get = [];
-    $.ajax({
+    return $.ajax({
         type: "GET",
         url: "api/juego/",
         async: false,
     })
         .done(function (respuesta) {
-            console.log(respuesta);
             let juegos = respuesta.juegos;
-            $.each(juegos, function (i, v) {
-                get.push(v);
-            });
-            return get;
-        });
+
+            return juegos;
+        })
+        ;
 
 }
+function getJuego(id) {
+    return $.ajax({
+        type: "GET",
+        url: "api/juego/" + id,
+        async: false,
+    })
+        .done(function (respuesta) {
+            let juegos = respuesta.juego;
+
+            return juegos;
+        })
+        ;
+
+}
+
 function getMesas() {
-    var get = [];
-    $.ajax({
+    return $.ajax({
         type: "GET",
         url: "api/mesa/",
         async: false,
     })
         .done(function (respuesta) {
-            console.log(respuesta);
             let mesas = respuesta.mesas;
-            $.each(mesas, function (i, v) {
-                get.push(v);
-            });
-            return get;
+
+            return mesas;
         });
 
 }

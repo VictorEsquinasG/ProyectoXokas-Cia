@@ -4,7 +4,9 @@ namespace App\Form;
 
 use App\Entity\Usuario;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -18,18 +20,23 @@ class RegistrationFormType extends AbstractType
         $builder
             ->add('email')
             
-            ->add('plainPassword', PasswordType::class, [
+            ->add('password', RepeatedType::class, [
                 // instead of being set onto the object directly,
                 // this is read and encoded in the controller
                 'mapped' => false,
                 'attr' => ['autocomplete' => 'new-password'],
+                'type' => PasswordType::class,
+                            'first_options' => ['label' => 'Contraseña'],
+                            'second_options' => ['label' => 'Repita su contraseña'],
+                'invalid_message'=> 'Las contraseñas no coincidena',
                 'constraints' => [
+                
                     new NotBlank([
-                        'message' => 'Please enter a password',
+                        'message' => 'Elige una contraseña',
                     ]),
                     new Length([
                         'min' => 6,
-                        'minMessage' => 'Your password should be at least {{ limit }} characters',
+                        'minMessage' => 'Tu contraseña no llega a {{ limit }} caracteres',
                         // max length allowed by Symfony for security reasons
                         'max' => 4096,
                     ]),
@@ -74,6 +81,7 @@ class RegistrationFormType extends AbstractType
                     ])
                 ]
             ])
+            ->add("imagen", FileType    ::class)
             ->add("telegram_id", null, [
                 'constraints' => [
                     new NotBlank([

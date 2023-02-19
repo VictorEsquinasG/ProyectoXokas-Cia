@@ -83,6 +83,7 @@ class ApiDistribucionController extends AbstractController
         return $this->json(
             [
                 "id" => $id,
+                "distribucion" => $distribucion,
                 "message" => "Éxito al crear la distribucion " . $id,
                 "Success" => true
             ],

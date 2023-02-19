@@ -4,9 +4,6 @@
 {% endblock %}
 
 {% block body %}
-	{% for flash_error in app.flashes('verify_email_error') %}
-		<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-	{% endfor %}
 
 	<style>
 
@@ -16,7 +13,7 @@
 			border-radius: 14px;
 		}
 		.row > div {
-			display:grid;
+			display: grid;
 			grid-template-columns: [a] 30% [b] 70%;
 		}
 
@@ -24,6 +21,9 @@
 			/* Dentro de los inputs, el texto se alinea a la izquierda */
 			text-align: left;
 			margin: 15px;
+		}
+		label {
+			margin: auto auto auto 0;
 		}
 	</style>
 
@@ -34,38 +34,44 @@
 			</div>
 
 			{{ form_start(registrationForm) }}
-			
+
 			<div class="row">
 				{{ form_row(registrationForm.email) }}
 			</div>
-			
+
 			<div class="row">
-				{{ form_row(registrationForm.plainPassword, {
+				{{ form_row(registrationForm.password, {
 				label: 'Contraseña'
 				}) }}
 			</div>
-			
+
 			<div class="row">
 				{{ form_row(registrationForm.nombre,{
 				label: 'Nombre'
 				}) }}
 			</div>
-			
+
 			<div class="row">
 				{{ form_row(registrationForm.apellido1,{
 				label: '1er Apellido'
 				}) }}
 			</div>
-			
+
 			<div class="row">
 				{{ form_row(registrationForm.apellido2,{
 				label: '2º Apellido'
 				}) }}
 			</div>
-			
+
 			<div class="row">
 				{{ form_row(registrationForm.telefono,{
 				label: 'Teléfono'
+				}) }}
+			</div>
+
+			<div class="row">
+				{{ form_row(registrationForm.imagen,{
+				label: 'Imagen de perfil'
 				}) }}
 			</div>
 
@@ -77,6 +83,10 @@
 
 			{# <input type="hidden" name="_target_path" value="/mesas"> #}
 
+			{% for flash_error in app.flashes('verify_email_error') %}
+				<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+			{% endfor %}
+			
 			<div class="row">
 				<button type="submit" class="btn btn-primary col-12">Registrarme</button>
 				{{ form_end(registrationForm) }}

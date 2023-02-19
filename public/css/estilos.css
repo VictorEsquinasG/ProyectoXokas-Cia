@@ -9866,13 +9866,13 @@ Header Style
   display: inline-block;
 }
 .pre-header ul li a {
-  color: #016aa7;
+  color: #1CE25F;
   transition: all 0.4s;
 }
 .pre-header .left-info ul li {
   margin-right: 15px;
   padding-right: 15px;
-  border-right: 1px solid #016aa7;
+  border-right: 1px solid #1CE25F;
 }
 .pre-header .left-info ul li a {
   font-size: 14px;
@@ -14330,6 +14330,66 @@ body {
     transition: none !important;
   }
 }
+a {
+  color: #1CE25F;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background-color: #1CE25F;
+  color: #fff;
+  border-color: #1CE25F;
+}
+.btn-primary:hover {
+  background-color: #fff;
+  color: #1CE25F;
+  border-color: transparent;
+  box-shadow: 4px 2px 5px #1CE25F;
+}
+.btn-primary:active {
+  background-color: #1CE25F;
+  color: #fff;
+  border-color: #1CE25F;
+}
+.btn-primary:focus-visible {
+  background-color: #1CE25F;
+  color: #fff;
+  border-color: #1CE25F;
+}
+
+section#sliderReservas {
+  display: flex;
+  width: 900px;
+  height: 430px;
+}
+section#sliderReservas .btn {
+  width: 0px;
+  flex-grow: 1;
+  object-fit: cover;
+  opacity: 0.8;
+  transition: 0.5s erase;
+}
+section#sliderReservas .btn:hover {
+  cursor: crosshair;
+  width: 450px;
+  opacity: 1;
+  filter: contrast(120%);
+}
+
+section img .card-body {
+  color: rgb(18, 100, 0);
+}
+
+form li {
+  position: relative;
+  top: 150%;
+  background-color: #d3080f;
+  color: #fff;
+  text-align: center;
+  padding: 3px 1px;
+  border-radius: 20px;
+}
+
 @media (max-width: 900px) {
   #FotoPerfil {
     display: none;

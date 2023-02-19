@@ -65,21 +65,7 @@ class Tramos implements JsonSerializable
         return $this;
     }
 
-    public function __toString(): string
-    {
-        return $this->hora_inicio->format('H:i') . " - " . $this->hora_fin->format('H:i');
-    }
-
-    public function jsonSerialize(): mixed
-    {
-        $json = new stdClass();
-        
-        $json->horaInicio = $this->getHoraFin();
-        $json->horaFin = $this->getHoraFin();
-
-        return $json;
-    }
-
+    
     /**
      * @return Collection<int, Evento>
      */
@@ -87,17 +73,17 @@ class Tramos implements JsonSerializable
     {
         return $this->eventos;
     }
-
+    
     public function addEvento(Evento $evento): self
     {
         if (!$this->eventos->contains($evento)) {
             $this->eventos->add($evento);
             $evento->setTramo($this);
         }
-
+        
         return $this;
     }
-
+    
     public function removeEvento(Evento $evento): self
     {
         if ($this->eventos->removeElement($evento)) {
@@ -106,10 +92,10 @@ class Tramos implements JsonSerializable
                 $evento->setTramo(null);
             }
         }
-
+        
         return $this;
     }
-
+    
     /**
      * @return Collection<int, Reserva>
      */
@@ -117,17 +103,17 @@ class Tramos implements JsonSerializable
     {
         return $this->reservas;
     }
-
+    
     public function addReserva(Reserva $reserva): self
     {
         if (!$this->reservas->contains($reserva)) {
             $this->reservas->add($reserva);
             $reserva->setTramo($this);
         }
-
+        
         return $this;
     }
-
+    
     public function removeReserva(Reserva $reserva): self
     {
         if ($this->reservas->removeElement($reserva)) {
@@ -136,8 +122,24 @@ class Tramos implements JsonSerializable
                 $reserva->setTramo(null);
             }
         }
-
+        
         return $this;
     }
-
+    
+    public function __toString(): string
+    {
+        return $this->hora_inicio->format('H:i') . " - " . $this->hora_fin->format('H:i');
+    }
+    
+    public function jsonSerialize(): mixed
+    {
+        $json = new stdClass();
+        
+        $json->id = $this->getId();
+        $json->horaInicio = $this->getHoraFin();
+        $json->horaFin = $this->getHoraFin();
+        $json->string = $this->__toString();
+    
+        return $json;
+    }
 }

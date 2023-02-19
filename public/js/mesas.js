@@ -4,62 +4,8 @@
  * @use UTILIZA JQUERY & UI
  * @author Víctor Esquinas
  */
+
 $(function () {
-
-    /* LA CLASE MESA */
-
-    class Mesa {
-
-        constructor(iden, anch, larg, sillas, x, y, distribuciones, reservas) {
-            this.id = iden;
-            this.ancho = anch;
-            this.largo = larg;
-            this.sillas = sillas;
-            this.pos_x = x;
-            this.pos_y = y;
-            this.disposiciones = distribuciones;
-            this.reservas = reservas;
-        }
-
-
-    }
-
-    class Sala {
-
-        constructor(div) {
-            this.mesas = [];
-            this.div = div;
-            this.div.data("sala", this);
-            // DIMENSIONES DEL CONTENEDOR
-            this.dify = div.offset().top;
-            this.difx = div.offset().left;
-        }
-
-        addMesa = function (mesa) {
-            this.mesas.push(mesa);
-            this.div.append(mesa);
-            // console.log("Ya existe esta mesa");
-        }
-
-        removeMesa = function (mesa) {
-
-            var id = mesa.id;
-            // Lo borramos del array mesas
-            this.mesas.splice(id, id);
-        }
-    }
-
-    class Distribucion {
-        constructor(id, mesa, fecha, posX, posY, alias, reservada) {
-            this.id = id;
-            this.mesa_id = mesa;
-            this.fecha = fecha;
-            this.pos_x = posX;
-            this.pos_y = posY;
-            this.alias = alias;
-            this.reservada = reservada;
-        }
-    }
 
     /* VARIABLES 'GLOBALES' */
     var all_distribuciones = []
@@ -83,52 +29,98 @@ $(function () {
                 guardaMesa(this, ui);
             }
         }
-    }).css({ 'overflow': 'scroll' });
+    }).css({
+        overflow: 'scroll',
+        backgroundColor: "#cccccc",
+        backgroundImage: "url('../images/fondoAlmacen.jpg')",
+        backgroundRepeat: "repeat",
+        backgroundCover: "fill"
+    });
 
     /* LA SALA PRINCIPAL */
     // var sala = 
-    $("#sala").droppable({
-        // Cuando se suelte en él
-        drop: function (ev, ui) {
+    $("#sala")
+        .attr("class", "ml-3")
+        .droppable({
+            // Cuando se suelte en él
+            drop: function (ev, ui) {
 
-            // Cogemos la mesa
-            var mesa = ui.draggable;
-            // Coordenadas donde hemos soltado el objeto
-            mesa.left = parseInt(ui.offset.left);
-            mesa.top = parseInt(ui.offset.top);
+                // Cogemos la mesa
+                var mesa = ui.draggable;
+                // Coordenadas donde hemos soltado el objeto
+                mesa.left = parseInt(ui.offset.left);
+                mesa.top = parseInt(ui.offset.top);
 
-            if (!posicionValida(mesa)) {
-                console.log("CHOQUE");
-            } else {
-                var sala = $('#sala').data('sala');
-                // Si es la sala, lo metemos al objeto y la movemos
-                appendSala(sala, mesa);
-                // Comprobamos la disposición
-                let dispActual = $('select[name="dispo"]').val();
-                if (dispActual !== '-1') {
-                    let $disp = getDisposicion(dispActual, mesa.data('mesa').id);
-
-                    let $objDisp = {};
-                    // Anotamos su nueva posición 
-                    $objDisp = new Distribucion($disp.id, $disp.mesa, $disp.fecha.date, (mesa.left - sala.difx), (mesa.top - sala.dify), $disp.alias, $disp.reservada);
-                    // La posición la actualizamos ese día
-                    actualizaDisposicion($objDisp)
+                if (!posicionValida(mesa)) {
+                    console.log("CHOQUE");
                 } else {
-                    // Posición BASE / ESTÁNDAR
-                    // Actualizamos su posición en la BD
-                    actualizaMesa(mesa);
+                    var sala = $('#sala').data('sala');
+                    // Si es la sala, lo metemos al objeto y la movemos
+                    appendSala(sala, mesa);
+                    // Comprobamos la disposición
+                    let dispActual = $('select[name="dispo"]').val();
+                    if (dispActual !== '-1') {
+
+                        var $disp = getDisposicion(dispActual, mesa.data('mesa').id);
+                        // Si no existe creamos la nueva disposición
+                        if ($disp == null) {
+                            $disp = new Distribucion(null, mesa.data('mesa').id, getFechaDisposicionByName(dispActual), -1, -1, dispActual, false);
+                            $disp = creaDisposicion($disp);
+                        }
+
+                        let $objDisp = {};
+                        // Anotamos su nueva posición 
+                        $objDisp = new Distribucion($disp.id, $disp.mesa, $disp.fecha.date, (mesa.left - sala.difx), (mesa.top - sala.dify), $disp.alias, $disp.reservada);
+                        // La posición la actualizamos ese día
+                        actualizaDisposicion($objDisp)
+                    } else {
+                        // Posición BASE / ESTÁNDAR
+                        // Actualizamos su posición en la BD
+                        actualizaMesa(mesa);
+                    }
+
                 }
-
             }
-        }
 
-    });
+        })
+        .css({
+            backgroundColor: "#cccccc",
+            backgroundImage: "url('../images/fondoSala.jpg')",
+            backgroundRepeat: "repeat",
+            backgroundCover: "fill"
+        })
+        ;
+
+    function getFechaDisposicionByName(alias) {
+        var distribucion = null;
+
+        // Buscamos nuestra mesa
+        $.each(all_distribuciones, function (i, v) {
+            // Nuestra mesa = nuestra distribucion
+            if (v.alias == alias) {
+                console.log(v);
+                distribucion = v.fecha.date;
+                return false; // Rompemos el bucle
+            }
+        });
+        // La devolvemos
+        return distribucion;
+    }
 
     function appendSala(sala, mesa) {
+        debugger
+        let objmesa;
+        if (mesa.data('mesa')) {
+            objmesa = mesa.data('mesa');
+        } else {
+            objmesa = mesa[0];
+            // No tiene TOP y LEFT
+            mesa.posicionYAnterior = parseInt(mesa.pos_y);
+            mesa.posicionXAnterior = parseInt(mesa.pos_x);
+            mesa.left = parseInt(mesa.pos_x);
+            mesa.top = parseInt(mesa.pos_y);
+        }
 
-        let objmesa = (mesa.data('mesa')) ? mesa.data('mesa') : mesa[0];
-
-        console.log(objmesa);
         // Cambiamos su estilo para poder visualizarla
         mesa.css({
             "position": "absolute",
@@ -144,16 +136,15 @@ $(function () {
         objmesa.pos_y = (mesa.top - sala.dify);
 
         sala
-            .addMesa(objmesa);
+            .addMesa(mesa);
     }
 
     function getDisposicion(alias, mesa_id) {
-        var distribucion;
+        var distribucion = null;
 
         // Buscamos nuestra mesa
         $.each(all_distribuciones, function (i, v) {
-            // debugger
-            // Nuestra mesa     = nuestra distribucion
+            // Nuestra mesa = nuestra distribucion
             if (v.mesa == mesa_id && v.alias == alias) {
                 distribucion = v;
                 return false; // Rompemos el bucle
@@ -163,8 +154,29 @@ $(function () {
         return distribucion;
     }
 
-    function actualizaDisposicion(disp) {
+    function creaDisposicion(disp) {
+        var nueva = null;
+        let dist = {};
+        dist.distribucion = disp;
+        $.ajax({
+            type: "POST",
+            url: "/api/distribucion",
+            data: JSON.stringify(dist),
+            dataType: "json",
+            async: false,
+            success: function (response) {
+                console.log(response);
+                console.log("Posición de la mesa " + response.id + " establecida");
+                nueva = response.distribucion;
+            }
+        });
 
+        return nueva;
+        // debugger;
+    }
+
+    function actualizaDisposicion(disp) {
+        debugger;
         let dist = {};
         dist.distribucion = disp;
         console.log(dist);
@@ -215,7 +227,7 @@ $(function () {
 
     function saleDeSala(mesa) {
         var sala = $('#sala').data('sala');
-        console.log(sala);
+
         let top = sala.dify;
         let left = sala.difx;
         let right = left + sala.div.width();
@@ -360,7 +372,6 @@ $(function () {
     // Capturamos el SELECT que definirá el cambio
     $('#selDisposicion').change(function (e) {
         e.preventDefault();
-
         // Cogemos el valor seleccionado
         var disposicion_seleccionada = $('select[name="dispo"]').val();
 
@@ -460,7 +471,7 @@ $(function () {
         var top = parseInt(mesa.pos_y);
         var left = parseInt(mesa.pos_x);
 
-        if (top >= 0 && left >= 0) {
+        if (top > 0 && left > 0) {
             // Tiene posición => Se coloca de manera absoluta en la sala
             appendSala($('#sala').data('sala'), $(mesa));
         } else {
@@ -468,7 +479,7 @@ $(function () {
             almacena($(mesa));
         }
 
-        console.log("Recolocada " + mesa.data('mesa').id);
+        console.log("Recolocada " + mesa.id);
     }
 
     function coloca(mesa) {
@@ -507,7 +518,7 @@ $(function () {
 
         // Icono de papelera
         var img = $('<img>').attr({
-            src: './images/papelera-de-reciclaje.png',
+            src: '../images/papelera-de-reciclaje.png',
             alt: 'Borrar',
             title: 'Eliminar'
         }).css({
@@ -594,9 +605,9 @@ $(function () {
                     // Si existe esta propiedad es que está colocada en la disposición BASE original
                     mesa.pos_x = mesa.posicionXAnterior;
                     mesa.pos_y = mesa.posicionYAnterior;
-                    // HAY QUE REASIGNAR SUS COORDENADAS Y MANDARLA A PINTARSE
-                    recoloca(mesa);
                 }
+                // HAY QUE REASIGNAR SUS COORDENADAS Y MANDARLA A PINTARSE
+                recoloca(mesa);
             });
         } else {
             // Si no tenemos mesas, las pedimos

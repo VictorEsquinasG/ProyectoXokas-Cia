@@ -55,7 +55,7 @@ class PdfMaker
 
     public function recargaForzada(string $documento, ?array $opciones = null):self
     {
+        return 
         $this->pdf->stream($documento, $opciones);
-        return $this;
     }
 }

@@ -1,11 +1,78 @@
+a {
+    color: $color-secundario;
+    text-decoration: none;
+}
 
 
+
+.btn-primary {
+
+    background-color: $color-secundario;
+    color: $bg-principal;
+    border-color: $color-secundario;
+
+    &:hover {
+        background-color: $bg-principal;
+        color: $color-secundario;
+        border-color: transparent;
+        box-shadow: 4px 2px 5px $color-secundario;
+    }
+
+    &:active {
+        background-color: $color-secundario;
+        color: $bg-principal;
+        border-color: $color-secundario;
+    }
+
+    &:focus-visible {
+        background-color: $color-secundario;
+        color: $bg-principal;
+        border-color: $color-secundario;
+    }
+
+}
+
+section#sliderReservas {
+    display: flex;
+    width: 900px;
+    height: 430px;
+
+    & .btn {
+        width: 0px;
+        flex-grow: 1;
+        object-fit: cover;
+        opacity: .8;
+        transition: .5s erase;
+
+        &:hover {
+            cursor: crosshair;
+            width: 450px;
+            opacity: 1;
+            filter: contrast(120%);
+        }
+    }
+
+}
+
+
+section img .card-body {
+    color: rgb(18, 100, 0);
+}
+
+form li {
+    position: relative;
+    top: 150%;
+    background-color: #d3080f;
+    color:$bg-principal;
+    text-align: center;
+    padding: 3px 1px;
+    border-radius: 20px;
+}
 
 // La foto de perfil
-#FotoPerfil{
+#FotoPerfil {
 
-    @media (max-width:900px)
-    {
+    @media (max-width:900px) {
         display: none;
     }
 }

@@ -14,6 +14,7 @@
 
 		<form action="" method="post">
 			<label for='selDisposicion'>Disposición de la sala</label>
+			
 			<select
 				name="dispo" id="selDisposicion" style="position: absolute;left: 50%;transform: translate(-50%, 0);">
 				{# Como mínimo tiene la estándar #}
@@ -21,24 +22,17 @@
 				{% for opt in disposiciones %}
 					<option value="{{opt.value}}">{{opt.name}}</option>
 				{% endfor %}
+				<option value="crear">Crea dispo..</option>
 			</select>
+
+			<input type="button" style="float:right" id="creaMesa" value="CREAR">
 		</form>
 	</div>
 	<div id="container-mesas">
 		<div id="almacen"></div>
 		<div id="sala"></div>
 	</div>
-	<div id="crea-mesas">
-		<form action="" method="POST">
-			<label for="ancho">Ancho:</label>
-			<input type="number" name="ancho" id="ancho">
-			<label for="largo">Largo:</label>
-			<input type="number" name="largo" id="largo">
-			<label for="sillas">Sillas:</label>
-			<input type="number" name="sillas" id="sillas">
-			<input type="submit" id="btnCrear" value="CREAR">
-		</form>
-	</div>
+	
 
 	<style>
 		.mesa {
@@ -86,5 +80,6 @@
 
 	{# BASE #}
 	<script src="{{ asset('js/mesas.js') }}"></script>
+	<script src="{{ asset('js/creaMesa.js') }}"></script>
 
 {% endblock %}

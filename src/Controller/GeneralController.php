@@ -97,23 +97,23 @@ class GeneralController extends AbstractController
         # TODO La página sobre la reserva original
     }
 
-    #[Route('/pdf/prueba', name: 'prueba_pdf')]
+    #[Route('/p', name: 'prueba_pdf')]
     public function pdf(PdfMaker $dompdf)
     {       
 
         // Retrieve the HTML generated in our twig file
         $html = $this->renderView('pdf/mypdf.html.twig', [
-            'title' => "Welcome to our PDF Test"
+            'title' => "UN PSF PARA DOMINAR A TODOS"
         ]);
 
         // Cargamos el HTML al Dompdf
-        $pdf = $dompdf->sethtml($html)
+        $dompdf->sethtml($html)
         ->renderizar()
         ->recargaForzada("mypdf.pdf", [
             "Attachment" => true
         ]);
         
-        return new Response($pdf);
+        // return new Response($pdf);
 
     }
 }
