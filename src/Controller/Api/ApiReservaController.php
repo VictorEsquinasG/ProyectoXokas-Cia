@@ -5,11 +5,14 @@ namespace App\Controller\Api;
 use App\Entity\Juego;
 use App\Entity\Mesa;
 use App\Entity\Reserva;
+use App\Entity\Tramos;
+use App\Entity\Usuario;
 use App\Repository\ReservaRepository;
 use DateTime;
 use Doctrine\Persistence\ManagerRegistry;
 use PDOException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -53,14 +56,15 @@ class ApiReservaController extends AbstractController
     }
 
     #[Route("/reserva", name: "postReserva", methods: "POST")]
-    public function postReserva(ManagerRegistry $mr, Request $request): Response
+    public function postReserva(ManagerRegistry $mr, Request $request, Security $security): Response
     {
         $datos = json_decode($request->getContent());
         $datos = $datos->reserva;
         $reserva = new Reserva();
 
+        // dd($datos->fecha);
         $datetime = new DateTime();
-        $fecha = $datetime->createFromFormat('Y-m-d H:i:s.u', $datos->fecha);
+        $fecha = $datetime->createFromFormat('Y-m-d', $datos->fecha);
 
         $reserva->setFechaReserva($fecha);
         $reserva->setAsiste($datos->asiste);
@@ -70,9 +74,22 @@ class ApiReservaController extends AbstractController
         } else {
             # Si no asiste
             $datetime = new DateTime();
-            $fecha = $datetime->createFromFormat('Y-m-d H:i:s.u', $datos->fechaCancelacion);
+            $fecha = $datetime->createFromFormat('Y-m-d', $datos->fechaCancelacion);
 
             $reserva->setFechaCancelacion($fecha);
+        }
+
+        // El usuario que reserva
+        if ($datos->usuario !== null) {
+            # Si nos da un usuario lo seteamos
+            $reserva->setUsuario(
+                $mr->getRepository(Usuario::class)->find($datos->usuario)
+            );
+        }else {
+            # Si no, es el "current"
+            $reserva->setUsuario(
+                $security->getUser()
+            );
         }
 
         $reserva->setMesa(
@@ -80,6 +97,9 @@ class ApiReservaController extends AbstractController
         );
         $reserva->setJuego(
             $mr->getRepository(Juego::class)->find($datos->juego)
+        );
+        $reserva->setTramo(
+            $mr->getRepository(Tramos::class)->find($datos->tramo)
         );
 
         try {
@@ -132,11 +152,16 @@ class ApiReservaController extends AbstractController
             $reserva->setFechaCancelacion($fecha);
         }
 
+        // No se puede modificar el usuario que ha hecho la reserva
+
         $reserva->setMesa(
             $mr->getRepository(Mesa::class)->find($datos->mesa)
         );
         $reserva->setJuego(
             $mr->getRepository(Juego::class)->find($datos->juego)
+        );
+        $reserva->setTramo(
+            $mr->getRepository(Tramos::class)->find($datos->tramo)
         );
 
         $manager = $mr->getManager();

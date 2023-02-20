@@ -33,14 +33,15 @@
 
 			<script src="{{ asset('js/all.min.js') }}"></script>
 			<script src="{{ asset('js/clases.js') }}"></script>
-			{# <script src="{{ asset('js/ventanaEmergente.js') }}"></script> #}
+			<script src="{{ asset('js/api/get.js') }}"></script>
+			{# LIBRERIAS #}
 			<script src="{{ asset('assets/js/isotope.min.js') }}"></script>
 			<script src="{{ asset('assets/js/owl-carousel.js') }}"></script>
 			<script src="{{ asset('assets/js/tabs.js') }}"></script>
 			<script src="{{ asset('assets/js/popup.js') }}"></script>
 			<script src="{{ asset('assets/js/custom.js') }}"></script>
 		{% endblock %}
-		{% block finanza %}{% endblock %}
+		
 	</head>
 	<body>
 		{% block header %}
@@ -63,6 +64,9 @@
 				{# HUECO PARA EL CARRUSEL #}
 			{% endblock %}
 		</section>
+
+		<div style="flex-grow:1"></div>
+
 		{% block footer %}
 			{% include "components/footer.html.twig" %}
 		{% endblock %}

@@ -1,3 +1,0 @@
-$(function () {
-    $('#TablaReserva').dataTable();
-});

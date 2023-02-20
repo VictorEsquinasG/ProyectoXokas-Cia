@@ -22,9 +22,14 @@ class ApiTramosController extends AbstractController
             # Si es null, las quiere todas
             $tramos = $mr->findAll();
 
-            return $this->json(["tramos" => $tramos, "Success" => true], 200);
+            return $this->json([
+                "tramos" => $tramos,
+                "Success" => true
+            ],
+            200
+        );
         } else {
-            // cogemos la tramo
+            // cogemos el tramo
             $tramo = $mr->find($id);
 
             return $this->json([

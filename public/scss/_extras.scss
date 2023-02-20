@@ -3,7 +3,14 @@ a {
     text-decoration: none;
 }
 
+body {
+    min-height: 100vh;
+}
 
+footer {
+    position: sticky;
+    top: 100%;
+}
 
 .btn-primary {
 

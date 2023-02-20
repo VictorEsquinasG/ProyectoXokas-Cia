@@ -13,11 +13,11 @@
 		</div>
 
 		{% for reserva in reservas %}
-			<div class="btn" style="background-color:#32BEA6" id="ver_reserva_{{reserva.id}}">
+			<div class="btn border-2" style="background-color:#A1DB26" id="ver_reserva_{{reserva.id}}">
 				<div class="item">
 					<img src="./images/uploads/{{reserva.img}}" alt="">
 					<div class="down-content">
-						<h4>{{reserva.title}}</h4>
+						<h4 class="text-light">{{reserva.title}}</h4>
 						<i class="fa-regular fa-eye"></i>
 					</div>
 				</div>

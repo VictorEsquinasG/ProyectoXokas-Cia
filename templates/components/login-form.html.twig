@@ -32,7 +32,7 @@
 
 			{# ERRORES #}
 			{% if error %}
-				<span class="text-center">
+				<span class="bg-danger text-light row" style="padding: 1px 5px;border-radius:5px;justify-content: center;">
 					{{ error.messageKey|trans(error.messageData, 'security') }}
 				</span>
 			{% endif %}

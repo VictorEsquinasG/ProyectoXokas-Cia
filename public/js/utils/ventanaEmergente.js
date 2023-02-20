@@ -16,78 +16,84 @@ $(function () { // Window.onload
     /* PLANTILLAS */
     var plantillaReserva =
         `<h1>Haz tu reserva en minutos</h1>
-        <div>
-            <div class="row">
-                <div class="col-12 col-md-6">
-                    <label for="datePicker">Fecha de reserva:</label>
+        <article>
+            <form>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <label for="datePicker">Fecha de reserva:</label>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <input type="text" id="datePicker">
+                    </div>
                 </div>
-                <div class="col-12 col-md-6">
-                    <input type="text" id="datePicker">
+                    
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <label for="selecTramos">Tramo horario:</label>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <select name="tramo" id="selecTramos"></select>
+                    </div>
                 </div>
-            </div>
                 
-            <div class="row">
-                <div class="col-12 col-md-6">
-                    <label for="selecTramos">Tramo horario:</label>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <label for="selecJuego">Juego:</label>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <select name="juego" id="selecJuego"></select>
+                    </div>
                 </div>
-                <div class="col-12 col-md-6">
-                    <select name="tramo" id="selecTramos"></select>
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-12 col-md-6">
-                    <label for="selecJuego">Juego:</label>
-                </div>
-                <div class="col-12 col-md-6">
-                    <select name="juego" id="selecJuego"></select>
-                </div>
-            </div>
 
-            <div class="row">
-                <div class="col-12 col-md-6">
-                    <label for="selecMesa">Mesa:</label>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <label for="selecMesa">Mesa:</label>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <select name="" id="selecMesa"></select>
+                    </div>
                 </div>
-                <div class="col-12 col-md-6">
-                    <select name="" id="selecMesa"></select>
-                </div>
-            </div>
 
-            <input type="hidden" name="_target_path" value="/">
+                <input type="submit" class="btn btn-primary col-12" value="RESERVAR">
 
-            <button type="submit" class="btn btn-primary">RESERVAR</button>
-        </div>
+            </form>
+        </article>
         `
 
     var plantillaJuego =
         `
-        <div>
-            <div class="row">
-                <h5 class="nombre"></h5>
-            </div>
-            <div class="row">
-                <div class="col-12 col-md-6">
-                    <img class="img" alt=""></img>
-                </div>
-                <div style="margin:auto;" class="col-12 col-md-3 text-center">
-                    <p class="num_jugadores"></p>
-                </div>
-                <div style="margin:auto;" class="col-12 col-md-3 text-center">
-                    <p class="tamaniotablero"></p>
-                </div>
-            </div>
-                
-            <div class="col-12">
-                <h5>Descripción:</h5>
-                <p class="desc"><p>
-            </div>
+        <article>
 
-            <p style="font-size:20px">¡Haz tu reserva y juegalo con tus amigos!</p>
+            <form>
 
-            <input type="hidden" name="_target_path" value="/">
+                <div class="row">
+                    <h5 class="nombre text-center text-md-start"></h5>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <img class="img" alt=""></img>
+                    </div>
+                    <div style="margin:auto;" class="col-12 col-md-3 text-center">
+                        <p class="num_jugadores"></p>
+                    </div>
+                    <div style="margin:auto;" class="col-12 col-md-3 text-center">
+                        <p class="tamaniotablero"></p>
+                    </div>
+                </div>
+                    
+                <div class="col-12">
+                    <h5>Descripción:</h5>
+                    <p class="desc"><p>
+                </div>
 
-            <button type="submit" class="btn btn-primary">RESERVAR</button>
-        </div>
+                <p style="font-size:20px">¡Haz tu reserva y juegalo con tus amigos!</p>
+
+                <input type="hidden" name="_target_path" value="/">
+
+                <button type="submit" class="btn btn-primary">RESERVAR</button>
+
+            </form>
+        </article>
         ` //TODO El value debe llevarte a hacer una reserva con el juego seleccionado
 
 
@@ -98,7 +104,7 @@ $(function () { // Window.onload
 
 
     // El dialog
-    var dialog = $('<div />');
+    var dialog = $('<div />').attr('id','dialog');
 
     // USAMOS 1 BOTON PARA ABRIR LA VENTANA MODAL
     $("#creaReserva").click(function (ev) {
@@ -112,8 +118,9 @@ $(function () { // Window.onload
             PEDIRÁ UN OBJETO RESERVA
             DEL CUAL COGEREMOS LOS CAMPOS QUE TENGA SELECCIONADOS
         */
-        let info = $(this).data('reserva');
-        console.log(info);
+       //TODO
+        // let info = $(this).data('reserva');
+        // console.log(info);
 
         /* RELLENAMOS LOS SELECTS */
         let selecTramos = JplantillaReserva.find('#selecTramos');
@@ -173,10 +180,30 @@ $(function () { // Window.onload
             }
         })
             .append(JplantillaReserva)
+            .show(function () {
+                //Volvemos a buscar datepickers
+                ConvierteDatePicker();
+            })
             .submit(function (e) { 
                 e.preventDefault();
+                
+                let formulario = $(this);
+                // Cogemos todos los campos del formulario
+                let fecha = formulario.find('#datePicker').val();
+                let idTramo = parseInt(formulario.find('#selecTramos').val());
+                let idJuego = parseInt(formulario.find('#selecJuego').val());
+                let idMesa = parseInt(formulario.find('#selecMesa').val());
+
                 //TODO creamos la reserva  
-            });
+                let reserva = new Reserva(null,fecha,true,null,null,idJuego,idMesa,idTramo);
+                // Hacemos el POST
+                if (setReserva(reserva))
+                {
+                    $(this).parent().remove();
+                }else {
+                    console.log("ERROR al crear la reserva");
+                }
+            })
             ;
 
     });
@@ -225,6 +252,7 @@ $(function () { // Window.onload
         dialog.dialog({
             modal: true,
             width: "700px",
+            minHeight: "900px",
             title: "Juega a " + juego.nombre + "🎲♟️",
         }).append(JplantillaJuego);
 
@@ -233,61 +261,3 @@ $(function () { // Window.onload
 
 
 });
-
-/* FUNCIONES */
-function getTramos() {
-    return $.ajax({
-        type: "GET",
-        url: "api/tramo/",
-        async: false,
-    })
-        .done(function (respuesta) {
-            let tramos = respuesta.tramos;
-
-            return tramos;
-        })
-        ;
-
-}
-function getJuegos() {
-    return $.ajax({
-        type: "GET",
-        url: "api/juego/",
-        async: false,
-    })
-        .done(function (respuesta) {
-            let juegos = respuesta.juegos;
-
-            return juegos;
-        })
-        ;
-
-}
-function getJuego(id) {
-    return $.ajax({
-        type: "GET",
-        url: "api/juego/" + id,
-        async: false,
-    })
-        .done(function (respuesta) {
-            let juegos = respuesta.juego;
-
-            return juegos;
-        })
-        ;
-
-}
-
-function getMesas() {
-    return $.ajax({
-        type: "GET",
-        url: "api/mesa/",
-        async: false,
-    })
-        .done(function (respuesta) {
-            let mesas = respuesta.mesas;
-
-            return mesas;
-        });
-
-}

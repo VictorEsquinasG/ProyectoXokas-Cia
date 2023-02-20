@@ -22,10 +22,12 @@ class MantenimientoController extends AbstractController
         return $this->render('mantenimiento/index.html.twig');
     }
 
-    #[Route('/reservar', name: 'mantenimiento_reservas')]
+   
+    
+    #[Route('/reservas', name: 'mantenimiento_reservas')]
     public function mant_reservas(): Response
     {
-        return $this->render('reservas/index.html.twig');
+        return $this->render('mantenimiento/editaReserva.html.twig');
     }
 
     #[Route('/sala', name: 'mueve_mesas')]

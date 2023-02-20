@@ -61,3 +61,16 @@ class Tramo {
         this.horaFin = fin;
     }
 }
+
+class Reserva {
+    constructor(id, fecha, asiste, fechaCancelacion, user, juego, mesa, tramo) {
+        this.id = id;
+        this.fecha = fecha;
+        this.asiste = asiste;
+        this.fechaCancelacion = fechaCancelacion;
+        this.usuario = user;
+        this.juego = juego;
+        this.mesa = mesa;
+        this.tramo = tramo;
+    }
+}
