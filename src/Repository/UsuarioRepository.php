@@ -56,6 +56,19 @@ class UsuarioRepository extends ServiceEntityRepository implements PasswordUpgra
         $this->save($user, true);
     }
 
+   /**
+    * @return Usuario Devuelve el usuario con el EMAIL dado
+    */
+   public function findByMail($correo): array
+   {
+       return $this->createQueryBuilder('u')
+           ->andWhere('u.email = :val')
+           ->setParameter('val', $correo)        
+           ->getQuery()
+           ->getResult()
+       ;
+   }
+   
 //    /**
 //     * @return Usuario[] Returns an array of Usuario objects
 //     */

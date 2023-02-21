@@ -189,10 +189,6 @@ $(function () { // Window.onload
             modal: true,
             width: "700px",
             title: "Reserva del " + fecha + " durante las " + tramoString,
-            show: {
-                effect: "blind",
-                duration: 1000
-            },
             hide: {
                 effect: "explode",
                 duration: 1000

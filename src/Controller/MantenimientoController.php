@@ -12,6 +12,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Controlador para páginas de mantenimiento
+ * @author Víctor Esquinas
+ */
 #[Route('/mantenimiento')]
 class MantenimientoController extends AbstractController
 {

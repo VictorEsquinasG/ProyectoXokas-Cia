@@ -7,6 +7,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
+/**
+ * Controlador para la página de login del usuario
+ * @author Víctor Esquinas
+ */
 class LoginController extends AbstractController
 {
     #[Route('/login', name: 'app_login')]

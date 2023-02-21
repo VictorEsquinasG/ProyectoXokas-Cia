@@ -1,0 +1,119 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ProfileController!
+{% endblock %}
+
+{% block body %}
+	<style>
+		form {
+			background-color: rgba(33, 37, 41, 0.01);
+			padding: 20px 0;
+			border-radius: 14px;
+		}
+		.row > div {
+			display: grid;
+			grid-template-columns: [a] 30% [b] 70%;
+		}
+		.c-info__user {
+
+			max-width: 1000px;
+			width: 95%;
+			margin: 1em auto;
+
+		}
+	</style>
+
+	<article class="c-info__user text-center">
+		<h1>
+			<i class="fa fa-user" aria-hidden="true"></i>
+			{{ user }}
+			<i class="fa fa-user" aria-hidden="true"></i>
+		</h1>
+
+		<div class="mt-3">
+			<section class="c-container__formu">
+
+				<div class="row mt-2">
+					<h1 class="text-center col-12">Nueva cuenta</h1>
+				</div>
+
+				{{ form_start(registrationForm) }}
+
+				<div class="row mt-2">
+					{{ form_row(registrationForm.email) }}
+				</div>
+
+				<div class="row mt-2">
+					{{ form_row(registrationForm.password, {
+				label: 'Contraseña'
+				}) }}
+				</div>
+
+				<div class="row mt-2">
+					{{ form_row(registrationForm.nombre,{
+				label: 'Nombre',
+				required: false
+				}) }}
+				</div>
+
+				<div class="row mt-2">
+					{{ form_row(registrationForm.apellido1,{
+				label: '1er Apellido',
+				required: false
+				}) }}
+				</div>
+
+				<div class="row mt-2">
+					{{ form_row(registrationForm.apellido2,{
+				label: '2º Apellido',
+				required: false
+				}) }}
+				</div>
+
+				<div class="row mt-2">
+					{{ form_row(registrationForm.telefono,{
+				label: 'Teléfono',
+				required: false
+				}) }}
+				</div>
+
+				<div class="row mt-2">
+					{{ form_row(registrationForm.imagen,{
+				label: 'Imagen de perfil',
+				required: false
+				}) }}
+				</div>
+
+				<div class="row mt-2">
+					{{ form_row(registrationForm.telegram_id,{
+				label: 'Telegram',
+				required: false
+				}) }}
+				</div>
+
+				{# <input type="hidden" name="_target_path" value="/mesas"> #}
+
+				{% for flash_error in app.flashes('verify_email_error') %}
+					<br/>
+					<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+				{% endfor %}
+
+				<div class="row mt-3">
+					<button type="submit" class="btn btn-primary col-12">Registrarme</button>
+				</div>
+
+					{{ form_end(registrationForm) }}
+
+
+				<span class="text-center">
+					Ya tengo cuenta
+					<a href="{{ url('app_login') }}">entrar</a>
+				</span>
+
+
+			</section>
+
+		</div>
+
+	</article>
+{% endblock %}

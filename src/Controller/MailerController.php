@@ -9,6 +9,12 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Controlador para el TESTEO del servicio mailer
+ * @ignore Esta página no se utiliza
+ * @author Víctor Esquinas
+ * @uses test
+ */
 class MailerController extends AbstractController
 {
     #[Route('/mailer', name: 'app_mailer')]

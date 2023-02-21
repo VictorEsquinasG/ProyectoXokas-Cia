@@ -11,6 +11,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+
+/**
+ * @api de la entidad Juego
+ * @author Víctor Esquinas
+ */
 #[Route('/api', name: 'api_juego')]
 class ApiJuegoController extends AbstractController
 {

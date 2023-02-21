@@ -5,9 +5,9 @@
  */
 
 
-    let dialog = $('<div>');
+let dialog = $('<div>');
 
-    let plantilla =
+let plantilla =
     `<form action="" method="POST">
         <div class="row mt-2">
             <label class="col-12 col-md-6" for="ancho">Ancho:</label>
@@ -24,38 +24,50 @@
         <input type="submit" id="btnCrear" value="CREAR">
 	</form>`
 
-    var Jplantilla = $(plantilla);
+var Jplantilla = $(plantilla);
 
-    function ModalMesa() {
-        dialog.dialog({
-            modal: true,
-            width: '700px',
-            title: 'Creando una nueva mesa'
+function ModalMesa() {
+    dialog.dialog({
+        modal: true,
+        width: '700px',
+        title: 'Creando una nueva mesa'
 
-        })
+    })
         .append(Jplantilla)
-        .submit(function (e) { 
+        /* CUANDO SE MANDA EL FORMULARIO -> SE CREA LA MESA */
+        .submit(function (e) {
             e.preventDefault();
             let mesa = {};
             // El valor de los campos
             let ancho = $(this).find('#ancho').val();
             let largo = $(this).find('#largo').val();
             let sillas = $(this).find('#sillas').val();
-            mesa.mesa = new Mesa(null, ancho,largo,sillas,-1,-1,null,null); 
+            let mesita = new Mesa(null, ancho, largo, sillas, -1, -1, null, null);
+            // Guardamos la mesa creada en formato JSON
+            mesa.mesa = {
+                "mesa": {
+                    "id": mesita.id,
+                    "ancho": mesita.ancho,
+                    "largo": mesita.largo,
+                    "sillas": mesita.sillas,
+                    "posicion_x": mesita.pos_x,
+                    "posicion_y": mesita.pos_y,
+                }
+            };
             $.ajax({
                 type: "POST",
                 url: "api/mesa/",
-                data: mesa,
+                data: JSON.stringify(mesa),
                 dataType: "json",
                 success: function (response) {
                     console.log(response);
                 }
             });
         });
-        ;
-    }
+    ;
+}
 
-   
+
 
 $(function () {
 

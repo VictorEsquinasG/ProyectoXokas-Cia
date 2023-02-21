@@ -15,6 +15,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+
+/**
+ * @api de la entidad Distribucion
+ * @author Víctor Esquinas
+ */
 #[Route('/api', name: 'api_distribucion')]
 class ApiDistribucionController extends AbstractController
 {

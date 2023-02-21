@@ -11,6 +11,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+
+/**
+ * @api de la entidad Mesa
+ * @author Víctor Esquinas
+ */
 #[Route("/api", name: "api_mesa")]
 class ApiMesaController extends AbstractController
 {

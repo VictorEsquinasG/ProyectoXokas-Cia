@@ -11,6 +11,13 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+
+/**
+ * Controlador que maneja las redirecciones 
+ * generales y no específicas de
+ * la aplicación
+ * @author Víctor Esquinas
+ */
 class GeneralController extends AbstractController
 {
     #[Route('/', name: 'home')]

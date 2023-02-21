@@ -1,7 +1,8 @@
 /**
  *   FUNCIONES PARA OBTENER ENTIDADES MEDIANTE API
+ * @description Contiene funciones que realizan peticiones GET a distintas APIs
  * @author Víctor Esquinas
- * 
+ * @version 1.0
  * */
 
 

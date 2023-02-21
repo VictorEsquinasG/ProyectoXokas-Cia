@@ -9437,6 +9437,10 @@ Header Style
   }
 }
 
+.background-header .main-nav .logo {
+  margin-top: 10px;
+}
+
 .header-area .main-nav .nav {
   flex-basis: 80%;
   height: 110px;

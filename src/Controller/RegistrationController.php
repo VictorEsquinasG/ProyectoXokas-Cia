@@ -4,19 +4,19 @@ namespace App\Controller;
 
 use App\Entity\Usuario;
 use App\Form\RegistrationFormType;
-use App\Security\EmailVerifier;
 use App\Service\Mailer;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\Translation\TranslatorInterface;
-use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
+
+/**
+ * Controlador para el registro de un nuevo usuario
+ * @author Víctor Esquinas
+ */
 class RegistrationController extends AbstractController
 {
 
@@ -42,10 +42,15 @@ class RegistrationController extends AbstractController
 
             $entityManager->persist($user);
             $entityManager->flush();
-            // TODO poner plantilla HTML
+            
+            // TODO revisar que funcione la plantilla
+            // Ponemos plantilla HTML
+            $html = $this->render('registration/confirmation_email.html.twig');
+            // Mandamos el correo
             $correo->setAsunto('Bienvenido a XOKAS & CO.')
             ->setDestinatario($user->getEmail())
             ->setMensaje('Estamos encantados de contar contigo. Empieza a reservar mesa para jugar ya y gana puntos para poder participar en nuestros eventos.')
+            ->setHTML($html)
             ->send();
             // do anything else you need here, like send an email
 

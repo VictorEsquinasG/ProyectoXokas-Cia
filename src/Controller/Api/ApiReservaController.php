@@ -17,6 +17,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+
+/**
+ * @api de la entidad Reserva
+ * @author Víctor Esquinas
+ */
 #[Route('/api', name: 'api_reserva')]
 class ApiReservaController extends AbstractController
 {
