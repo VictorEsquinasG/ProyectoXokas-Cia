@@ -1,5 +1,5 @@
 $(function () {
 
-    $('#dataTable').dataTable();
+    $('#dataTable_reservas').dataTable();
     
 });

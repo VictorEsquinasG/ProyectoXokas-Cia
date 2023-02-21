@@ -115,10 +115,11 @@ $(function () {
         } else {
             objmesa = mesa[0];
             // No tiene TOP y LEFT
-            mesa.posicionYAnterior = parseInt(mesa.pos_y);
-            mesa.posicionXAnterior = parseInt(mesa.pos_x);
             mesa.left = parseInt(mesa.pos_x);
             mesa.top = parseInt(mesa.pos_y);
+            
+            mesa.posicionYAnterior = mesa.top;
+            mesa.posicionXAnterior = mesa.left;
         }
 
         // Cambiamos su estilo para poder visualizarla
@@ -599,6 +600,7 @@ $(function () {
             // Si ya las tenemos solo debemos recolocarlas
             let mesas = $('.mesa');
             $.each(mesas, function (i, mesa) {
+                // debugger
                 // Le pasamos la mesa
                 if ((typeof mesa.posicionXAnterior !== 'undefined') && (mesa.posicionXAnterior !== null)) {
 
@@ -609,6 +611,7 @@ $(function () {
                 // HAY QUE REASIGNAR SUS COORDENADAS Y MANDARLA A PINTARSE
                 recoloca(mesa);
             });
+            
         } else {
             // Si no tenemos mesas, las pedimos
             $.ajax({

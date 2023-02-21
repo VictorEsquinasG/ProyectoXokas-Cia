@@ -39,6 +39,21 @@ class MesaRepository extends ServiceEntityRepository
         }
     }
 
+   /**
+    * @return Mesa[] Returns an array of Mesa objects
+    */
+   public function getReservadas($numJugadores): array
+   {
+       return $this->createQueryBuilder('m')
+           ->andWhere('m.sillas = :val')
+           ->andWhere('m. = :val')
+           ->setParameter('val', $numJugadores)
+           ->orderBy('m.id', 'ASC')
+           ->setMaxResults(10)
+           ->getQuery()
+           ->getResult()
+       ;
+   }
 //    /**
 //     * @return Mesa[] Returns an array of Mesa objects
 //     */

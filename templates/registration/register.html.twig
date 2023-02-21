@@ -47,43 +47,50 @@
 
 			<div class="row">
 				{{ form_row(registrationForm.nombre,{
-				label: 'Nombre'
+				label: 'Nombre',
+				required: false
 				}) }}
 			</div>
 
 			<div class="row">
 				{{ form_row(registrationForm.apellido1,{
-				label: '1er Apellido'
+				label: '1er Apellido',
+				required: false
 				}) }}
 			</div>
 
 			<div class="row">
 				{{ form_row(registrationForm.apellido2,{
-				label: '2º Apellido'
+				label: '2º Apellido',
+				required: false
 				}) }}
 			</div>
 
 			<div class="row">
 				{{ form_row(registrationForm.telefono,{
-				label: 'Teléfono'
+				label: 'Teléfono',
+				required: false
 				}) }}
 			</div>
 
 			<div class="row">
 				{{ form_row(registrationForm.imagen,{
-				label: 'Imagen de perfil'
+				label: 'Imagen de perfil',
+				required: false
 				}) }}
 			</div>
 
 			<div class="row">
 				{{ form_row(registrationForm.telegram_id,{
-				label: 'Telegram'
+				label: 'Telegram',
+				required: false
 				}) }}
 			</div>
 
 			{# <input type="hidden" name="_target_path" value="/mesas"> #}
 
 			{% for flash_error in app.flashes('verify_email_error') %}
+			    <br/>
 				<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
 			{% endfor %}
 			

@@ -9,12 +9,18 @@
 
     let plantilla =
     `<form action="" method="POST">
-        <label for="ancho">Ancho:</label>
-        <input type="number" name="ancho" id="ancho">
-        <label for="largo">Largo:</label>
-        <input type="number" name="largo" id="largo">
-        <label for="sillas">Sillas:</label>
-        <input type="number" name="sillas" id="sillas">
+        <div class="row mt-2">
+            <label class="col-12 col-md-6" for="ancho">Ancho:</label>
+            <input class="col-12 col-md-6" type="number" name="ancho" id="ancho">
+        </div>
+        <div class="row mt-2">
+            <label class="col-12 col-md-6" for="largo">Largo:</label>
+            <input class="col-12 col-md-6" type="number" name="largo" id="largo">
+        </div>
+        <div class="row mt-2">
+            <label class="col-12 col-md-6" for="sillas">Sillas:</label>
+            <input class="col-12 col-md-6" type="number" name="sillas" id="sillas">
+        </div>
         <input type="submit" id="btnCrear" value="CREAR">
 	</form>`
 

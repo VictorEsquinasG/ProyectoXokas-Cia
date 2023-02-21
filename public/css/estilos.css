@@ -9420,21 +9420,14 @@ Header Style
 }
 
 .header-area .main-nav .logo {
-  margin-top: 10px;
   flex-basis: 20%;
   -webkit-transition: all 0.3s ease 0s;
   -moz-transition: all 0.3s ease 0s;
   -o-transition: all 0.3s ease 0s;
   transition: all 0.3s ease 0s;
 }
-@media (max-width: 990px) {
-  .header-area .main-nav .logo {
-    margin-top: 31px;
-  }
-}
 @media (max-width: 766px) {
   .header-area .main-nav .logo {
-    margin-top: 20px;
     width: 234px;
   }
 }
@@ -9442,10 +9435,6 @@ Header Style
   .header-area .main-nav .logo {
     width: auto;
   }
-}
-
-.background-header .main-nav .logo {
-  margin-top: 10px;
 }
 
 .header-area .main-nav .nav {

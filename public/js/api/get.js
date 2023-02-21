@@ -97,9 +97,23 @@ function getMesa(id) {
         async: false,
     })
         .done(function (respuesta) {
-            let mesas = respuesta.mesa;
+            let mesa = respuesta.mesa;
 
-            return mesas;
+            return mesa;
+        });
+
+}
+
+function getReserva(id) {
+    return $.ajax({
+        type: "GET",
+        url: "api/reserva/" + id,
+        async: false,
+    })
+        .done(function (respuesta) {
+            let reserva = respuesta.reserva;
+
+            return reserva;
         });
 
 }

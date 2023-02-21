@@ -6,11 +6,10 @@
  */
 $(function () { // Window.onload
 
-
-
-
-
-
+    // Cogemos los datos que necesitamos
+    var allTramos = getTramos();
+    var allJuegos = getJuegos();
+    var allMesas = getMesas();
 
 
     /* PLANTILLAS */
@@ -18,7 +17,7 @@ $(function () { // Window.onload
         `<h1>Haz tu reserva en minutos</h1>
         <article>
             <form>
-                <div class="row">
+                <div class="row mt-2">
                     <div class="col-12 col-md-6">
                         <label for="datePicker">Fecha de reserva:</label>
                     </div>
@@ -27,7 +26,7 @@ $(function () { // Window.onload
                     </div>
                 </div>
                     
-                <div class="row">
+                <div class="row mt-2">
                     <div class="col-12 col-md-6">
                         <label for="selecTramos">Tramo horario:</label>
                     </div>
@@ -36,7 +35,7 @@ $(function () { // Window.onload
                     </div>
                 </div>
                 
-                <div class="row">
+                <div class="row mt-2">
                     <div class="col-12 col-md-6">
                         <label for="selecJuego">Juego:</label>
                     </div>
@@ -45,7 +44,7 @@ $(function () { // Window.onload
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="row mt-2">
                     <div class="col-12 col-md-6">
                         <label for="selecMesa">Mesa:</label>
                     </div>
@@ -54,7 +53,7 @@ $(function () { // Window.onload
                     </div>
                 </div>
 
-                <input type="submit" class="btn btn-primary col-12" value="RESERVAR">
+                <input type="submit" class="btn btn-primary col-12 mt-3" id="btnSubmit" value="RESERVAR">
 
             </form>
         </article>
@@ -104,66 +103,15 @@ $(function () { // Window.onload
 
 
     // El dialog
-    var dialog = $('<div />').attr('id','dialog');
+    var dialog = $('<div />').attr('id', 'dialog');
 
     // USAMOS 1 BOTON PARA ABRIR LA VENTANA MODAL
     $("#creaReserva").click(function (ev) {
 
         ev.preventDefault();
-        var allTramos = getTramos();
-        var allJuegos = getJuegos();
-        var allMesas = getMesas();
-        /* 
-            PARA QUE SE PUEDA REUTILIZAR EL MODAL
-            PEDIRÁ UN OBJETO RESERVA
-            DEL CUAL COGEREMOS LOS CAMPOS QUE TENGA SELECCIONADOS
-        */
-       //TODO
-        // let info = $(this).data('reserva');
-        // console.log(info);
 
         /* RELLENAMOS LOS SELECTS */
-        let selecTramos = JplantillaReserva.find('#selecTramos');
-        selecTramos
-                .append('<option value="-1" disabled selected></option>');
-        $.each(allTramos.responseJSON.tramos, function (i, v) {
-            
-            selecTramos
-                .append(
-                    $('<option/>')
-                        .data(v)
-                        .val(v.id)
-                        .html(v.string)
-                );
-        });
-        // debugger
-        let selecJuegos = JplantillaReserva.find('#selecJuego');
-        selecJuegos
-                .append('<option value="-1" disabled selected></option>');
-        $.each(allJuegos.responseJSON.juegos, function (i, v) {
-
-            selecJuegos
-                .append(
-                    $('<option/>')
-                        .data(v)
-                        .val(v.id)
-                        .html(v.string)
-                );
-        });
-        let selecMesas = JplantillaReserva.find('#selecMesa');
-        selecMesas
-                .append('<option value="-1" disabled selected></option>');
-        $.each(allMesas.responseJSON.mesas, function (i, v) {
-
-            selecMesas
-                .append(
-                    $('<option/>')
-                        .data(v)
-                        .val(v.id)
-                        .html(v.string)
-                );
-        });
-
+        rellenaSelecReserva();
 
         /* CREAMOS UN MODAL  */
         dialog.dialog({
@@ -184,9 +132,9 @@ $(function () { // Window.onload
                 //Volvemos a buscar datepickers
                 ConvierteDatePicker();
             })
-            .submit(function (e) { 
+            .submit(function (e) {
                 e.preventDefault();
-                
+
                 let formulario = $(this);
                 // Cogemos todos los campos del formulario
                 let fecha = formulario.find('#datePicker').val();
@@ -194,13 +142,12 @@ $(function () { // Window.onload
                 let idJuego = parseInt(formulario.find('#selecJuego').val());
                 let idMesa = parseInt(formulario.find('#selecMesa').val());
 
-                //TODO creamos la reserva  
-                let reserva = new Reserva(null,fecha,true,null,null,idJuego,idMesa,idTramo);
+                // creamos la reserva  
+                let reserva = new Reserva(null, fecha, true, null, null, idJuego, idMesa, idTramo);
                 // Hacemos el POST
-                if (setReserva(reserva))
-                {
+                if (setReserva(reserva)) {
                     $(this).parent().remove();
-                }else {
+                } else {
                     console.log("ERROR al crear la reserva");
                 }
             })
@@ -210,14 +157,38 @@ $(function () { // Window.onload
 
     $('div[id^=ver_reserva_]').click(function (ev) {
         ev.preventDefault();
+        let id = $(this).attr('id').split('_')[2];
 
-        let info = $(this).data('reserva');
-        console.log(info);
+        /* 
+          PARA QUE SE PUEDA REUTILIZAR EL MODAL
+          PEDIRÁ UN OBJETO RESERVA
+          DEL CUAL COGEREMOS LOS CAMPOS QUE TENGA SELECCIONADOS
+      */
+        let reservaActual = getReserva(id).responseJSON.Reserva;
+
+        console.log(reservaActual);
+        let date = new Date(reservaActual.fecha.date);
+        let fecha = (date.toLocaleDateString('es'));
+        let tramo = reservaActual.tramo.id;
+        let tramoString = reservaActual.tramo.string;
+        let juego = reservaActual.juego.id;
+        let mesa = reservaActual.mesa.id;
+
+        /* RELLENAMOS LOS SELECTS */
+        rellenaSelecReserva();
+
+        // Damos los valores a la plantilla
+        JplantillaReserva.find('#datePicker').val(fecha);
+        JplantillaReserva.find('#selecTramos').val(tramo);
+        JplantillaReserva.find('#selecJuego').val(juego);
+        JplantillaReserva.find('#selecMesa').val(mesa);
+        JplantillaReserva.find('#btnSubmit').val('Guardar cambios');
+
 
         dialog.dialog({
             modal: true,
             width: "700px",
-            title: "Juega a " + reserva.nombre + "🎲♟️",
+            title: "Reserva del " + fecha + " durante las " + tramoString,
             show: {
                 effect: "blind",
                 duration: 1000
@@ -226,7 +197,21 @@ $(function () { // Window.onload
                 effect: "explode",
                 duration: 1000
             }
-        }).append(JplantillaReserva);
+        })
+            .append(JplantillaReserva)
+            .submit(function () {
+                // PUT
+                let formulario = $(this);
+                // Cogemos todos los campos del formulario
+                let fecha = formulario.find('#datePicker').val();
+                let idTramo = parseInt(formulario.find('#selecTramos').val());
+                let idJuego = parseInt(formulario.find('#selecJuego').val());
+                let idMesa = parseInt(formulario.find('#selecMesa').val());
+
+                let reserva = new Reserva(reservaActual.id,fecha,true,null,null,idJuego,idMesa,idTramo);
+                putReserva(reserva);
+            })
+            ;
     });
 
 
@@ -259,5 +244,52 @@ $(function () { // Window.onload
     });
 
 
+    function rellenaSelecReserva() {
+        /* CAPTURAMOS LOS SELECT */
+        let selecTramos = JplantillaReserva.find('#selecTramos');
+        let selecJuegos = JplantillaReserva.find('#selecJuego');
+        let selecMesas = JplantillaReserva.find('#selecMesa');
+        /* VACIAMOS LOS SELECT */
+        selecTramos.html('');
+        selecJuegos.html('');
+        selecMesas.html('');
+        /* RELLENAMOS LOS SELECTS */
+        selecTramos
+            .append('<option value="-1" disabled selected></option>');
+        $.each(allTramos.responseJSON.tramos, function (i, v) {
 
+            selecTramos
+                .append(
+                    $('<option/>')
+                        .data(v)
+                        .val(v.id)
+                        .html(v.string)
+                );
+        });
+        
+        selecJuegos
+            .append('<option value="-1" disabled selected></option>');
+        $.each(allJuegos.responseJSON.juegos, function (i, v) {
+
+            selecJuegos
+                .append(
+                    $('<option/>')
+                        .data(v)
+                        .val(v.id)
+                        .html(v.string)
+                );
+        });
+        selecMesas
+            .append('<option value="-1" disabled selected></option>');
+        $.each(allMesas.responseJSON.mesas, function (i, v) {
+
+            selecMesas
+                .append(
+                    $('<option/>')
+                        .data(v)
+                        .val(v.id)
+                        .html(v.string)
+                );
+        });
+    }
 });

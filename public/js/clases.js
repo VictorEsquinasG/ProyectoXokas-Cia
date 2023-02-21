@@ -72,5 +72,6 @@ class Reserva {
         this.juego = juego;
         this.mesa = mesa;
         this.tramo = tramo;
+        
     }
 }
