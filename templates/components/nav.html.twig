@@ -7,19 +7,13 @@
 					class="main-nav">
 					<!-- ***** Logo Start ***** -->
 					<a href="{{ url('home') }}" class="logo">
-						<img src="{{ asset('images/image.png') }}" alt="" style="width:45%;margin:25px;margin-bottom:0">
+						<img src="{{ asset('images/image.png') }}" alt="" style="margin-bottom:0">
 					</a>
 					<!-- ***** Logo End ***** -->
 
 					<!-- ***** Menu Start ***** -->
 					<ul class="nav">
 
-						{% if is_granted('ROLE_USER') %}
-							<!-- Si está logueado, ve sus reservas -->
-							<li class="scroll-to-section">
-								<a href="{{ url('reservar') }}">Reservas</a>
-							</li>
-						{% endif %}
 						<li class="scroll-to-section">
 							<a href="{{ url('juegos') }}">Juegos</a>
 						</li>
@@ -34,9 +28,12 @@
 									<i class="fa fa-chevron-left" id="c-submenu__izrda" style="display:none"></i>
 								</a>
 								<ul class="sub-menu">
-									<li>
-										<a href="{{ url('admin') }}">Administrador</a>
-									</li>
+								
+									{% if is_granted('ROLE_SUPER_ADMIN') %}
+										<li>
+											<a href="{{ url('admin') }}">Administrador</a>
+										</li>
+									{% endif %}
 
 									<li>
 										<a href="{{ url('mueve_mesas') }}">Organizar sala</a>
@@ -62,7 +59,7 @@
 						<li>
 							{% if is_granted('ROLE_USER') %}
 								<li class="has-sub">
-									
+
 									<a class="mt-1" id="FotoPerfil" style="height:50px;">
 										<img src="{{ asset('images/uploads/' ~ app.user.imagen) }}" style="width:50px;border-radius:50%;" alt="Profile.pic">
 										<i class="fa fa-chevron-down"></i>
@@ -71,6 +68,10 @@
 									<ul class="sub-menu mt-0">
 										<li>
 											<a class="mt-0" href="{{ url('app_profile') }}">Mi perfil</a>
+										</li>
+										<li class="scroll-to-section">
+											<!-- Sus reservas -->
+											<a href="{{ url('reservar') }}">Reservas</a>
 										</li>
 										<li>
 											<a class="mt-0" href="{{ url('app_logout') }}">Cerrar Sesión</a>
@@ -95,8 +96,4 @@
 			<!-- ***** Menu End ***** -->
 		</nav>
 	</div>
-</div>
-</div>
-</header>
-<!-- ***** Header Area End ***** -->
-<script src="{{ asset('js/flechita-submenu.js') }}"></script>
+</div></div></header><!-- ***** Header Area End ***** --><script src="{{ asset('js/flechita-submenu.js') }}"></script>

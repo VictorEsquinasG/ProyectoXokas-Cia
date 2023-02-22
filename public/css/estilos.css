@@ -9420,14 +9420,25 @@ Header Style
 }
 
 .header-area .main-nav .logo {
+  width: 15%;
+  margin-top: 10px;
   flex-basis: 20%;
   -webkit-transition: all 0.3s ease 0s;
   -moz-transition: all 0.3s ease 0s;
   -o-transition: all 0.3s ease 0s;
   transition: all 0.3s ease 0s;
 }
+.header-area .main-nav .logo img {
+  width: 50%;
+}
+@media (max-width: 990px) {
+  .header-area .main-nav .logo {
+    margin-top: 31px;
+  }
+}
 @media (max-width: 766px) {
   .header-area .main-nav .logo {
+    margin-top: 20px;
     width: 234px;
   }
 }
@@ -14335,6 +14346,10 @@ body {
 footer {
   position: sticky;
   top: 100%;
+}
+
+table {
+  overflow: scroll;
 }
 
 .btn-primary {

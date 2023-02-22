@@ -434,19 +434,24 @@ Header Style
 }
 
 .header-area .main-nav .logo {
-  
+  width: 15%;
+  margin-top: 10px;
   flex-basis: 20%;
   -webkit-transition: all 0.3s ease 0s;
   -moz-transition: all 0.3s ease 0s;
   -o-transition: all 0.3s ease 0s;
   transition: all 0.3s ease 0s;
 
+  & img {
+    width: 50%;
+  }
+  
   @media (max-width: 990px) {
-    // margin-top: 31px;
+    margin-top: 31px;
   }
 
   @media (max-width:766px) {
-    // margin-top: 20px;
+    margin-top: 20px;
     width: 234px;
   }
 

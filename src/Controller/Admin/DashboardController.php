@@ -69,6 +69,7 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToCrud('Tramos horarios','fa fa-clock',Tramos::class),
             MenuItem::section('Extras', 'fa fa-ellipsis-h'),
             MenuItem::linkToUrl('Buscar con google', 'fab fa-google', 'https://google.com'),
+            MenuItem::linkToRoute('Más mantenimiento', 'fa fa-cog', 'app_mantenimiento'),
             MenuItem::linkToRoute('Volver al inicio', 'fa fa-reply', 'home'),
         ];
         // yield MenuItem::linkToCrud('Mesas', 'fas fa-list', Mesa::class);
