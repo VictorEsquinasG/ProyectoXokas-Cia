@@ -22,11 +22,11 @@ class ApiJuegoController extends AbstractController
     #[Route("/juego/{id}", name: "getJuego", methods: "GET")]
     public function getJuego(JuegoRepository $jr, int $id = null): Response
     {
-        
+
         if ($id === null) {
             # Si es null, los quiere todos
             $juegos = $jr->findAll();
-            return $this->json(["juegos" => $juegos,"Success"=>true], 200);
+            return $this->json(["juegos" => $juegos, "Success" => true], 200);
         } else {
             // Cogemos el juego
             $juego = $jr->find($id);
@@ -34,7 +34,7 @@ class ApiJuegoController extends AbstractController
                 "id" => $juego->getId(),
                 "nombre" => $juego->getNombre(),
                 "descripcion" => $juego->getDescripcion(),
-                "imagen" => ($juego->getImagen() !== null)?$juego->getImagen():null,
+                "imagen" => ($juego->getImagen() !== null) ? $juego->getImagen() : null,
                 "jugadores" => [
                     "min" => $juego->getMinJugadores(),
                     "max" => $juego->getMaxJugadores(),
@@ -45,8 +45,17 @@ class ApiJuegoController extends AbstractController
                 ],
                 "reservas" => $juego->getReservas(),
                 "eventos" => $juego->getEventos()
-            ], "Success" => true],200);
+            ], "Success" => true], 200);
         }
+    }
+
+    #[Route("/juego/byJugadores/{num}", name: "getJuegoByNumJugadores", methods: "GET")]
+    public function getJuegoByNumJugadores(JuegoRepository $jr, int $num): Response
+    {
+
+        # 
+        $juegos = $jr->findByNumJugadores($num);
+        return $this->json(["juegos" => $juegos, "Success" => true], 200);
     }
 
     #[Route("/juego", name: "postJuego", methods: "POST")]
@@ -65,7 +74,7 @@ class ApiJuegoController extends AbstractController
         $tablero = $datos->tablero;
         $juego->setAnchoTablero($tablero->ancho);
         $juego->setLargoTablero($tablero->largo);
-        
+
         /* $reservas = $datos->reservas;
         foreach ($reservas as $reserva) {
             # Añadimos cada una de las reservas
@@ -83,11 +92,12 @@ class ApiJuegoController extends AbstractController
             $manager->persist($juego);
             $manager->flush();
         } catch (PDOException $e) {
-            $this->json(['message'=>$e->getMessage(),
-            "Success"=>false
-        ],400);
+            $this->json([
+                'message' => $e->getMessage(),
+                "Success" => false
+            ], 400);
         }
-        $id = $juego->getId(); 
+        $id = $juego->getId();
         # Creado con éxito => Devolvemos la ID
         return $this->json(
             [
@@ -117,7 +127,7 @@ class ApiJuegoController extends AbstractController
         $tablero = $datos->tablero;
         $juego->setAnchoTablero($tablero->ancho);
         $juego->setLargoTablero($tablero->largo);
-        
+
         /* $reservas = $datos->reservas;
         foreach ($reservas as $reserva) {
             # Añadimos cada una de las reservas
@@ -162,9 +172,9 @@ class ApiJuegoController extends AbstractController
         } catch (PDOException $e) {
             return $this->json([
                 "id" => $id,
-                'message'=>'Error al borrar juego '.$id."\n".$e->getMessage(),
-                "Success"=>false
-            ],400);
+                'message' => 'Error al borrar juego ' . $id . "\n" . $e->getMessage(),
+                "Success" => false
+            ], 400);
         }
 
         # Creado con éxito => Devolvemos la ID

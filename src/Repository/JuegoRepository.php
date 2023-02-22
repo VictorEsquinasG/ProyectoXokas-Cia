@@ -39,6 +39,26 @@ class JuegoRepository extends ServiceEntityRepository
         }
     }
 
+   /**
+    * @return Juego[] Returns an array of Juego objects
+    */
+   public function findByNumJugadores($jugadores): array
+   {
+        //  Array a devolver
+        $boardgames = [];
+        // Todos los juegos
+        $juegos = $this->findAll();
+        // Comprobamos que el número de jugadores dado está entre el mínimo y el máximo
+        foreach ($juegos as $game) {
+            # Comprobamos el numero de jugadores en cada juego
+            if (($game->getMinJugadores()<=$jugadores) && ($game->getMaxJugadores()>=$jugadores)) {
+                # Si es así, lo añadimos al array
+                $boardgames[]= $game;
+            }
+        }
+       return $boardgames;
+   }
+
 //    /**
 //     * @return Juego[] Returns an array of Juego objects
 //     */

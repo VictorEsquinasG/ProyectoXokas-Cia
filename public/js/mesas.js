@@ -381,6 +381,10 @@ $(function () {
         });
     }
 
+    /**
+     * 
+     * @param {*} borrado 
+     */
     function vaciaSala(borrado = false) {
         // Eliminamos todas las mesas de la página
         let mesasSala = $('#sala > .mesa');

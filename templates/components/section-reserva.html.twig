@@ -1,0 +1,92 @@
+<style>
+
+	#fotoReserva {
+		max-height: 300px;
+		/*width: 500px;*/
+		margin: auto;
+	}
+	#fotoReserva:hover {
+		transmform: 0.5s erase;
+		opacity: .9;
+	}
+	.l-grid {
+		display: grid;
+		grid-template-columns: 15% 85%;
+	}
+	.l-grid-line {
+		display: grid;
+		grid-template-rows: 50% 50%;
+	}
+	.l-flex-center {
+		display: flex;
+		justify-content: center;
+	}
+	#container-salas {
+		display: grid;
+		grid-template-rows: [fila] 100%;
+		grid-template-columns: [a] 20% [b] 80%;
+		min-width: 1300px;
+		margin: 5px;
+		height: fit-content;
+	}
+	#sala {
+		grid-row: fila;
+		grid-column: b;
+		border: 1.5px solid #332626;
+		width: 98%;
+		min-height: 550px;
+	}
+	#almacen {
+		grid-row: fila;
+		grid-column: a;
+		border: 1.5px solid #84481d;
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+</style>
+
+
+<section class="c-flex">
+
+	<div class="container">
+		<div class="row text-center">
+			<h2>
+				Haz
+				{% if is_granted('ROLE_USER') %}
+					{# Está logeado #}
+					{% if ((app.user.reservas|length) <= 0) %}
+						{# No tiene reservas => Es su primera reserva #}
+						tu primera
+					{% else %}
+						una
+					{% endif %}
+				{% else %}
+					una
+				{% endif %}
+				reserva ahora
+			</h2>
+		</div>
+
+		<div class="row mt-3">
+
+			<img src="{{asset('images/board-game-g5cf06fe42_1280.jpg')}}" class="col-12 col-md-6" id="fotoReserva" alt="Haz reservas aquí!!"></img>
+
+		<p class="col-12 col-md-6">
+			Realiza una reserva para mañana o para dentro de 3 meses, 
+							gana puntos por cada reserva efectuada y asiste a emocionantes
+							eventos de presentación de nuevos juegos
+							¡que no te quiten el sitio!
+		</p>
+
+	</div>
+
+	<div class="row mt-2">
+		<div class="col-5"></div>
+		<div class="col-2 l-flex-center">
+			<button class="text-center btn btn-primary" id="creaReserva">HACER RESERVA</button>
+		</div>
+		<div class="col-5"></div>
+	</div>
+</div></section><!-- API RESERVA --><script src="{{ asset('js/api/reservar.js') }}"></script><script src="{{ asset('js/api/get.js') }}"></script><!-- FECHA --><script src="{{ asset('js/utils/DatePicker.js') }}"></script><!-- EL MODAL --><script src="{{ asset('js/utils/modalReserva.js') }}"></script>

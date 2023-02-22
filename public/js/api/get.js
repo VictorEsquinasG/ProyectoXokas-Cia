@@ -47,6 +47,19 @@ function getDiasFestivos() {
     });
 }
 
+function getJuegosByNumJugadores(num) {
+    return $.ajax({
+        type: "GET",
+        url: "api/juego/byJugadores/"+num,
+        async: false,
+    })
+        .done(function (respuesta) {
+            let juegos = respuesta.juegos;
+
+            return juegos;
+        })
+        ;
+}
 
 function getJuegos() {
     return $.ajax({
@@ -62,6 +75,7 @@ function getJuegos() {
         ;
 
 }
+
 function getJuego(id) {
     return $.ajax({
         type: "GET",
