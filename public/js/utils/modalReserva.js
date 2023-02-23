@@ -10,11 +10,16 @@
 var allTramos = getTramos();
 var allJuegos = getJuegos();
 var allMesas = getMesas();
+var all_distribuciones = [];
 
 // El dialog
-var dialog = $('<div />').attr('id', 'dialog');
+var dialog =
+    $('<div />')
+        .attr('id', 'dialog');
 
 $(function () {
+
+    getDisposiciones();
 
     // LA PLANTILLA COMO OBJETO JQUERY
     var Jplantilla = $(plantilla);
@@ -24,8 +29,13 @@ $(function () {
     Jplantilla.find("#almacen").droppable({
         drop: function (ev, ui) {
 
+            let tablero = ui.draggable;
+            let texto = creaTexto(tablero.data('juego'));
             // guardaMesa(this, ui);
+            tablero
+                .append(texto)
 
+            $(this).append(tablero);
         }
     }).css({
         overflow: 'scroll',
@@ -33,7 +43,8 @@ $(function () {
         backgroundImage: "url('../images/fondoAlmacen.jpg')",
         backgroundRepeat: "repeat",
         backgroundCover: "fill"
-    });
+    })
+        ;
 
     /* LA SALA PRINCIPAL */
     // var sala = 
@@ -53,6 +64,7 @@ $(function () {
 
         })
         .css({
+            overflow: 'scroll',
             minHeight: '300px',
             backgroundColor: "#cccccc",
             backgroundImage: "url('../images/fondoSala.jpg')",
@@ -63,7 +75,6 @@ $(function () {
 
     // USAMOS 1 BOTON PARA ABRIR LA VENTANA MODAL
     $("#creaReserva").click(function (ev) {
-
         ev.preventDefault();
 
         /* CREAMOS EL FORMULARIO */
@@ -88,8 +99,20 @@ $(function () {
         })
             .append(Jplantilla)
             .show(function () {
-                //Volvemos a buscar datepickers
+                /* CREAMOS LA SALA */
+                new Sala($('#sala'));
+                // Volvemos a buscar datepickers
                 ConvierteDatePicker();
+
+                // El numero de jugadores cambiará los juegos disponibles
+                $('#numJugadores')
+                    .change(function (ev) {
+                        ev.preventDefault();
+
+                        let jugadores = $(this).val();
+                        vaciaStock();
+                        rellenaStockJuegos($('#almacen'), jugadores);
+                    });
             })
             .submit(function (e) {
                 e.preventDefault();
@@ -114,15 +137,6 @@ $(function () {
 
     });
 
-    $('#numJugadores').change(function (ev) {
-        ev.preventDefault();
-
-        let jugadores = $(this).val();
-        vaciaStock();
-        rellenaStockJuegos($('#almacen'), jugadores);
-    })
-    /* LOS JUEGOS SON ARRASTRABLES */
-    $('.juego')
 
 
 });//fin
@@ -139,13 +153,15 @@ var plantilla =
         </h2>
         <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
             <div class="accordion-body">
-                <div class="col-12 col-md-6 l-grid-line">
-                    <label>Fecha</label>
-                    <input type="text" id="datePicker" autocomplete="off">
-                </div>
-                <div class="col-12 col-md-6 l-grid-line">
-                    <label>Hora</label>
-                    <select name="tramo" id="selecTramos"></select>
+                <div class="row">
+                    <div class="col-12 col-md-6 l-grid-line">
+                        <label>Fecha</label>
+                        <input type="text" id="datePicker" autocomplete="off">
+                    </div>
+                    <div class="col-12 col-md-6 l-grid-line">
+                        <label>Hora</label>
+                        <select name="tramo" id="selecTramos"></select>
+                    </div>
                 </div>
             </div>
         </div>
@@ -223,17 +239,14 @@ function rellenaStockJuegos(salaJuegos, numJugadores = null) {
 
     $.each(juegos.responseJSON.juegos, function (i, v) {
         // Añadimos al select
-        console.log(v);
-
         let texto = creaTexto(v);
 
-        //TODO probar
         salaJuegos
             .append(
                 $('<div/>')
-                    .data(v)
+                    .data('juego', v)
                     .attr('class', 'juego')
-                    .attr('id', 'juego_'+v.id)
+                    .attr('id', 'juego_' + v.id)
                     .attr('title', v.nombre) // TOOLTIP
                     .css({
                         position: "relative",
@@ -257,9 +270,13 @@ function rellenaStockJuegos(salaJuegos, numJugadores = null) {
                             // Hacemos parcialmente transparente la mesa que estamos moviendo
                             ui.helper.prevObject.css({ 'opacity': '50%' });
 
-                            ui.helper.css({ 'border': '3.5px dotted #3de051' });
-                            // QUITAMOS LA PAPELERA
-                            $(this).children().eq(0).css({ display: 'none' });
+                            ui.helper.css({
+                                'border': '3.5px dotted #3de051',
+                                'width': ui.helper.prevObject.eq(0).data('juego').tablero.ancho + 'px',
+                                'height': ui.helper.prevObject.eq(0).data('juego').tablero.largo + 'px'
+                            });
+                            // QUITAMOS EL SPAN INFORMATIVO
+                            $(this).eq(0).children().remove();
                         },
                         stop: function (ev, ui) {
                             // Devolvemos su opacidad a la mesa colocada
@@ -272,6 +289,9 @@ function rellenaStockJuegos(salaJuegos, numJugadores = null) {
 
     });
 }
+
+
+
 
 
 function creaTexto(juego) {

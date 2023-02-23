@@ -51,6 +51,20 @@ class DistribucionRepository extends ServiceEntityRepository
            ->getResult()
        ;
    }
+   
+   /**
+    * Método hecho por mí
+    * @return Distribucion[] Returns an array of Distribucion objects
+    */
+   public function getByDate($valor): array
+   {
+       return $this->createQueryBuilder('d')
+           ->andWhere('d.fecha like :val')
+           ->setParameter('val', $valor)
+           ->getQuery()
+           ->getResult()
+       ;
+   }
 //    /**
 //     * @return Distribucion[] Returns an array of Distribucion objects
 //     */

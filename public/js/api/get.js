@@ -91,6 +91,45 @@ function getJuego(id) {
 
 }
 
+function getDisposiciones() {
+
+    $.getJSON("/api/distribucion",
+        function (data) {
+            $.each(data.distribuciones, function (i, v) {
+                all_distribuciones.push(v);
+            });
+        }
+    );
+}
+
+
+function getDistribucion(fecha) {
+    return $.ajax({
+        type: "GET",
+        url: "api/distribucion/fecha/" + fecha,
+        async: false,
+        success: function (response) {
+            return (response.distribuciones);
+        }
+    });
+}
+
+function getFechaDisposicionByName(all_distribuciones,alias) {
+    var distribucion = null;
+
+    // Buscamos nuestra mesa
+    $.each(all_distribuciones, function (i, v) {
+        // Nuestra mesa = nuestra distribucion
+        if (v.alias == alias) {
+            console.log(v);
+            distribucion = v.fecha.date;
+            return false; // Rompemos el bucle
+        }
+    });
+    // La devolvemos
+    return distribucion;
+}
+
 function getMesas() {
     return $.ajax({
         type: "GET",
@@ -103,6 +142,44 @@ function getMesas() {
             return mesas;
         });
 
+}
+
+function getMesasHoy(fecha) {
+    // Las mesas que devolveremos
+    const mesas = [];
+    // Consultamos las distribuciones
+    let disposiciones =
+        $.ajax({
+            type: "GET",
+            url: "api/distribucion/fecha/" + JSON.stringify({"date": fecha}),
+            async: false,
+            success: function (response) {
+                
+                return response.distribuciones;
+            }
+        });
+
+    disposiciones = disposiciones.responseJSON.distribuciones;
+    
+    if (disposiciones.length > 0) {
+        // Hay disposiciones, buscamos las mesas de la nuestra 
+        $.each(disposiciones, function (i, v) {
+            let dist = v;
+            // Cogemos la mesa
+            let mesa = getMesa(v.mesa).responseJSON.mesa;
+            // Alteramos la posición de la mesa
+            mesa.pos_x = dist.pos_x;
+            mesa.pos_y = dist.pos_y;
+            mesas.push(mesa);
+        });
+    } else {
+        $.each(allMesas, function (i, v) { 
+            // Ponemos todas las mesas
+            mesas.push(v);
+        });
+    }
+
+    return mesas;
 }
 
 function getMesa(id) {

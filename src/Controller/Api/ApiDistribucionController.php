@@ -50,6 +50,30 @@ class ApiDistribucionController extends AbstractController
         }
     }
 
+    #[Route("/distribucion/fecha/{date}", name: "getDistribucionByFecha", methods: "GET")]
+    public function getDistribucionByDate(DistribucionRepository $mr, string $date): Response
+    {
+
+        $date = json_decode($date)->date;
+
+        // PARAMETROS DE LA FECHA
+        $ano = $date[0];
+        $mes = ($date[1] > 10) ? $date[1] : "0" . $date[1];
+        $dia = ($date[2] > 10) ? $date[2] : "0" . $date[2];
+
+        $fecha = $ano . "-" . $mes . "-" . $dia . " 00:00:00";
+        
+        $distribuciones = $mr->getByDate($fecha);
+        # DISTRIBUCIONES POR FECHA
+        return $this->json(
+            [
+                "distribuciones" => $distribuciones,
+                "Success" => true
+            ],
+            202
+        );
+    }
+
     #[Route("/distribucion", name: "postDistribucion", methods: "POST")]
     public function postDistribucion(ManagerRegistry $mr, Request $request): Response
     {
@@ -58,14 +82,14 @@ class ApiDistribucionController extends AbstractController
         $distribucion = new Distribucion();
 
         $rep = $mr->getRepository(Mesa::class);
-        $mesa = $rep->find($datos->mesa_id); 
+        $mesa = $rep->find($datos->mesa_id);
         $distribucion->setMesaId($mesa);
         $distribucion->setPosicionX($datos->pos_x);
         $distribucion->setPosicionY($datos->pos_y);
         $distribucion->setAlias($datos->alias);
         $datetime = new DateTime();
-        
-        $fecha = $datetime->createFromFormat('Y-m-d H:i:s.u',$datos->fecha);
+
+        $fecha = $datetime->createFromFormat('Y-m-d H:i:s.u', $datos->fecha);
         $distribucion->setFecha($fecha);
 
         if (isset($datos->reservada)) {
@@ -110,12 +134,12 @@ class ApiDistribucionController extends AbstractController
         $distribucion->setPosicionY($datos->pos_y);
         // La fecha
         $datetime = new DateTime();
-        $fecha = $datetime->createFromFormat('Y-m-d H:i:s.u',$datos->fecha);
+        $fecha = $datetime->createFromFormat('Y-m-d H:i:s.u', $datos->fecha);
         // dd(["original" => $datos->fecha, "fecha" => $fecha]);
         $distribucion->setFecha($fecha);
         //
         $distribucion->setMesaId(
-            $mesaRepository->find($datos->mesa_id)            
+            $mesaRepository->find($datos->mesa_id)
         );
         $distribucion->setAlias($datos->alias);
         $distribucion->setReservada($datos->reservada);
@@ -126,9 +150,10 @@ class ApiDistribucionController extends AbstractController
             $manager->persist($distribucion);
             $manager->flush();
         } catch (PDOException $e) {
-            $this->json(['message' => $e->getMessage(),
-            "Success" => false
-        ], 400);
+            $this->json([
+                'message' => $e->getMessage(),
+                "Success" => false
+            ], 400);
         }
 
         # Creado con éxito => Devolvemos la ID

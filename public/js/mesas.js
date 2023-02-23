@@ -63,7 +63,7 @@ $(function () {
                         var $disp = getDisposicion(dispActual, mesa.data('mesa').id);
                         // Si no existe creamos la nueva disposición
                         if ($disp == null) {
-                            $disp = new Distribucion(null, mesa.data('mesa').id, getFechaDisposicionByName(dispActual), -1, -1, dispActual, false);
+                            $disp = new Distribucion(null, mesa.data('mesa').id, getFechaDisposicionByName(all_distribuciones, dispActual), -1, -1, dispActual, false);
                             $disp = creaDisposicion($disp);
                         }
 
@@ -90,21 +90,7 @@ $(function () {
         })
         ;
 
-    function getFechaDisposicionByName(alias) {
-        var distribucion = null;
-
-        // Buscamos nuestra mesa
-        $.each(all_distribuciones, function (i, v) {
-            // Nuestra mesa = nuestra distribucion
-            if (v.alias == alias) {
-                console.log(v);
-                distribucion = v.fecha.date;
-                return false; // Rompemos el bucle
-            }
-        });
-        // La devolvemos
-        return distribucion;
-    }
+    
 
     function appendSala(sala, mesa) {
         debugger
@@ -386,20 +372,20 @@ $(function () {
      * @param {*} borrado 
      */
     function vaciaSala(borrado = false) {
-        // Eliminamos todas las mesas de la página
-        let mesasSala = $('#sala > .mesa');
-        let sala = $('#sala').data('sala');
-        $.each(mesasSala, function (i, v) {
-            let mesa = $(v);
-            sala.removeMesa(mesa.data('mesa'));
-            if (borrado) {
-                // Borramos las mesas
-                $('#sala').children('.mesa[id=mesa_' + v.id + ']').remove();
-            } else {
-                // Guardamos cada mesa 
-                almacena(mesa);
-            }
-        });
+            // Eliminamos todas las mesas de la página
+            let mesasSala = $('#sala > .mesa');
+            let sala = $('#sala').data('sala');
+            $.each(mesasSala, function (i, v) {
+                let mesa = $(v);
+                sala.removeMesa(mesa.data('mesa'));
+                if (borrado) {
+                    // Borramos las mesas
+                    $('#sala').children('.mesa[id=mesa_' + v.id + ']').remove();
+                } else {
+                    // Guardamos cada mesa 
+                    almacena(mesa);
+                }
+            });
     }
 
     /**
@@ -635,14 +621,4 @@ $(function () {
         actualizaMesa(mesa);
     }
 
-    function getDisposiciones() {
-
-        $.getJSON("/api/distribucion",
-            function (data) {
-                $.each(data.distribuciones, function (i, v) {
-                    all_distribuciones.push(v);
-                });
-            }
-        );
-    }
 });

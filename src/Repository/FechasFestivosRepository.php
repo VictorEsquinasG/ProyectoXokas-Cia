@@ -39,6 +39,19 @@ class FechasFestivosRepository extends ServiceEntityRepository
         }
     }
 
+   /**
+    * @return FechasFestivos[] Returns an array of FechasFestivos objects
+    */
+   public function getByDate($fecha): array
+   {
+       return $this->createQueryBuilder('f')
+           ->andWhere('f.fecha LIKE :val')
+           ->setParameter('val', $fecha)
+           ->getQuery()
+           ->getResult()
+       ;
+   }
+   
 //    /**
 //     * @return FechasFestivos[] Returns an array of FechasFestivos objects
 //     */
