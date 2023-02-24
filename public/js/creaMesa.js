@@ -5,7 +5,7 @@
  */
 
 
-let dialog = $('<div>');
+let dialog = $('<div>').attr('id','modal');
 
 let plantilla =
     `<form action="" method="POST">
@@ -21,7 +21,7 @@ let plantilla =
             <label class="col-12 col-md-6" for="sillas">Sillas:</label>
             <input class="col-12 col-md-6" type="number" name="sillas" id="sillas">
         </div>
-        <input type="submit" id="btnCrear" value="CREAR">
+        <input type="submit" class="btn btn-primary" id="btnCrear" value="CREAR">
 	</form>`
 
 var Jplantilla = $(plantilla);
@@ -63,6 +63,9 @@ function ModalMesa() {
                     console.log(response);
                 }
             });
+
+            // Cerramos el dialog
+            $('#modal').remove();
         });
     ;
 }

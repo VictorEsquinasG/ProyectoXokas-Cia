@@ -9190,6 +9190,9 @@ body {
   --bg-header: rgb(3, 148, 1);
   --gradient-1: rgb(0, 227, 106);
   --gradient-2: rgb(180, 218, 30);
+  --bs-primary-text: $text-color;
+  --bs-primary-bg-subtle: rgb(173, 251, 171);
+  --bs-accordion-btn-focus-border-color:$text-color;
 }
 
 ::selection {

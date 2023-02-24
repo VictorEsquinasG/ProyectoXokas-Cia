@@ -92,7 +92,7 @@ function getJuego(id) {
 
 }
 
-function getDisposiciones() {
+function getDisposiciones(all_distribuciones) {
 
     $.getJSON("/api/distribucion",
         function (data) {

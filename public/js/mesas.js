@@ -12,7 +12,7 @@ $(function () {
 
     /* PETICIÓN AJAX */
     disposicionEstandar();
-    getDisposiciones();
+    getDisposiciones(all_distribuciones);
 
     /* CREAMOS LA SALA */
     new Sala($('#sala'));
@@ -43,7 +43,7 @@ $(function () {
         .droppable({
             // Cuando se suelte en él
             drop: function (ev, ui) {
-
+                debugger;
                 // Cogemos la mesa
                 var mesa = ui.draggable;
                 // Coordenadas donde hemos soltado el objeto
@@ -58,6 +58,7 @@ $(function () {
                     appendSala(sala, mesa);
                     // Comprobamos la disposición
                     let dispActual = $('select[name="dispo"]').val();
+
                     if (dispActual !== '-1') {
 
                         var $disp = getDisposicion(dispActual, mesa.data('mesa').id);
@@ -68,16 +69,16 @@ $(function () {
                         }
 
                         let $objDisp = {};
+                        let obj = mesa.data('mesa');
+
                         // Anotamos su nueva posición 
-                        $objDisp = new Distribucion($disp.id, $disp.mesa, $disp.fecha.date, (mesa.pos_x + sala.difx), (mesa.pos_y + sala.dify), $disp.alias, $disp.reservada);
+                        $objDisp = new Distribucion($disp.id, $disp.mesa, $disp.fecha.date, (obj.pos_x - sala.difx), (obj.pos_y - sala.dify), $disp.alias, $disp.reservada);
                         // La posición la actualizamos ese día
                         actualizaDisposicion($objDisp);
                     } else {
                         // Posición BASE / ESTÁNDAR
-                        // Actualizamos su posición en la BD
-                        actualizaMesa(mesa);
+                        actualizaMesa(mesa); // Actualizamos su posición en la BD
                     }
-
                 }
             }
 
@@ -90,39 +91,38 @@ $(function () {
         })
         ;
 
-    
+
 
     function appendSala(sala, mesa) {
-        debugger
         let objmesa;
         if (mesa.data('mesa')) {
             objmesa = mesa.data('mesa');
         } else {
             objmesa = mesa[0];
-            // No tiene TOP y LEFT
-            mesa.left = parseInt(mesa.offset.left);
-            mesa.top = parseInt(mesa.offset.top);
 
             mesa.posicionYAnterior = parseInt(mesa.pos_y);
             mesa.posicionXAnterior = parseInt(mesa.pos_x);
         }
 
+        // Actualizamos su posición guardada en el objeto
+        if (mesa.top == undefined) {
+            mesa.top = (parseInt(objmesa.pos_y) + sala.dify);
+            mesa.left = (parseInt(objmesa.pos_x) + sala.difx);
+        }
+
+        sala
+            .addMesa(mesa);
         // Cambiamos su estilo para poder visualizarla
         mesa.css({
-            "position": "absolute",
+            position: "absolute",
             top: mesa.top + "px",
             left: mesa.left + "px",
             width: objmesa.ancho + "px",
             height: objmesa.largo + "px"
         })
             /* ELIMINAMOS EL TEXTO INFORMATIVO */
-            .children('p').remove();
-        // Actualizamos su posición guardada en el objeto
-        objmesa.pos_x = (mesa.left - sala.difx);
-        objmesa.pos_y = (mesa.top - sala.dify);
-
-        sala
-            .addMesa(mesa);
+            .children('p').remove()
+            ;
     }
 
     function getDisposicion(alias, mesa_id) {
@@ -158,11 +158,9 @@ $(function () {
         });
 
         return nueva;
-        // debugger;
     }
 
     function actualizaDisposicion(disp) {
-        debugger;
         let dist = {};
         dist.distribucion = disp;
         console.log(dist);
@@ -333,7 +331,7 @@ $(function () {
     });
 
     function cambiaDisposicion(selected) {
-          // Vaciamos la sala
+        // Vaciamos la sala
         vaciaSala();
 
         $.ajax({
@@ -347,7 +345,7 @@ $(function () {
                     let distribuciones = mesita.distribuciones;
 
                     $.each(distribuciones, function (i, v) {
-                        
+
                         let dist = JSON.parse(v);
                         let nombre = dist.alias;
                         // Hablamos de la misma distribucion (mismo nombre o misma fecha)
@@ -356,6 +354,9 @@ $(function () {
                             mesaActual.posicionYAnterior = objActual.pos_y;
                             mesaActual.posicionXAnterior = objActual.pos_x;
                             // Es la distribucion que queremos
+                            mesaActual.top = dist.pos_y;
+                            mesaActual.left = dist.pos_x;
+
                             objActual.pos_y = dist.pos_y;
                             objActual.pos_x = dist.pos_x;
                             // La mandamos a pintar
@@ -372,20 +373,22 @@ $(function () {
      * @param {*} borrado 
      */
     function vaciaSala(borrado = false) {
-            // Eliminamos todas las mesas de la página
-            let mesasSala = $('#sala > .mesa');
-            let sala = $('#sala').data('sala');
-            $.each(mesasSala, function (i, v) {
-                let mesa = $(v);
-                sala.removeMesa(mesa.data('mesa'));
-                if (borrado) {
-                    // Borramos las mesas
-                    $('#sala').children('.mesa[id=mesa_' + v.id + ']').remove();
-                } else {
-                    // Guardamos cada mesa 
-                    almacena(mesa);
-                }
-            });
+        // Eliminamos todas las mesas de la página
+        let mesasSala = $('#sala > .mesa');
+        let sala = $('#sala').data('sala');
+        $.each(mesasSala, function (i, v) {
+            let mesa = $(v);
+            // Borramos la mesa de la sala
+            sala.removeMesa(mesa);
+
+            if (borrado) {
+                // Borramos las mesas
+                $('#sala').children('.mesa[id=mesa_' + v.id + ']').remove();
+            } else {
+                // Guardamos cada mesa 
+                almacena(mesa);
+            }
+        });
     }
 
     /**
@@ -424,7 +427,7 @@ $(function () {
         var top = parseInt(obj.pos_y);
         var left = parseInt(obj.pos_x);
 
-        if (top > 0 && left > 0) {
+        if (top >= 0 && left >= 0) {
             // Tiene posición => Se coloca de manera absoluta en la sala
             appendSala($('#sala').data('sala'), mesa);
         } else {
@@ -432,7 +435,7 @@ $(function () {
             almacena(mesa);
         }
 
-        console.log("Recolocada " + mesa.id);
+        console.log("Recolocada " + obj.id);
     }
 
     function coloca(mesa) {
@@ -552,7 +555,6 @@ $(function () {
             // Si ya las tenemos solo debemos recolocarlas
             let mesas = $('.mesa');
             $.each(mesas, function (i, v) {
-                debugger
                 let mesa = $(v);
 
                 // Le pasamos la mesa

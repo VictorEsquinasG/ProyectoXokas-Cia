@@ -19,7 +19,7 @@ var dialog =
 
 $(function () {
 
-    getDisposiciones();
+    getDisposiciones(all_distribuciones);
 
     // LA PLANTILLA COMO OBJETO JQUERY
     var Jplantilla = $(plantilla);
@@ -67,7 +67,7 @@ $(function () {
             overflow: 'scroll',
             minHeight: '300px',
             backgroundColor: "#cccccc",
-            backgroundImage: "url('../images/fondoSala.jpg')",
+            backgroundImage: "url('../images/fondoSala.webp')",
             backgroundRepeat: "repeat",
             backgroundCover: "fill"
         })

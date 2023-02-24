@@ -1,8 +1,9 @@
-@import "variables";
-@import "font-awesome";
-@import "template-tale-seo-agency";
-@import "owl";
-@import "animate";
-@import "cards";
-@import "extras";
+@import "base/reset";
+@import "utils/variables/variables";
+@import "utils/extras/font-awesome";
+@import "main/template-tale-seo-agency";
+@import "components/owl";
+@import "functions/animate";
+@import "components/cards";
+@import "utils/extras/extras";
 @import "https://unpkg.com/swiper@7/swiper-bundle.min.css"; 

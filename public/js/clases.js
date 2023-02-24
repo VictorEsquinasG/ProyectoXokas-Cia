@@ -37,8 +37,20 @@ class Sala {
     removeMesa = function (mesa) {
 
         var id = mesa.id;
+        let mesas = this.mesas;
         // Lo borramos del array mesas
-        this.mesas.splice(id, id);
+        mesas.forEach((meson,i) => {
+            console.log(meson);
+            let id_actual = meson.data('mesa').id;
+            if (id_actual == id) {
+                this.mesas.splice(i,1);
+            }
+        });
+    }
+
+    removeMesas = function () {  
+        this.mesas = [];
+
     }
 }
 
