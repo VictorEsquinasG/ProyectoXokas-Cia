@@ -341,7 +341,6 @@ $(function () {
                 let mesas = data.mesas;
                 $.each(mesas, function (i, mesita) {
                     let mesaActual = $('#mesa_' + mesita.id);
-                    let objActual = mesaActual.data('mesa');
                     let distribuciones = mesita.distribuciones;
 
                     $.each(distribuciones, function (i, v) {
