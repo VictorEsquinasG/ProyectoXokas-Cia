@@ -43,7 +43,6 @@ $(function () {
         .droppable({
             // Cuando se suelte en él
             drop: function (ev, ui) {
-                debugger;
                 // Cogemos la mesa
                 var mesa = ui.draggable;
                 // Coordenadas donde hemos soltado el objeto
@@ -69,15 +68,18 @@ $(function () {
                         }
 
                         let $objDisp = {};
-                        let obj = mesa.data('mesa');
 
                         // Anotamos su nueva posición 
-                        $objDisp = new Distribucion($disp.id, $disp.mesa, $disp.fecha.date, (obj.pos_x - sala.difx), (obj.pos_y - sala.dify), $disp.alias, $disp.reservada);
+                        $objDisp = new Distribucion($disp.id, $disp.mesa, $disp.fecha.date, mesa.left, mesa.top, $disp.alias, $disp.reservada);
                         // La posición la actualizamos ese día
                         actualizaDisposicion($objDisp);
-                    } else {
-                        // Posición BASE / ESTÁNDAR
-                        actualizaMesa(mesa); // Actualizamos su posición en la BD
+                    } else { /* Posición BASE / ESTÁNDAR */
+                        // Su nueva posición
+                        let obj = mesa.data('mesa');
+                        obj.pos_x = parseInt(mesa.left);
+                        obj.pos_y = parseInt(mesa.top);
+                        // Actualizamos su posición en la BD
+                        actualizaMesa(mesa); 
                     }
                 }
             }
@@ -127,7 +129,6 @@ $(function () {
 
     function getDisposicion(alias, mesa_id) {
         var distribucion = null;
-
         // Buscamos nuestra mesa
         $.each(all_distribuciones, function (i, v) {
             // Nuestra mesa = nuestra distribucion
@@ -163,7 +164,7 @@ $(function () {
     function actualizaDisposicion(disp) {
         let dist = {};
         dist.distribucion = disp;
-        console.log(dist);
+       
         // dist.distribucion.fecha = dist.distribucion.fecha.substr(0,10); //19
         $.ajax({
             type: "PUT",
@@ -339,19 +340,21 @@ $(function () {
             url: "/api/mesa",
             success: function (data) {
                 let mesas = data.mesas;
+                
                 $.each(mesas, function (i, mesita) {
+                    // A cada mesa le preguntamos por sus distribuciones
                     let mesaActual = $('#mesa_' + mesita.id);
+                    let objActual = mesaActual.data('mesa');
                     let distribuciones = mesita.distribuciones;
 
                     $.each(distribuciones, function (i, v) {
-
                         let dist = JSON.parse(v);
                         let nombre = dist.alias;
                         // Hablamos de la misma distribucion (mismo nombre o misma fecha)
                         if (nombre == selected) {
                             // Guardamos sus coordenadas actuales
-                            mesaActual.posicionYAnterior = objActual.pos_y;
-                            mesaActual.posicionXAnterior = objActual.pos_x;
+                            mesaActual.posicionYAnterior = mesita.pos_y;
+                            mesaActual.posicionXAnterior = mesita.pos_x;
                             // Es la distribucion que queremos
                             mesaActual.top = dist.pos_y;
                             mesaActual.left = dist.pos_x;

@@ -14,7 +14,7 @@ $(function () { // Window.onload
 
     /* PLANTILLAS */
     var plantillaReserva =
-        `<h1>Haz tu reserva en minutos</h1>
+        `<h1 id="title">Haz tu reserva en minutos</h1>
         <article>
             <form>
                 <div class="row mt-2">
@@ -234,6 +234,9 @@ $(function () { // Window.onload
                         )
                 )
                 ;
+        }else {
+            debugger;
+            JplantillaReserva.find('#title').html('RESERVA CANCELADA :C');
         }
         JplantillaReserva.find('#btnSubmit').val('Guardar cambios');
 

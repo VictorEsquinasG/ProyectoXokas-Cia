@@ -67,7 +67,7 @@ $(function () {
             overflow: 'scroll',
             minHeight: '300px',
             backgroundColor: "#cccccc",
-            backgroundImage: "url('../images/fondoSala.webp')",
+            backgroundImage: "url('../images/fondoSala.jpg')",
             backgroundRepeat: "repeat",
             backgroundCover: "fill"
         })
