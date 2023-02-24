@@ -14334,6 +14334,16 @@ body {
     transition: none !important;
   }
 }
+.c-tarjeta__reserva {
+  max-height: 300px;
+  /*width: 500px;*/
+  margin: auto;
+}
+.c-tarjeta__reserva:hover {
+  transform: 0.5s erase;
+  opacity: 0.9;
+}
+
 a {
   color: #1CE25F;
   text-decoration: none;
@@ -14363,12 +14373,12 @@ table {
   border-color: transparent;
   box-shadow: 4px 2px 5px #1CE25F;
 }
-.btn-primary:active {
+.btn-primary:focus-visible {
   background-color: #1CE25F;
   color: #fff;
   border-color: #1CE25F;
 }
-.btn-primary:focus-visible {
+.btn-primary:active {
   background-color: #1CE25F;
   color: #fff;
   border-color: #1CE25F;
@@ -14390,6 +14400,11 @@ section#sliderReservas .btn {
   object-fit: cover;
   opacity: 0.8;
   transition: 0.5s erase;
+}
+section#sliderReservas .btn:first-child:active {
+  background-color: #1CE25F;
+  color: #fff;
+  border-color: #1CE25F;
 }
 section#sliderReservas .btn:hover {
   cursor: crosshair;

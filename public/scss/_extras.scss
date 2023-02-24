@@ -30,13 +30,13 @@ table {
         box-shadow: 4px 2px 5px $color-secundario;
     }
 
-    &:active {
+    &:focus-visible {
         background-color: $color-secundario;
         color: $bg-principal;
         border-color: $color-secundario;
     }
 
-    &:focus-visible {
+    &:active {
         background-color: $color-secundario;
         color: $bg-principal;
         border-color: $color-secundario;
@@ -60,6 +60,12 @@ section#sliderReservas {
         object-fit: cover;
         opacity: .8;
         transition: .5s erase;
+
+        &:first-child:active {
+            background-color: $color-secundario;
+            color: $bg-principal;
+            border-color: $color-secundario;
+        }
 
         &:hover {
             cursor: crosshair;

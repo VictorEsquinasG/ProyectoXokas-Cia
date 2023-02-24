@@ -61,9 +61,13 @@ class DashboardController extends AbstractDashboardController
                 MenuItem::linkToCrud('Juegos','fa fa-chess', Juego::class),
                 MenuItem::linkToCrud('Reservas','fa fa-paperclip', Reserva::class),
                 MenuItem::linkToCrud('Eventos','fa fa-glass', Evento::class),
-                MenuItem::linkToCrud('Mesas','fa fa-clone', Mesa::class),
                 // MenuItem::linkToCrud('Distribuciones','fa fa-object-group', Distribucion::class),
             ]),
+
+            MenuItem::section('Mesas y distribución', 'fa fa-object-group'),
+            MenuItem::linkToCrud('Mesas','fa fa-clone', Mesa::class),
+            MenuItem::linkToCrud('Mesas en disposiciones especiales','fas fa-arrows-alt', Distribucion::class),
+
             MenuItem::section('Fechas', 'fa fa-calendar'),
             MenuItem::linkToCrud('Festividades','fa fa-calendar-times-o',FechasFestivos::class),
             MenuItem::linkToCrud('Tramos horarios','fa fa-clock',Tramos::class),

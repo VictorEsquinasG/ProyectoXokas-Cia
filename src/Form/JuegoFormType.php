@@ -17,7 +17,7 @@ class JuegoFormType extends AbstractType
             ->add('nombre')
             ->add('minJugadores')
             ->add('maxJugadores')
-            // TODO tipo file cuando tiene una imagen no nos carga porque es 'STRING'
+            //  tipo file cuando tiene una imagen no nos carga porque es 'STRING'
             ->add('imagen', FileType::class,[
                 'data_class' => null
                 ])->setRequired(false)

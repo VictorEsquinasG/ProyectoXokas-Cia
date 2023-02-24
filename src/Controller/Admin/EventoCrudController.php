@@ -37,6 +37,7 @@ class EventoCrudController extends AbstractCrudController
                 ->setRequired(false),
             DateField::new('fecha'),
             IntegerField::new('num_max_asistentes')
+                ->setLabel('Nº máximo de asistentes')
                 ->setRequired(true),
             AssociationField::new('usuarios')
                 ->autocomplete()

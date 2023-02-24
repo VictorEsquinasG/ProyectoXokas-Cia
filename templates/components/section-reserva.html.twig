@@ -1,14 +1,5 @@
 <style>
 
-	#fotoReserva {
-		max-height: 300px;
-		/*width: 500px;*/
-		margin: auto;
-	}
-	#fotoReserva:hover {
-		transmform: 0.5s erase;
-		opacity: .9;
-	}
 	.l-grid {
 		display: grid;
 		grid-template-columns: 15% 85%;
@@ -73,19 +64,21 @@
 
 			<img src="{{asset('images/board-game-g5cf06fe42_1280.jpg')}}" class="col-12 col-md-6" id="fotoReserva" alt="Haz reservas aquí!!"></img>
 
-		<p class="col-12 col-md-6">
+			<p class="col-12 col-md-6">
 			Realiza una reserva para mañana o para dentro de 3 meses, 
 							gana puntos por cada reserva efectuada y asiste a emocionantes
 							eventos de presentación de nuevos juegos
 							¡que no te quiten el sitio!
-		</p>
+			</p>
 
-	</div>
+		</div>
 
 	<div class="row mt-2">
 		<div class="col-5"></div>
 		<div class="col-2 l-flex-center">
-			<button class="text-center btn btn-primary" id="creaReserva">HACER RESERVA</button>
+			{% if is_granted('ROLE_USER') %}
+				<button class="text-center btn btn-primary" id="creaReserva">HACER RESERVA</button>
+			{% endif %}
 		</div>
 		<div class="col-5"></div>
 	</div>

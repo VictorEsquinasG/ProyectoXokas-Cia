@@ -22,7 +22,7 @@ $(function () { // Window.onload
                         <label for="datePicker">Fecha de reserva:</label>
                     </div>
                     <div class="col-12 col-md-6">
-                        <input type="text" id="datePicker">
+                        <input type="text" id="datePicker" autocomplete="off">
                     </div>
                 </div>
                     
@@ -51,6 +51,10 @@ $(function () { // Window.onload
                     <div class="col-12 col-md-6">
                         <select name="" id="selecMesa"></select>
                     </div>
+                </div>
+
+                <div class="row mt-2" id="btnCancelar">
+                    <!-- DIV vacío para rellenar en caso de reserva ya hecha, para cancelar la asistencia -->
                 </div>
 
                 <input type="submit" class="btn btn-primary col-12 mt-3" id="btnSubmit" value="RESERVAR">
@@ -93,9 +97,7 @@ $(function () { // Window.onload
 
             </form>
         </article>
-        ` //TODO El value debe llevarte a hacer una reserva con el juego seleccionado
-
-
+        `
 
     // Las convertimos en JQuery
     var JplantillaReserva = $(plantillaReserva);
@@ -112,6 +114,8 @@ $(function () { // Window.onload
 
         /* RELLENAMOS LOS SELECTS */
         rellenaSelecReserva();
+
+        JplantillaReserva.find('#btnSubmit').val('RESERVAR');
 
         /* CREAMOS UN MODAL  */
         dialog.dialog({
@@ -166,7 +170,6 @@ $(function () { // Window.onload
       */
         let reservaActual = getReserva(id).responseJSON.Reserva;
 
-        console.log(reservaActual);
         let date = new Date(reservaActual.fecha.date);
         let fecha = (date.toLocaleDateString('es'));
         let tramo = reservaActual.tramo.id;
@@ -178,10 +181,60 @@ $(function () { // Window.onload
         rellenaSelecReserva();
 
         // Damos los valores a la plantilla
-        JplantillaReserva.find('#datePicker').val(fecha);
-        JplantillaReserva.find('#selecTramos').val(tramo);
-        JplantillaReserva.find('#selecJuego').val(juego);
-        JplantillaReserva.find('#selecMesa').val(mesa);
+        JplantillaReserva.find('#datePicker').val(fecha).prop("disabled", true);
+        JplantillaReserva.find('#selecTramos').val(tramo).prop("disabled", true);
+        JplantillaReserva.find('#selecJuego').val(juego).prop("disabled", true);
+        JplantillaReserva.find('#selecMesa').val(mesa).prop("disabled", true);
+        /* HACEMOS VISIBLE EL BOTÓN DE CANCELAR RESERVA */
+        if (reservaActual.asiste) {
+            JplantillaReserva.find('#btnCancelar')
+                .append(
+                    // Primer DIV para rellenar
+                    $('<div/>').attr('class', 'col-0 col-md-6')
+                )
+                .append(
+                    // El botón
+                    $('<div/>')
+                        .attr('class', 'col-12 col-md-6')
+    
+                        .append(
+                            $('<button/>')
+                                .html('<i class="fa-solid fa-ban"></i> Cancelar reserva')
+                                .attr('class', 'btn btn-danger text-center')
+                                .click(function (ev) {
+                                    ev.preventDefault();
+    
+                                    // Cancelamos la reserva
+                                    let cancelada = {};
+    
+                                    let hoy = new Date();
+                                    let mes = ((hoy.getMonth() + 1) > 10) ? (hoy.getMonth() + 1) : "0" + (hoy.getMonth() + 1);
+                                    let dia = (hoy.getDate() > 10) ? hoy.getDate() : "0" + hoy.getDate();
+    
+                                    // Preparamos los datos para la API
+                                    reservaActual.fecha = reservaActual.fecha.date;
+                                    reservaActual.mesa = reservaActual.mesa.id;
+                                    reservaActual.juego = reservaActual.juego.id;
+                                    reservaActual.tramo = reservaActual.tramo.id;
+                                    // NO ASISTE Y HA CANCELADO HOY
+                                    reservaActual.fechaCancelacion = (hoy.getFullYear() + '-' + mes + '-' + dia + ' 00:00:00.000000');
+                                    reservaActual.asiste = false;
+    
+                                    cancelada.reserva = reservaActual;
+                                    $.ajax({
+                                        type: "PUT",
+                                        url: "api/reserva",
+                                        data: JSON.stringify(cancelada),
+                                        dataType: "json",
+                                    });
+    
+                                    // Cerramos el dialog
+                                    $('#dialog').remove();
+                                })
+                        )
+                )
+                ;
+        }
         JplantillaReserva.find('#btnSubmit').val('Guardar cambios');
 
 
@@ -191,7 +244,7 @@ $(function () { // Window.onload
             title: "Reserva del " + fecha + " durante las " + tramoString,
             hide: {
                 effect: "explode",
-                duration: 1000
+                duration: 500
             }
         })
             .append(JplantillaReserva)
@@ -204,7 +257,7 @@ $(function () { // Window.onload
                 let idJuego = parseInt(formulario.find('#selecJuego').val());
                 let idMesa = parseInt(formulario.find('#selecMesa').val());
 
-                let reserva = new Reserva(reservaActual.id,fecha,true,null,null,idJuego,idMesa,idTramo);
+                let reserva = new Reserva(reservaActual.id, fecha, true, null, null, idJuego, idMesa, idTramo);
                 putReserva(reserva);
             })
             ;
@@ -241,14 +294,18 @@ $(function () { // Window.onload
 
 
     function rellenaSelecReserva() {
-        /* CAPTURAMOS LOS SELECT */
+        /* CAPTURAMOS LOS CAMPOS DEL FORMULARIO */
+        let fecha = JplantillaReserva.find('#datePicker');
         let selecTramos = JplantillaReserva.find('#selecTramos');
         let selecJuegos = JplantillaReserva.find('#selecJuego');
         let selecMesas = JplantillaReserva.find('#selecMesa');
-        /* VACIAMOS LOS SELECT */
-        selecTramos.html('');
-        selecJuegos.html('');
-        selecMesas.html('');
+        let btnCancelar = JplantillaReserva.find('#btnCancelar');
+        /* VACIAMOS LOS CAMPOS Y LOS REACTIVAMOS */
+        fecha.html('').prop("disabled", false);
+        selecTramos.html('').prop("disabled", false);
+        selecJuegos.html('').prop("disabled", false);
+        selecMesas.html('').prop("disabled", false);
+        btnCancelar.html('');
         /* RELLENAMOS LOS SELECTS */
         selecTramos
             .append('<option value="-1" disabled selected></option>');
@@ -262,7 +319,7 @@ $(function () { // Window.onload
                         .html(v.string)
                 );
         });
-        
+
         selecJuegos
             .append('<option value="-1" disabled selected></option>');
         $.each(allJuegos.responseJSON.juegos, function (i, v) {

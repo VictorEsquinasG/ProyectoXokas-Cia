@@ -20,7 +20,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class ProfileController extends AbstractController
 {
 
-    //TODO
+    //TODO Página de MI PERFIL donde el usuario podrá editar 
     #[Route('/profile', name: 'app_profile')]
     public function index(Request $request, AuthenticationUtils $authenticationUtils, EntityManagerInterface $entityManager): Response
     {
@@ -34,15 +34,22 @@ class ProfileController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // guardamos los cambios
-            if ($user->getImagen() !== null) {
-                # Tiene imágen
-                // $user->
+            if ($file = $form['imagen']->getData()) {
+                # Ha subido una imágen
+                $nombreFichero = $file->getClientOriginalName();
+                // Cogemos la imagen que ha subido
+                $file->move('images/uploads', $nombreFichero);
+                // Apuntamos a la imagen
+                $user->setImagen($nombreFichero);
             }
 
             $entityManager->persist($user);
             $entityManager->flush();
 
-            $this->addFlash('notice',"Usuario actualizado");
+            $this->addFlash(
+                'notice',
+                "Usuario actualizado"
+            );
 
             // Cambiamos 
 

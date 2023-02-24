@@ -39,8 +39,10 @@ class UsuarioCrudController extends AbstractCrudController
                         ->setUploadedFileNamePattern('[slug]-[timestamp].[extension]'),
                     EmailField::new('email'),
                     'nombre',
-                    'apellido1',
-                    'apellido2',
+                    TextField::new('apellido1')
+                        ->setLabel('1er Apellido'),
+                    TextField::new('apellido2')
+                        ->setLabel('2º Apellido'),
                     TextField::new('password')
                         ->setFormType(RepeatedType::class)
                         ->setFormTypeOptions([
@@ -62,8 +64,10 @@ class UsuarioCrudController extends AbstractCrudController
             return [
                 "id",
                 "nombre",
-                "apellido1",
-                "apellido2",
+                TextField::new("apellido1")
+                    ->setLabel('1er Apellido'),
+                TextField::new("apellido2")
+                    ->setLabel('2º Apellido'),
                 BooleanField::new('Admin')
                     ->setDisabled(true),
                 ImageField::new('imagen')

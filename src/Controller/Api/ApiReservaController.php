@@ -49,7 +49,7 @@ class ApiReservaController extends AbstractController
                         "juego" => $reserva->getJuego(),
                         "mesa" => $reserva->getMesa(),
                         "fecha" => $reserva->getFechaReserva(),
-                        "fecha_cancelacion" => $reserva->getFechaCancelacion(),
+                        "fechaCancelacion" => $reserva->getFechaCancelacion(),
                         "user" => $reserva->getUsuario(),
                         "asiste" => $reserva->isAsiste(),
                         "tramo" => $reserva->getTramo()
@@ -143,8 +143,8 @@ class ApiReservaController extends AbstractController
         // Cambiamos todos sus campos
 
         $datetime = new DateTime();
-        $fecha = $datetime->createFromFormat('d/m/Y', $datos->fecha);
-
+        $fecha = $datetime->createFromFormat('Y-m-d H:i:s.u', $datos->fecha);
+       
         $reserva->setFechaReserva($fecha);
         $reserva->setAsiste($datos->asiste);
 
@@ -153,7 +153,7 @@ class ApiReservaController extends AbstractController
         } else {
             # Si no asiste
             $datetime = new DateTime();
-            $fecha = $datetime->createFromFormat('d/m/Y', $datos->fechaCancelacion);
+            $fecha = $datetime->createFromFormat('Y-m-d H:i:s.u', $datos->fechaCancelacion);
 
             $reserva->setFechaCancelacion($fecha);
         }

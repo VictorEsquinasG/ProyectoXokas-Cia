@@ -14,7 +14,7 @@
 
 		{% for reserva in reservas %}
 			<div class="btn border-2" style="background-color:#A1DB26" id="ver_reserva_{{reserva.id}}">
-				<div class="item">
+				<div class="item c-tarjeta__reserva">
 					<img src="./images/uploads/{{reserva.img}}" alt="">
 					<div class="down-content">
 						<h4 class="text-light">{{reserva.title}}</h4>
@@ -26,7 +26,6 @@
 
 	</div>
 
-	<script src="{{ asset('js/api/put.js') }}">
-	</script>
+	<script src="{{ asset('js/api/put.js') }}"></script>
 
 </section>

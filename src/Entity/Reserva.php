@@ -131,7 +131,7 @@ class Reserva implements JsonSerializable
             "mesa" => $this->getMesa(),
             "usuario" => $this->getUsuario(),
             "asiste" => $this->isAsiste(),
-            "fecha_cancelacion" => $this->getFechaCancelacion(),
+            "fechaCancelacion" => $this->getFechaCancelacion(),
         ];
         return $json;
     }

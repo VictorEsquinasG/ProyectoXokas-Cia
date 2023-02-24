@@ -19,58 +19,69 @@ class UsuarioType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-        ->add('email')
-        
-        
-        ->add("nombre", null, [
-            'constraints' => [
-                new Length([
-                    'max' => 45,
-                    'maxMessage' => 'Nombre demasiado largo (máximo {{ limit }} caracteres)'
-                ])
-            ]
-        ])
-        ->add("apellido1", null, [
-            'constraints' => [
-                new NotBlank([
-                    'message' => 'Escriba su primer apellido por favor'
-                ]),
-                new Length([
-                    'max' => 45,
-                    'maxMessage' => 'Nombre demasiado largo (máximo {{ limit }} caracteres)'
-                ])
-            ]
-        ])
-        ->add("apellido2", null, [
-            'constraints' => [
-                new Length([
-                    'max' => 45,
-                    'maxMessage' => 'Nombre demasiado largo (máximo {{ limit }} caracteres)'
-                ])
-            ]
-        ])
-        ->add("telefono", TelType::class, [
-            'constraints' => [
-                new NotBlank([
-                    'message' => 'Número de teléfono necesario'
-                ]),
-                new Length([
-                    'max' => 45,
-                    'maxMessage' => 'Nombre demasiado largo (máximo {{ limit }} caracteres)'
-                ])
-            ]
-        ])
-        ->add("imagen", FileType::class, [
-                "mapped" => false
+            ->add('email')
+
+
+            ->add("nombre", null, [
+                'constraints' => [
+                    new Length([
+                        'max' => 45,
+                        'maxMessage' => 'Nombre demasiado largo (máximo {{ limit }} caracteres)'
+                    ])
+                ]
             ])
-        ->add("telegram_id", null, [
-            'constraints' => [
-                new NotBlank([
-                    'message' => 'Telegram necesario'
-                ])
-            ]
-        ])
-    ;
+            ->add("apellido1", null, [
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Escriba su primer apellido por favor'
+                    ]),
+                    new Length([
+                        'max' => 45,
+                        'maxMessage' => 'Nombre demasiado largo (máximo {{ limit }} caracteres)'
+                    ])
+                ]
+            ])
+            ->add("apellido2", null, [
+                'constraints' => [
+                    new Length([
+                        'max' => 45,
+                        'maxMessage' => 'Nombre demasiado largo (máximo {{ limit }} caracteres)'
+                    ])
+                ]
+            ])
+            ->add(
+                "telefono",
+                TelType::class,
+                [
+                    'constraints' => [
+                        new NotBlank([
+                            'message' => 'Número de teléfono necesario'
+                        ]),
+                        new Length([
+                            'max' => 45,
+                            'maxMessage' => 'Nombre demasiado largo (máximo {{ limit }} caracteres)'
+                        ])
+                    ]
+                ]
+            )
+            ->add(
+                "imagen",
+                FileType::class,
+                [
+                    "mapped" => false
+                ]
+            )
+            ->add(
+                "telegram_id",
+                null,
+                [
+                    'constraints' => [
+                        new NotBlank([
+                            'message' => 'Telegram necesario'
+                        ])
+                    ]
+                ]
+            );
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -42,7 +42,8 @@ function getDiasFestivos() {
         url: "/api/festivos",
         async: false,
         success: function (response) {
-            console.log(response);
+            // Devolvemos los festivos
+            return response.festivos;
         }
     });
 }

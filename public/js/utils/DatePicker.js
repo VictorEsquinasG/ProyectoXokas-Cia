@@ -73,7 +73,7 @@ function ConvierteDatePicker() {
     var fechaReserva = $('#datePicker');
     var fechaDistribucion = $('#datePickerDisposicion');
 
-    //TODO API días festivos
+    // API días festivos
     let diasFestivos = getDiasFestivos();
 
     diasFestivos = ["27/02/2023", "28/02/2023", "01/03/2023"];

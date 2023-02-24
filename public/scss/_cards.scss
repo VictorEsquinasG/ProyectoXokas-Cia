@@ -1,0 +1,13 @@
+.c-tarjeta {
+
+    &__reserva {
+        max-height: 300px;
+        /*width: 500px;*/
+        margin: auto;
+
+        &:hover {
+            transform: 0.5s erase;
+            opacity: .9;
+        }
+    }
+}
