@@ -174,7 +174,9 @@ function getMesasHoy(fecha) {
             mesas.push(mesa);
         });
     } else {
-        $.each(allMesas, function (i, v) { 
+        let data = getMesas();
+        let arrayMesas = data.responseJSON.mesas;
+        $.each(arrayMesas, function (i, v) { 
             // Ponemos todas las mesas
             mesas.push(v);
         });

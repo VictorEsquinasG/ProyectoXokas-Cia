@@ -59,6 +59,7 @@ $(function () {
                     let dispActual = $('select[name="dispo"]').val();
 
                     if (dispActual !== '-1') {
+                        // No es la disposición estándard
 
                         var $disp = getDisposicion(dispActual, mesa.data('mesa').id);
                         // Si no existe creamos la nueva disposición
@@ -372,7 +373,7 @@ $(function () {
 
     /**
      * 
-     * @param {*} borrado 
+     * @param {boolean} borrado 
      */
     function vaciaSala(borrado = false) {
         // Eliminamos todas las mesas de la página
@@ -469,7 +470,6 @@ $(function () {
             }).append(textTamanio)
                 .appendTo($('#almacen'));
         }
-        console.log("Colocada " + mesa.id);
     }
 
     function creaDiv(mesa) {

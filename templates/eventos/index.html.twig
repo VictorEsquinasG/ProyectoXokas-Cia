@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Catálogo
+{% endblock %}
+
+{% block body %}
+
+<div class="m-5 l-grid l-grid--line display-5">
+    <h2>
+        Estos son los últimos eventos
+        {# Si está logueado le llamamos por su nombre #}
+        {% if app.user %}
+            {{ app.user.getNombre }}
+        {% endif %}
+        !
+    </h2>
+    <h4>¿Quieres participar? ¿A qué esperas?</h4>
+</div>
+
+    {# CARDS DE EVENTOS #}
+    {% include "components/cards-eventos.html.twig" %}
+    
+    {# EL MODAL #}
+    {# <script src="{{ asset('js/utils/ventanaEmergente.js') }}"></script> #}
+{% endblock %}

@@ -67,12 +67,12 @@ class GeneralController extends AbstractController
     {
         $juegos = [];
 
-        $data = $juegoRepository->findAll(); //TODO crear juego, editar, eliminar
+        $data = $juegoRepository->findAll();
 
         foreach ($data as $datos) {
             # Rellenamos con el juego actual
             $juegos[] = [
-                'id' => $datos->getId() . '', //TODO página de JUEGO_ID
+                'id' => $datos->getId() . '',
                 'nombre' => $datos->getNombre() . '',
                 'desc' => $datos->getDescripcion() . '',
                 'img' => $datos->getImagen() . '',
@@ -90,6 +90,37 @@ class GeneralController extends AbstractController
             'juegos' => $juegos,
         ]);
     }
+    #[Route('/eventos', name: 'eventos')]
+    public function eventos(EventoRepository $eventoRepository): Response
+    {
+        $eventos = [];
+
+        $data = $eventoRepository->findAll();
+
+        foreach ($data as $datos) {
+            $juegos = $datos->getJuegos();
+            $games = [];
+            foreach ($juegos as $juego) {
+                # Pasamos la colección a array
+                $games []= $juego;
+            }
+            $i = array_rand($games);
+            # Rellenamos con el juego actual
+            $eventos[] = [
+                'id' => $datos->getId(),
+                'nombre' => $datos->getNombre() . '',
+                'fecha' => $datos->getFecha()->format('dd-mm-Y'),
+                'tramo' => $datos->getTramo(),
+                'numMaxAsistentes' => $datos->getNumMaxAsistentes(),
+                'juegos' => $games,
+                'img' => $juegos[$i]->getImagen(),
+                'asistentes' => $datos->getUsuarios()
+            ];
+        }
+        return $this->render('eventos/index.html.twig', [
+            'eventos' => $eventos,
+        ]);
+    }
 
     #[Route('/reserva/{id}', name: 'reserva_concreta')]
     public function reservaConcreta(int $id)
@@ -97,7 +128,7 @@ class GeneralController extends AbstractController
         # TODO La página sobre la reserva original
     }
 
-    #[Route('/evento/{id}', name: 'reserva_concreto')]
+    #[Route('/evento/{id}', name: 'evento_concreto')]
     public function eventoConcreto(int $id)
     {
         die("SI " . $id);
@@ -106,7 +137,7 @@ class GeneralController extends AbstractController
 
     #[Route('/p', name: 'prueba_pdf')]
     public function pdf(PdfMaker $dompdf)
-    {       
+    {
 
         // Retrieve the HTML generated in our twig file
         $html = $this->renderView('pdf/mypdf.html.twig', [
@@ -115,11 +146,11 @@ class GeneralController extends AbstractController
 
         // Cargamos el HTML al Dompdf
         $dompdf->sethtml($html)
-        ->renderizar()
-        ->recargaForzada("mypdf.pdf", [
-            "Attachment" => true
-        ]);
-        
+            ->renderizar()
+            ->recargaForzada("mypdf.pdf", [
+                "Attachment" => true
+            ]);
+
         // return new Response($pdf);
 
     }

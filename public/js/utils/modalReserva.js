@@ -50,19 +50,7 @@ $(function () {
     // var sala = 
     Jplantilla.find("#sala")
         .attr("class", "ml-3")
-        .droppable({
-            // Cuando se suelte en él
-            drop: function (ev, ui) {
-
-                if (!posicionValida(mesa)) {
-                    console.log("No puedes jugar en esa mesa");
-                } else {
-
-
-                }
-            }
-
-        })
+        
         .css({
             overflow: 'scroll',
             minHeight: '300px',
@@ -72,6 +60,21 @@ $(function () {
             backgroundCover: "fill"
         })
         ;
+
+    $('.mesa') /* LAS MESAS SON DROPABLES PARA DEJAR LOS TABLEROS */
+    .droppable({
+        // Cuando se suelte en él
+        drop: function (ev, ui) {
+
+            if (!posicionValida(mesa)) {
+                console.log("No puedes jugar en esa mesa");
+            } else {
+
+
+            }
+        }
+
+    });
 
     // USAMOS 1 BOTON PARA ABRIR LA VENTANA MODAL
     $("#creaReserva").click(function (ev) {

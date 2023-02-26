@@ -1,0 +1,24 @@
+.l-grid {
+    display: grid;
+
+    &__form{
+        grid-template-columns: 15% 85%;
+    }
+
+    &--line {
+        
+        grid-template-rows: 50% 50%;
+    }
+    &--columns {
+        
+        grid-template-columns: 50% 50%;
+    }
+}
+
+.l-flex {
+    display: flex;
+
+    &--center {
+        justify-content: center;
+    }
+}

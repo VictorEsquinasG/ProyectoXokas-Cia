@@ -1,16 +1,5 @@
 <style>
-	.l-grid {
-		display: grid;
-		grid-template-columns: 15% 85%;
-	}
-	.l-grid-line {
-		display: grid;
-		grid-template-rows: 50% 50%;
-	}
-	.l-flex-center {
-		display: flex;
-		justify-content: center;
-	}
+	
 	#container-salas {
 		display: grid;
 		grid-template-rows: [fila] 100%;
@@ -74,7 +63,7 @@
 
 	<div class="row mt-2">
 		<div class="col-5"></div>
-		<div class="col-2 l-flex-center">
+		<div class="col-2 l-flex--center">
 			{% if is_granted('ROLE_USER') %}
 				<button class="text-center btn btn-primary" id="creaReserva">HACER RESERVA</button>
 			{% endif %}
@@ -86,6 +75,7 @@
 <!-- API RESERVA -->
 <script src="{{ asset('js/api/get.js') }}"></script>
 <script src="{{ asset('js/api/reservar.js') }}"></script>
+{# <script src="{{ asset('js/mesas.js') }}"></script> #}
 <!-- FECHA -->
 <script src="{{ asset('js/utils/DatePicker.js') }}"></script>
 <!-- EL MODAL -->

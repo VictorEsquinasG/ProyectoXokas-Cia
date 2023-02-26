@@ -21,46 +21,48 @@ function datePicker(fecha, diasFestivos) {
 
             // Consultamos las distribuciones y si no hay distribuciones, cargamos la base.
             let mesas = getMesasHoy(fecha);
+            // Vaciamos la mesa
+            vaciaSala();
             // Las pintamos
-            // pintaMesas(mesas);
+            pintaMesas(mesas);
         }
     });
 }
 
-function datePickerDistribucion(fecha, diasFestivos) {
-    // Entrada mínima mañana y máxima 3 meses
-    fecha.datepicker({
-        dateFormat: "dd/mm/yy",
-        firstDay: 1,    // Empieza en lunes
-        beforeShowDay: $.datepicker.noWeekends,
-        defaultDate: "+1D",
-        minDate: 1, // A partir de mañana
-        maxDate: "+3M +1D",
-        onSelect: function (texto, obj) {
-            console.log(texto);
-            // $("calendario-2").datapicker("destroy").datepicker({
-            //     minDate: new Date(obj.currentYear, obj.currentMonth, obj.currentDay + 1), // Seteamos el mínimo de la salida
-            //     maxDate: new Date(obj.currentYear, obj.currentMonth, obj.currentDay + 23),
-            //     beforeShowDay: function (fecha) {
-            //         var dia = fecha.getDate();
-            //         var mes = fecha.getMonth() + 1;
-            //         var anio = fecha.getFullYear(0);
-            //         var cadenaFecha =
-            //             ((dia < 10) ? "0" + dia : dia) + '/' +
-            //             ((mes < 10) ? "0" + mes : mes) + '/' + anio;
-            //         var mostrar = [true, "", ""];
-            //         if (fecha.getDay() % 6 == 0 || diasFestivos.indexOf(cadenaFecha) > -1) // Sin findes ni festivos
-            //         {
-            //             mostrar = [false, "", "CERRADO"];
-            //         }
-            //         return mostrar;
-            //     },
-            //     dateFormat: "dd-mm-yy",
-            //     firstDay: 1
-            // }).datapicker("refresh")
-        }
-    });
-}
+// function datePickerDistribucion(fecha, diasFestivos) {
+//     // Entrada mínima mañana y máxima 3 meses
+//     fecha.datepicker({
+//         dateFormat: "dd/mm/yy",
+//         firstDay: 1,    // Empieza en lunes
+//         beforeShowDay: $.datepicker.noWeekends,
+//         defaultDate: "+1D",
+//         minDate: 1, // A partir de mañana
+//         maxDate: "+3M +1D",
+//         onSelect: function (texto, obj) {
+//             // console.log(texto);
+//             // $("calendario-2").datapicker("destroy").datepicker({
+//             //     minDate: new Date(obj.currentYear, obj.currentMonth, obj.currentDay + 1), // Seteamos el mínimo de la salida
+//             //     maxDate: new Date(obj.currentYear, obj.currentMonth, obj.currentDay + 23),
+//             //     beforeShowDay: function (fecha) {
+//             //         var dia = fecha.getDate();
+//             //         var mes = fecha.getMonth() + 1;
+//             //         var anio = fecha.getFullYear(0);
+//             //         var cadenaFecha =
+//             //             ((dia < 10) ? "0" + dia : dia) + '/' +
+//             //             ((mes < 10) ? "0" + mes : mes) + '/' + anio;
+//             //         var mostrar = [true, "", ""];
+//             //         if (fecha.getDay() % 6 == 0 || diasFestivos.indexOf(cadenaFecha) > -1) // Sin findes ni festivos
+//             //         {
+//             //             mostrar = [false, "", "CERRADO"];
+//             //         }
+//             //         return mostrar;
+//             //     },
+//             //     dateFormat: "dd-mm-yy",
+//             //     firstDay: 1
+//             // }).datapicker("refresh")
+//         }
+//     });
+// }
 
 
 $(function () {
@@ -71,7 +73,7 @@ $(function () {
 
 function ConvierteDatePicker() {
     var fechaReserva = $('#datePicker');
-    var fechaDistribucion = $('#datePickerDisposicion');
+    // var fechaDistribucion = $('#datePickerDisposicion');
 
     // API días festivos
     let diasFestivos = getDiasFestivos();
@@ -82,7 +84,7 @@ function ConvierteDatePicker() {
     setDateFormatES();
     // Hacemos que sea datePicker
     datePicker(fechaReserva, diasFestivos);
-    datePickerDistribucion(fechaDistribucion, diasFestivos);
+    // datePickerDistribucion(fechaDistribucion, diasFestivos);
 }
 
 function setDateFormatES() {
@@ -113,26 +115,78 @@ function setDateFormatES() {
  */
 function pintaMesas(mesas) {
 
-    $.each(mesas, function (i, v) {
+    $.each(mesas, function (i, mesa) {
+        debugger
+        // La convertimos en un objeto mesa
+        if (mesa.pos_x !== undefined && mesa.pos_x !== null) {
+            // TIENE POSICION DE DISTRIBUCION
+            var objActual = new Mesa(mesa.id, mesa.ancho, mesa.largo, mesa.sillas, mesa.pos_x, mesa.pos_y, mesa.distribuciones, mesa.reservas);
+        }else {
+            // ES UNA MESA DE LA DISTRIBUCION BASE
+            var objActual = new Mesa(mesa.id, mesa.ancho, mesa.largo, mesa.sillas, mesa.posicion_x, mesa.posicion_y, mesa.distribuciones, mesa.reservas);
+        }
         // Cogemos la sala
-        let sala = $('sala').data('sala');
+        let sala = $('#sala').data('sala');
         // Cogemos la mesa
-        let mesa =
+        let caja =
             $('<div/>')
                 .attr('class', 'mesa')
-                .data('mesa', v)
+                .data('mesa', objActual)
                 .css({
                     position: "absolute",
-                    width: v.ancho + 'px',
-                    height: v.largo + 'px',
+                    width: objActual.ancho + 'px',
+                    height: objActual.largo + 'px',
                     // Lo ubicamos respecto a la sala
-                    top: (v.pos_y + sala.dify) + "px", 
-                    left: (v.pos_x + sala.difx) + "px",
-                    background: "red"
+                    top: (objActual.pos_y + 939) + "px",
+                    left: (objActual.pos_x + 285) + "px",
+
+                    background: "green"
                 })
             ;
+            debugger
+        // Estilo de la mesa si está reservada
+        marcaReservada(caja);
 
         // La pintamos 
-        sala.addMesa(mesa);
+        sala.addMesa(caja);
     });
+}
+/**
+ * 
+ *  
+ */
+function vaciaSala() {
+    // Eliminamos todas las mesas de la página
+    let mesasSala = $('#sala > .mesa');
+    let sala = $('#sala').data('sala');
+    $.each(mesasSala, function (i, v) {
+        let mesa = $(v).data('mesa');
+        // Borramos la mesa de la sala
+        sala.removeMesa(mesa);
+
+        // Borramos las mesas
+        $('#sala').children('.mesa[id=mesa_' + v.id + ']').remove();
+
+    });
+}
+
+function marcaReservada(div) {
+    // Cogemos la mesa
+    let mesa = div.data('mesa');
+    // Miramos entre sus reservas
+    $.each(mesa.reservas, function (i, v) {
+        
+        let reserva = JSON.parse(v);
+        
+        let fechaReserva = new Date(reserva.fecha_reserva.date);
+        let hoy = new Date();
+        
+        // Si está reservada HOY
+        if (fechaReserva.getTime() == hoy.getTime()) {
+            div.css({
+                // Está reservada y se ve de manera visual
+                background: "red"
+            })
+        }
+    })
 }

@@ -2006,6 +2006,10 @@ body {
     justify-content: center;
   }
 
+  &--bottom {
+    padding-top: 5.25rem;
+  }
+
   &__formu {
     min-width: 300px;
     margin: auto;
@@ -2041,10 +2045,11 @@ body {
     display: none;
   }
 
+  /* 
   .main-banner {
     padding: 185px 0px;
   }
-
+ */
   .main-banner h4 {
     font-size: 36px;
     line-height: 44px;

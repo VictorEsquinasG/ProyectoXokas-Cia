@@ -1,0 +1,19 @@
+{# TOOS LOS EVENTOS EN UNA CARD #}
+<div style="display:flex;flex-direction:row;flex-wrap:wrap;flex:1 1 100%; gap: 1.5rem; margin:5%;">
+	{% for evento in eventos %}
+		<a href="#" id="{{ 'evento_' ~ evento.id }}">
+			<div class="card" style="width: 18rem;max-height:250px">
+				<img class="card-img-top" src="{{asset('images/uploads/' ~ evento.img)}}" alt="{{ 'Imagen de ' ~ evento.nombre }}">
+				<div class="card-body">
+					<h5 class="card-title">{{evento.nombre}}</h5>
+					<p class="card-text">
+						<b>{{evento.fecha}}</b>
+						{{evento.tramo}}
+						<br/>
+						<b>{{ (evento.asistentes|length) ~ '/' ~ evento.numMaxAsistentes }} <i class="fa fa-users"></i></b>
+					</p>
+				</div>
+			</div>
+		</a>
+	{% endfor %}
+</div>

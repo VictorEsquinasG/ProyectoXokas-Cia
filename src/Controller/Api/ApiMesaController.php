@@ -26,7 +26,7 @@ class ApiMesaController extends AbstractController
         if ($id === null) {
             # Si es null, las quiere todas
             $mesas = $mr->findAll();
-            
+
             return $this->json([
                 "mesas" => $mesas,
                 "Success" => true
@@ -34,7 +34,7 @@ class ApiMesaController extends AbstractController
         } else {
             // cogemos la mesa
             $mesa = $mr->find($id);
-            
+
             return $this->json([
                 "mesa" => [
                     "id" => $mesa->getId(),
@@ -46,7 +46,7 @@ class ApiMesaController extends AbstractController
                     "distribuciones" => $mesa->getDistribucionesNotLazy(),
                     "reservas" => $mesa->getReservasNotLazy()
                 ],
-                "Success" => true 
+                "Success" => true
             ], 200);
         }
     }
@@ -105,7 +105,13 @@ class ApiMesaController extends AbstractController
             $manager->persist($mesa);
             $manager->flush();
         } catch (PDOException $e) {
-            $this->json(['message' => $e->getMessage(), "Success" => false], 400);
+            $this->json(
+                [
+                    'message' => $e->getMessage(),
+                    "Success" => false
+                ],
+                400
+            );
         }
 
         # Creado con éxito => Devolvemos la ID
@@ -135,7 +141,13 @@ class ApiMesaController extends AbstractController
             $manager->remove($mesa);
             $manager->flush();
         } catch (PDOException $e) {
-            $this->json(['message' => $e->getMessage(), "Success" => false], 400);
+            $this->json(
+                [
+                    'message' => $e->getMessage(),
+                    "Success" => false
+                ],
+                400
+            );
         }
 
         # Creado con éxito => Devolvemos la ID
