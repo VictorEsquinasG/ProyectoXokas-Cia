@@ -4,12 +4,16 @@
  * @use JQUERY ui
  * @author Víctor Esquinas
  */
+
+
+// Cogemos los datos que necesitamos
+var allTramos = getTramos();
+var allJuegos = getJuegos();
+var allMesas = getMesas();
+var allUsers = getUsuarios();
+
 $(function () { // Window.onload
 
-    // Cogemos los datos que necesitamos
-    var allTramos = getTramos();
-    var allJuegos = getJuegos();
-    var allMesas = getMesas();
 
 
     /* PLANTILLAS */
@@ -98,10 +102,61 @@ $(function () { // Window.onload
             </form>
         </article>
         `
+    var plantillaEvento =
+        `
+        <article>
+            <form>
+                <div class="row mt-3">
+                    <h5 class="nombre text-center text-md-start display-4"></h5>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-12 col-md-6">
+                        <label>Fecha:</label>
+                        <input type="text" name="fecha" id="datePicker">
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label>Tramo:</label>
+                        <select name="tramo" id="selecTramo"></select>
+                    </div>
+                </div>
+                
+                <div class="row mt-3">    
+                    <div class="col-12 col-md-6 text-center">
+                        <h5>Juegos</h5>
+                        <select name="juegos" multiple id="selecJuego"></select>
+                    </div>
+                    <div class="d-none d-md-block col-md-6">
+                        <p>Elija máximo 2 juegos</p>
+                        <img src="../images/play-g47584f827_1280.jpg" alt="foto de evento"></img>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div style="margin:auto;" class="col-12 col-md-6 text-center">
+                        <label>Usuarios asistentes:</label>
+                        <select multiple id="asistentes"></select>
+                    </div>
+                    <div style="margin:auto;" class="col-12 col-md-6 text-center">
+                        <label>Número <b>máximo</b> de asistentes:</label>
+                        <input type="number" id="max_asistentes">
+                    </div>
+                </div>
+
+                <input type="hidden" name="_target_path" value="/">
+
+                <div class="row mt-4">
+                    <button type="submit" class="btn btn-primary">Conservar Cambios</button>
+                </div>
+
+            </form>
+        </article>
+        `
 
     // Las convertimos en JQuery
     var JplantillaReserva = $(plantillaReserva);
     var JplantillaJuego = $(plantillaJuego);
+    var JplantillaEvento = $(plantillaEvento);
 
 
     // El dialog
@@ -196,21 +251,21 @@ $(function () { // Window.onload
                     // El botón
                     $('<div/>')
                         .attr('class', 'col-12 col-md-6')
-    
+
                         .append(
                             $('<button/>')
                                 .html('<i class="fa-solid fa-ban"></i> Cancelar reserva')
                                 .attr('class', 'btn btn-danger text-center')
                                 .click(function (ev) {
                                     ev.preventDefault();
-    
+
                                     // Cancelamos la reserva
                                     let cancelada = {};
-    
+
                                     let hoy = new Date();
                                     let mes = ((hoy.getMonth() + 1) > 10) ? (hoy.getMonth() + 1) : "0" + (hoy.getMonth() + 1);
                                     let dia = (hoy.getDate() > 10) ? hoy.getDate() : "0" + hoy.getDate();
-    
+
                                     // Preparamos los datos para la API
                                     reservaActual.fecha = reservaActual.fecha.date;
                                     reservaActual.mesa = reservaActual.mesa.id;
@@ -219,7 +274,7 @@ $(function () { // Window.onload
                                     // NO ASISTE Y HA CANCELADO HOY
                                     reservaActual.fechaCancelacion = (hoy.getFullYear() + '-' + mes + '-' + dia + ' 00:00:00.000000');
                                     reservaActual.asiste = false;
-    
+
                                     cancelada.reserva = reservaActual;
                                     $.ajax({
                                         type: "PUT",
@@ -227,14 +282,14 @@ $(function () { // Window.onload
                                         data: JSON.stringify(cancelada),
                                         dataType: "json",
                                     });
-    
+
                                     // Cerramos el dialog
                                     $('#dialog').remove();
                                 })
                         )
                 )
                 ;
-        }else {
+        } else {
             debugger;
             JplantillaReserva.find('#title').html('RESERVA CANCELADA :C');
         }
@@ -295,57 +350,182 @@ $(function () { // Window.onload
 
     });
 
+    $('a[id^=editaEvento_]').click(function (ev) {
+        ev.preventDefault();
+        let id = $(this).attr('id').split('_')[1];
 
-    function rellenaSelecReserva() {
-        /* CAPTURAMOS LOS CAMPOS DEL FORMULARIO */
-        let fecha = JplantillaReserva.find('#datePicker');
-        let selecTramos = JplantillaReserva.find('#selecTramos');
-        let selecJuegos = JplantillaReserva.find('#selecJuego');
-        let selecMesas = JplantillaReserva.find('#selecMesa');
-        let btnCancelar = JplantillaReserva.find('#btnCancelar');
-        /* VACIAMOS LOS CAMPOS Y LOS REACTIVAMOS */
-        fecha.html('').prop("disabled", false);
-        selecTramos.html('').prop("disabled", false);
-        selecJuegos.html('').prop("disabled", false);
-        selecMesas.html('').prop("disabled", false);
-        btnCancelar.html('');
-        /* RELLENAMOS LOS SELECTS */
-        selecTramos
-            .append('<option value="-1" disabled selected></option>');
-        $.each(allTramos.responseJSON.tramos, function (i, v) {
+        let eventoActual = getEvento(id).responseJSON.evento;
 
-            selecTramos
-                .append(
-                    $('<option/>')
-                        .data(v)
-                        .val(v.id)
-                        .html(v.string)
-                );
+        rellenaSelecJuegos(JplantillaEvento);
+        rellenaSelecTramos(JplantillaEvento);
+        rellenaSelecUsuarios(JplantillaEvento);
+
+        /* RELLENAMOS LOS CAMPOS */
+        let nombre = eventoActual.nombre;
+        let fecha = eventoActual.fecha.date;
+        let tramo = eventoActual.tramo.id;
+        let asistentes = eventoActual.usuarios;
+        let juegos = eventoActual.juegos;
+        let max_asistentes = eventoActual.max_asistentes;
+        let date = fecha.substr(0,10);
+        let fechaArray = date.split('-');
+        let fechaString = (fechaArray[2] + '/' + fechaArray[1] + '/' + fechaArray[0]);
+
+        JplantillaEvento.find('.nombre').html(nombre);
+        JplantillaEvento.find('#datePicker').val(fechaString);
+        JplantillaEvento.find('#max_asistentes').val(max_asistentes);
+        JplantillaEvento.find('#asistentes').val(asistentes);
+        $.each(juegos, function (i, juego) { 
+            JplantillaEvento.find('#selecJuego').val(juego);
         });
+        JplantillaEvento.find('#selecTramo').val(tramo);
+
+        dialog.dialog({
+            modal: true,
+            width: "750px",
+            minHeight: "900px",
+            title: "Editar evento 🍸✍🏾",
+        })
+            .append(JplantillaEvento)
+
+            .show(function () {
+                // Buscamos el datePicker que hemos creado con el modal
+                ConvierteDatePicker();
+            })
+            .submit(function (ev) {
+                ev.preventDefault();
+
+                let formulario = $(this);
+                // Cogemos todos los campos del formulario
+                let fecha = formulario.find('#datePicker').val();
+                let asistentes = formulario.find('#asistentes').val();
+                let max_asistentes = formulario.find('#max_asistentes').val();
+                let idTramo = parseInt(formulario.find('#selecTramos').val());
+                let idJuegos = parseInt(formulario.find('#selecJuego').val());
+
+                // Lo mandamos a editar
+                let evento = new Evento(id, fecha, idTramo, nombre, idJuegos, asistentes, max_asistentes);
+                putEvento(evento);
+                // Cerramos el dialog
+                $(this).parent().remove();
+            })
+            ;
+    });
+
+});
+
+function rellenaSelecJuegos(Jplantilla) {
+    // Cogemos el campo del formulario
+    let selecJuegos = Jplantilla.find('#selecJuego');
+    // Vaciamos el select
+    selecJuegos.html('');
+    // Mínimo tendrá el vacío
+    selecJuegos
+        // .append('<option value="-1" disabled selected></option>');
+    $.each(allJuegos.responseJSON.juegos, function (i, v) {
 
         selecJuegos
-            .append('<option value="-1" disabled selected></option>');
-        $.each(allJuegos.responseJSON.juegos, function (i, v) {
+            .append(
+                $('<option/>')
+                    .data(v)
+                    .val(v.id)
+                    .html(v.string)
+            );
+    });
+}
 
-            selecJuegos
-                .append(
-                    $('<option/>')
-                        .data(v)
-                        .val(v.id)
-                        .html(v.string)
-                );
-        });
+function rellenaSelecUsuarios(Jplantilla) {
+    // Cogemos el campo del formulario
+    let selecUsuarios = Jplantilla.find('#asistentes');
+    // Vaciamos el select
+    selecUsuarios.html('');
+    // Mínimo tendrá el vacío
+    selecUsuarios
+        // .append('<option value="-1" disabled selected></option>');
+    $.each(allUsers.responseJSON.usuarios, function (i, v) {
+
+        selecUsuarios
+            .append(
+                $('<option/>')
+                    .data(v)
+                    .val(v.id)
+                    .html(v.nombreCompleto)
+            );
+    });
+}
+
+function rellenaSelecTramos(Jplantilla) {
+    let selecTramos = Jplantilla.find('#selecTramo');
+
+    selecTramos.html('');
+
+    selecTramos
+        .append('<option value="-1" disabled selected></option>');
+    $.each(allTramos.responseJSON.tramos, function (i, v) {
+
+        selecTramos
+            .append(
+                $('<option/>')
+                    .data(v)
+                    .val(v.id)
+                    .html(v.string)
+            );
+    });
+}
+
+/**
+ * Función que rellena todos los selects necesarios para
+ * la entidad reserva
+ */
+function rellenaSelecReserva() {
+    /* CAPTURAMOS LOS CAMPOS DEL FORMULARIO */
+    let fecha = JplantillaReserva.find('#datePicker');
+    let selecTramos = JplantillaReserva.find('#selecTramos');
+    let selecJuegos = JplantillaReserva.find('#selecJuego');
+    let selecMesas = JplantillaReserva.find('#selecMesa');
+    let btnCancelar = JplantillaReserva.find('#btnCancelar');
+    /* VACIAMOS LOS CAMPOS Y LOS REACTIVAMOS */
+    fecha.html('').prop("disabled", false);
+    selecTramos.html('').prop("disabled", false);
+    selecJuegos.html('').prop("disabled", false);
+    selecMesas.html('').prop("disabled", false);
+    btnCancelar.html('');
+    /* RELLENAMOS LOS SELECTS */
+    selecTramos
+        .append('<option value="-1" disabled selected></option>');
+    $.each(allTramos.responseJSON.tramos, function (i, v) {
+
+        selecTramos
+            .append(
+                $('<option/>')
+                    .data(v)
+                    .val(v.id)
+                    .html(v.string)
+            );
+    });
+
+    selecJuegos
+        .append('<option value="-1" disabled selected></option>');
+    $.each(allJuegos.responseJSON.juegos, function (i, v) {
+
+        selecJuegos
+            .append(
+                $('<option/>')
+                    .data(v)
+                    .val(v.id)
+                    .html(v.string)
+            );
+    });
+    selecMesas
+        .append('<option value="-1" disabled selected></option>');
+    $.each(allMesas.responseJSON.mesas, function (i, v) {
+
         selecMesas
-            .append('<option value="-1" disabled selected></option>');
-        $.each(allMesas.responseJSON.mesas, function (i, v) {
-
-            selecMesas
-                .append(
-                    $('<option/>')
-                        .data(v)
-                        .val(v.id)
-                        .html(v.string)
-                );
-        });
-    }
-});
+            .append(
+                $('<option/>')
+                    .data(v)
+                    .val(v.id)
+                    .html(v.string)
+            );
+    });
+}

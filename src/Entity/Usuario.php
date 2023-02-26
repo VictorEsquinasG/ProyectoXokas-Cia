@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -14,7 +15,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UsuarioRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'Ya hay una cuenta registrada con este email')]
-class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
+class Usuario implements UserInterface, PasswordAuthenticatedUserInterface, JsonSerializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -308,5 +309,46 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
         $this->puntos = $puntos;
 
         return $this;
+    }
+    
+    
+    public function jsonSerialize(): mixed
+    {
+    
+        $json = [
+            "id" => $this->getId(),
+            "email" => $this->getEmail(),
+            "nombre" => $this->getNombre(),
+            "apellido1" => $this->getApellido1(),
+            "apellido2" => $this->getApellido2(),
+            "roles" => $this->getRoles(),
+            "reservas" => $this->reservas->map(function (Reserva $reserva) {
+                return [
+                    'id' => $reserva->getId(),
+                    'fechaReserva' => $reserva->getFechaReserva(),
+                    'mesa' => $reserva->getMesa(),
+                    'tramo' => $reserva->getTramo(),
+                ];
+            })->toArray(),
+            "eventos" => $this->evento->map(function (Evento $evento)
+            {
+                return [
+                  "id" => $evento->getId(),
+                  "nombre" => $evento->getNombre(),  
+                  "fecha" => $evento->getFecha(),
+                  "tramo" => $evento->getTramo(),  
+                  "juegos" => $evento->getJuegos(),
+                  "numMaxAsistentes" => $evento->getNumMaxAsistentes(),  
+                ];
+            })->toArray(),
+            "string" => $this->__toString(),
+            "verificado" => $this->isVerified(),
+            "imagen" => $this->getImagen(),
+            "telefono" => $this->getTelefono(),
+            "telegram" => $this->getTelegramId(),
+            "admin" => $this->getAdmin(),
+            "nombreCompleto" => $this->getNombreCompleto(),
+        ];
+        return $json;
     }
 }

@@ -17,31 +17,49 @@ table {
     overflow: scroll;
 }
 
-.btn-primary {
+.btn {
 
-    background-color: $color-secundario;
-    color: $bg-principal;
-    border-color: $color-secundario;
-
-    &:hover {
-        background-color: $bg-principal;
-        color: $color-secundario;
-        border-color: transparent;
-        box-shadow: 4px 2px 5px $color-secundario;
+    &-outline-primary{
+        --bs-btn-color: #1CE25F;
+        --bs-btn-border-color: #1CE25F;
+        --bs-btn-hover-color: #fff;
+        --bs-btn-hover-bg: #1CE25F;
+        --bs-btn-hover-border-color: #1CE25F;
+        --bs-btn-focus-shadow-rgb: 13,110,253;
+        --bs-btn-active-color: #fff;
+        --bs-btn-active-bg: #1CE25F;
+        --bs-btn-active-border-color: #1CE25F;
+        --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+        --bs-btn-disabled-color: #1CE25F;
+        --bs-btn-disabled-bg: transparent;
+        --bs-btn-disabled-border-color: #1CE25F;
     }
+    &-primary {
 
-    &:focus-visible {
         background-color: $color-secundario;
         color: $bg-principal;
         border-color: $color-secundario;
-    }
 
-    &:active {
-        background-color: $color-secundario;
-        color: $bg-principal;
-        border-color: $color-secundario;
-    }
+        &:hover {
+            background-color: $bg-principal;
+            color: $color-secundario;
+            border-color: transparent;
+            box-shadow: 4px 2px 5px $color-secundario;
+        }
 
+        &:focus-visible {
+            background-color: $color-secundario;
+            color: $bg-principal;
+            border-color: $color-secundario;
+        }
+
+        &:active {
+            background-color: $color-secundario;
+            color: $bg-principal;
+            border-color: $color-secundario;
+        }
+
+    }
 }
 
 .c-flex {
@@ -86,7 +104,7 @@ form li {
     position: relative;
     top: 150%;
     background-color: #d3080f;
-    color:$bg-principal;
+    color: $bg-principal;
     text-align: center;
     padding: 3px 1px;
     border-radius: 20px;

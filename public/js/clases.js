@@ -87,3 +87,18 @@ class Reserva {
         
     }
 }
+
+
+class Evento {
+    
+    constructor(id, fecha, tramo, nombre, juegos, usuarios, max_asistentes) {
+        this.id = id;
+        this.nombre = nombre;
+        this.fecha = fecha;
+        this.tramo = tramo;
+        this.juegos = juegos;
+        this.usuarios = usuarios;
+        this.num_max_asistentes = max_asistentes;
+        
+    }
+}

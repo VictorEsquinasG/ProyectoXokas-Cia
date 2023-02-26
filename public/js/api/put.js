@@ -9,8 +9,23 @@ function putReserva(reserva) {
     debugger;
     $.ajax({
         type: "PUT",
-        url: "api/reserva",
+        url: "/api/reserva",
         data: JSON.stringify(reser),
+        dataType: "json",
+        async: false,
+        success: function (response) {
+            console.log(response);
+        }
+    });
+}
+function putEvento(evento) {
+    let ev = {};
+    ev.evento = evento;
+    debugger;
+    $.ajax({
+        type: "PUT",
+        url: "/api/evento",
+        data: JSON.stringify(ev),
         dataType: "json",
         async: false,
         success: function (response) {

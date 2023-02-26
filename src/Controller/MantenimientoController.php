@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Evento;
 use App\Entity\Juego;
 use App\Form\JuegoFormType;
 use App\Repository\DistribucionRepository;
+use App\Repository\EventoRepository;
 use App\Repository\JuegoRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,8 +28,8 @@ class MantenimientoController extends AbstractController
         return $this->render('mantenimiento/index.html.twig');
     }
 
-   
-    
+
+
     #[Route('/reservas', name: 'mantenimiento_reservas')]
     public function mant_reservas(): Response
     {
@@ -49,7 +51,10 @@ class MantenimientoController extends AbstractController
             if (!in_array($nombre, $nombreDistribuciones)) {
                 #Si se trata de un nuevo nombre
                 $nombreDistribuciones[] = $nombre;
-                $disposiciones[] = ["name" => $nombre, "value" => $nombre];
+                $disposiciones[] = [
+                    "name" => $nombre,
+                    "value" => $nombre
+                ];
             }
         }
 
@@ -63,6 +68,14 @@ class MantenimientoController extends AbstractController
     {
         return $this->render('mantenimiento/juegos.html.twig', [
             "juegos" => $jr->findAll()
+        ]);
+    }
+
+    #[Route('/eventos', name: 'mantenimiento_eventos')]
+    public function mant_eventos(EventoRepository $er): Response
+    {
+        return $this->render('mantenimiento/eventos.html.twig', [
+            "eventos" => $er->findAll()
         ]);
     }
 
@@ -83,7 +96,7 @@ class MantenimientoController extends AbstractController
                 // Apuntamos a la imagen
                 $juego->setImagen($nombreFichero);
             }
-            
+
             // Lo persistimos
             $entityManager->persist($juego);
             $entityManager->flush();
@@ -117,7 +130,7 @@ class MantenimientoController extends AbstractController
         # Por último, lo reenviamos al listado
         return $this->redirectToRoute('mantenimiento_juegos');
     }
-    
+
     #[Route('/juego/crear', name: 'app_juego_nuevo')]
     public function crea_juego(EntityManagerInterface $entityManager, Request $request)
     {
@@ -135,7 +148,7 @@ class MantenimientoController extends AbstractController
                 // Apuntamos a la imagen
                 $juego->setImagen($nombreFichero);
             }
-            
+
             // Lo persistimos
             $entityManager->persist($juego);
             $entityManager->flush();
@@ -153,5 +166,21 @@ class MantenimientoController extends AbstractController
             "juego" => $juego,
             "juegoForm" => $form->createView()
         ]);
+    }
+
+
+    #[Route('/evento/borrar/{id}', name: 'app_borrar_evento')]
+    public function borra_eventos(EntityManagerInterface $entityManager, int $id)
+    {
+        # Encontramos el evento seleccionado
+        $jr = $entityManager->getRepository(Evento::class);
+        $event = $jr->find($id);
+
+        # Lo borramos
+        $entityManager->remove($event);
+        $entityManager->flush();
+
+        # Por último, lo reenviamos al listado
+        return $this->redirectToRoute('mantenimiento_eventos');
     }
 }

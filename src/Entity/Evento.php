@@ -7,9 +7,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 #[ORM\Entity(repositoryClass: EventoRepository::class)]
-class Evento
+class Evento implements JsonSerializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -151,5 +152,35 @@ class Evento
         $this->tramo = $tramo;
 
         return $this;
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        $users = $this->getUsuarios();
+        $games = $this->getJuegos();
+        $asistentes = [];
+        $juegos = [];
+
+        foreach ($users as $usuario) {
+            # Lo metemos a un array (not lazy)
+            $asistentes[]= $usuario;
+        }
+
+        foreach ($games as $juego) {
+            # Lo metemos a un array (not lazy)
+            $juegos[]= $juego;
+        }
+
+        $json = [
+            "id" => $this->id,
+            "nombre" => $this->nombre,
+            "fecha" => $this->getFecha(),
+            "tramo" => $this->getTramo(),
+            "numMaxAsistentes" => $this->getNumMaxAsistentes(),
+            "asistentes" => $asistentes,
+            "juegos" => $juegos
+        ];
+
+        return $json;
     }
 }

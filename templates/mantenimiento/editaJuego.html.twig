@@ -4,9 +4,10 @@
 
 	<style>
 		form {
-			padding: 20px 5px;
-			border-radius: 15px;
-			background-color: #cccfcc;
+			padding: 60px;
+			border-radius: 23px;
+			background-color: #FFFFFF;
+			box-shadow: 0px 0px 10px rgb(0 0 0 / 10%);
 		}
 		.c-cont__botones {
 			display: flex;
@@ -22,7 +23,7 @@
 
 	<section class="c-container--center">
 		<section class="c-container__formu">
-			<h1 class="mb-2">Editar juego:
+			<h1 class="mb-3 text-center display-5">EDITAR JUEGO
 				{{juego.nombre}}</h1>
 
 			{{ form_start(juegoForm) }}
@@ -65,7 +66,7 @@
 
 			<div class="c-cont__botones">
 
-				<a class="btn btn-info col-6 col-md-3" href="{{ url('mantenimiento_juegos') }}">
+				<a class="btn btn-outline-primary col-6 col-md-3" href="{{ url('mantenimiento_juegos') }}">
 					<i class="fa fa-backward"></i><br>
 					Volver atrás
 				</a>

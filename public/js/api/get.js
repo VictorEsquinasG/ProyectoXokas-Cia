@@ -9,7 +9,7 @@
 function getTramos() {
     return $.ajax({
         type: "GET",
-        url: "api/tramo/",
+        url: "/api/tramo/",
         async: false,
     })
         .done(function (respuesta) {
@@ -24,7 +24,7 @@ function getTramos() {
 function getTramo(id) {
     return $.ajax({
         type: "GET",
-        url: "api/tramo/" + id,
+        url: "/api/tramo/" + id,
         async: false,
     })
         .done(function (respuesta) {
@@ -51,7 +51,7 @@ function getDiasFestivos() {
 function getJuegosByNumJugadores(num) {
     return $.ajax({
         type: "GET",
-        url: "api/juego/byJugadores/"+num,
+        url: "/api/juego/byJugadores/"+num,
         async: false,
     })
         .done(function (respuesta) {
@@ -65,7 +65,7 @@ function getJuegosByNumJugadores(num) {
 function getJuegos() {
     return $.ajax({
         type: "GET",
-        url: "api/juego/",
+        url: "/api/juego/",
         async: false,
     })
         .done(function (respuesta) {
@@ -74,13 +74,12 @@ function getJuegos() {
             return juegos;
         })
         ;
-
 }
 
 function getJuego(id) {
     return $.ajax({
         type: "GET",
-        url: "api/juego/" + id,
+        url: "/api/juego/" + id,
         async: false,
     })
         .done(function (respuesta) {
@@ -90,6 +89,33 @@ function getJuego(id) {
         })
         ;
 
+}
+
+function getUsuarios() {
+
+    return $.ajax({
+        type: "GET",
+        url: "/api/usuario/",
+        async: false,
+    })
+        .done(function (respuesta) {
+            let usuarios = respuesta.usuarios;
+
+            return usuarios;
+        })
+        ;
+}
+
+
+function getEvento(id) {
+    return $.ajax({
+        type: "GET",
+        url: "/api/evento/" + id,
+        async: false,
+        success: function (response) {
+            return (response.evento);
+        }
+    });
 }
 
 function getDisposiciones(all_distribuciones) {
@@ -107,10 +133,10 @@ function getDisposiciones(all_distribuciones) {
 function getDistribucion(fecha) {
     return $.ajax({
         type: "GET",
-        url: "api/distribucion/fecha/" + fecha,
+        url: "/api/distribucion/fecha/" + fecha,
         async: false,
         success: function (response) {
-            return (response.distribuciones);
+            return (response.distribucion);
         }
     });
 }
@@ -134,7 +160,7 @@ function getFechaDisposicionByName(all_distribuciones,alias) {
 function getMesas() {
     return $.ajax({
         type: "GET",
-        url: "api/mesa/",
+        url: "/api/mesa/",
         async: false,
     })
         .done(function (respuesta) {

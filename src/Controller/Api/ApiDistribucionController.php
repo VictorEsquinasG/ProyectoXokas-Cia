@@ -67,7 +67,7 @@ class ApiDistribucionController extends AbstractController
         # DISTRIBUCIONES POR FECHA
         return $this->json(
             [
-                "distribuciones" => $distribuciones,
+                "distribucion" => $distribuciones,
                 "Success" => true
             ],
             202
