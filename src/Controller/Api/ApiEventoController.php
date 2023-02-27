@@ -36,15 +36,27 @@ class ApiEventoController extends AbstractController
             // cogemos el evento
             $evento = $mr->find($id);
 
+            // Cogemos las colecciones en arrays
+            $juegos = [];
+            $asistentes = [];
+            $games = $evento->getJuegos();
+            $users = $evento->getUsuarios();
+            foreach ($games as $game) {
+                $juegos[] = $game;
+            }
+            foreach ($users as $user) {
+                $asistentes[] = $user;
+            }
+
             return $this->json([
                 "evento" => [
                     "id" => $evento->getId(),
                     "nombre" => $evento->getNombre(),
                     "fecha" => $evento->getFecha(),
-                    "juegos" => $evento->getJuegos(),
+                    "juegos" => $juegos,
                     "max_asistentes" => $evento->getNumMaxAsistentes(),
                     "tramo" => $evento->getTramo(),
-                    "usuarios" => $evento->getUsuarios(),
+                    "usuarios" => $asistentes,
                 ],
                 "Success" => true
             ], 200);
@@ -65,7 +77,7 @@ class ApiEventoController extends AbstractController
         $evento->setFecha($fecha);
         $evento->setTramo($datos->tramo);
         $evento->setNumMaxAsistentes($datos->max_asistentes);
-        
+
         $manager = $mr->getManager();
         try {
             $manager->persist($evento);
@@ -102,7 +114,7 @@ class ApiEventoController extends AbstractController
         $evento->setTramo($eventoNuevo->tramo);
         $evento->setNombre($eventoNuevo->nombre);
         $evento->setNumMaxAsistentes($eventoNuevo->num_max_asistentes);
-        
+
         // Borramos los usuarios del evento antes de editar el array
         foreach ($evento->getUsuarios() as $asistente) {
             # Lo eliminamos

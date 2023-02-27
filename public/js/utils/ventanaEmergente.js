@@ -133,7 +133,7 @@ $(function () { // Window.onload
                 </div>
 
                 <div class="row mt-3">
-                    <div style="margin:auto;" class="col-12 col-md-6 text-center">
+                    <div style="margin:auto;" id="div_asistentes" class="col-12 col-md-6 text-center">
                         <label>Usuarios asistentes:</label>
                         <select multiple id="asistentes"></select>
                     </div>
@@ -350,6 +350,61 @@ $(function () { // Window.onload
 
     });
 
+    /**
+     * Ver más información acerca del evento
+     * Es igual que el de editar pero los campos se encuentran desactivados
+     */
+    $('a[id^=evento_]').click(function (ev) {
+        ev.preventDefault();
+
+        let id = $(this).attr('id').split('_')[1];
+        let eventoActual = getEvento(id).responseJSON.evento;
+
+        rellenaSelecJuegos(JplantillaEvento);
+        rellenaSelecTramos(JplantillaEvento);
+        rellenaSelecUsuarios(JplantillaEvento);
+
+        /* RELLENAMOS LOS CAMPOS */
+        let nombre = eventoActual.nombre;
+        let fecha = eventoActual.fecha.date;
+        let tramo = eventoActual.tramo.id;
+        let asistentes = eventoActual.usuarios;
+        let juegos = eventoActual.juegos;
+        let max_asistentes = eventoActual.max_asistentes;
+        let date = fecha.substr(0, 10);
+        let fechaArray = date.split('-');
+        let fechaString = (fechaArray[2] + '/' + fechaArray[1] + '/' + fechaArray[0]);
+
+        JplantillaEvento.find('.nombre').html(nombre);
+        JplantillaEvento.find('#datePicker').val(fechaString).prop('disabled', true);
+        JplantillaEvento.find('#max_asistentes').val(max_asistentes).prop('disabled', true);
+        JplantillaEvento.find('#div_asistentes').attr( 'class', 'd-none' ); // Ocultamos los asistentes;
+
+        let selecAsistentes = JplantillaEvento.find('#asistentes');
+        let selecJuego = JplantillaEvento.find('#selecJuego').attr( 'disabled', 'disabled' );
+
+        $.each(asistentes, function (i, usuario) {
+            selecAsistentes.val(usuario.id);
+        });
+        
+        $.each(juegos, function (i, juego) {
+            selecJuego.val(juego.id);
+        });
+
+        JplantillaEvento.find('#selecTramo').val(tramo).prop('disabled', true);
+        JplantillaEvento.find('button[type="submit"]').attr("class","d-none"); // No hay botón de aceptar
+
+        dialog.dialog({
+            modal: true,
+            width: "750px",
+            minHeight: "900px",
+            title: "Información del evento 🍸📒",
+        })
+            .append(JplantillaEvento)
+    });
+    /**
+     * Editar eventos
+     */
     $('a[id^=editaEvento_]').click(function (ev) {
         ev.preventDefault();
         let id = $(this).attr('id').split('_')[1];
@@ -367,18 +422,28 @@ $(function () { // Window.onload
         let asistentes = eventoActual.usuarios;
         let juegos = eventoActual.juegos;
         let max_asistentes = eventoActual.max_asistentes;
-        let date = fecha.substr(0,10);
+        let date = fecha.substr(0, 10);
         let fechaArray = date.split('-');
         let fechaString = (fechaArray[2] + '/' + fechaArray[1] + '/' + fechaArray[0]);
 
         JplantillaEvento.find('.nombre').html(nombre);
         JplantillaEvento.find('#datePicker').val(fechaString);
+        JplantillaEvento.find('#div_asistentes').attr( 'class', 'd-block col-12 col-md-6 text-center' ); // Mostramos los asistentes;
         JplantillaEvento.find('#max_asistentes').val(max_asistentes);
-        JplantillaEvento.find('#asistentes').val(asistentes);
-        $.each(juegos, function (i, juego) { 
-            JplantillaEvento.find('#selecJuego').val(juego);
-        });
         JplantillaEvento.find('#selecTramo').val(tramo);
+
+        let selecAsistentes = JplantillaEvento.find('#asistentes');
+        let selecJuego = JplantillaEvento.find('#selecJuego');
+
+        $.each(asistentes, function (i, usuario) {
+            selecAsistentes.val(usuario.id);
+        });
+        
+        $.each(juegos, function (i, juego) {
+            selecJuego.val(juego.id);
+        });
+
+        JplantillaEvento.find('button[type="submit"]').attr("class","d-block btn btn-primary"); // Nos cercionamos de que el botón está visible
 
         dialog.dialog({
             modal: true,
@@ -421,7 +486,7 @@ function rellenaSelecJuegos(Jplantilla) {
     selecJuegos.html('');
     // Mínimo tendrá el vacío
     selecJuegos
-        // .append('<option value="-1" disabled selected></option>');
+    // .append('<option value="-1" disabled selected></option>');
     $.each(allJuegos.responseJSON.juegos, function (i, v) {
 
         selecJuegos
@@ -441,7 +506,7 @@ function rellenaSelecUsuarios(Jplantilla) {
     selecUsuarios.html('');
     // Mínimo tendrá el vacío
     selecUsuarios
-        // .append('<option value="-1" disabled selected></option>');
+    // .append('<option value="-1" disabled selected></option>');
     $.each(allUsers.responseJSON.usuarios, function (i, v) {
 
         selecUsuarios

@@ -3,7 +3,9 @@
 namespace App\Command;
 
 use App\Entity\Evento;
+use App\Entity\Juego;
 use App\Entity\Tramos;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -66,13 +68,19 @@ class EventoMakerCommand extends Command
             $nombre = $io->ask("¿Cómo se llamará el evento?");
         }
         $evento->setNombre($nombre);
-        $progressBar->advance(33);
+        $progressBar->advance(25);
         $output->writeln(''); //Salto de línea
         
         /* NÚMERO DE ASISTENTES */
         $max = $io->ask("¿Cuál es el aforo máximo?","10");
         $evento->setNumMaxAsistentes(intval($max));
-        $progressBar->advance(33);
+        $progressBar->advance(10);
+        $output->writeln(''); //Salto de línea
+
+        /* FECHA */
+        $date = $io->ask('¿Cuándo será? (Fecha en formato: 2003-08-30)');
+        $fecha = new DateTime($date);
+        $evento->setFecha($fecha);
         $output->writeln(''); //Salto de línea
         
         /* TRAMO HORARIO */
@@ -86,12 +94,41 @@ class EventoMakerCommand extends Command
         $input->setInteractive(true);
         $tramo = $this->manager->getRepository(Tramos::class)->find($tramoElegido);
         $evento->setTramo($tramo);
-        $progressBar->advance(30);
+        $progressBar->advance(15);
+        $io->writeln('');
+
+        /* JUEGOS */
+        $juegos = $this->manager->getRepository(Juego::class)->findAll();
+        
+        /* (1/2) */
+        foreach ($juegos as $juego) {
+            # Los imprimimos como opciones
+            $output->writeln($juego->getId().' - '.$juego);
+        }
+
+        $juegoElegido = $io->ask("¿Qué juego se presentará? [1/2]");
+        $input->setInteractive(true);
+        $tramo = $this->manager->getRepository(Juego::class)->find($juegoElegido);
+        $evento->setTramo($tramo);
+        $progressBar->advance(15);
+        $io->writeln('');
+
+        /* (2/2) */
+        foreach ($juegos as $juego) {
+            # Los imprimimos como opciones
+            $output->writeln($juego->getId().' - '.$juego);
+        }
+        $juegoElegido = $io->ask("¿Qué juego se presentará? [2/2]",null);
+        $input->setInteractive(true);
+        $tramo = $this->manager->getRepository(Juego::class)->find($juegoElegido);
+        $evento->setTramo($tramo);
+        $progressBar->advance(15);
         $io->writeln('');
         
-
+        /* FIN*/
         $output->writeln('Nombre del evento: '.$nombre);
         $output->writeln('Participantes: '.$max);
+        $output->writeln('Fecha: '.$fecha->format('d-m-Y'));
         $output->writeln('Tramo: '.$tramo);
 
         $progressBar->finish();
