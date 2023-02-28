@@ -26,7 +26,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ApiReservaController extends AbstractController
 {
     #[Route("/reserva/{id}", name: "getReserva", methods: "GET")]
-    public function getReserva(ReservaRepository $rr, int $id): Response
+    public function getReserva(ReservaRepository $rr, int $id = null): Response
     {
 
         if ($id === null) {
@@ -44,7 +44,7 @@ class ApiReservaController extends AbstractController
             $reserva = $rr->find($id);  
             return $this->json(
                 [
-                    "Reserva" => [
+                    "reserva" => [
                         "id" => $reserva->getId(),
                         "juego" => $reserva->getJuego(),
                         "mesa" => $reserva->getMesa(),
@@ -73,16 +73,17 @@ class ApiReservaController extends AbstractController
         $fecha = $datetime->createFromFormat('Y-m-d', $datos->fecha);
 
         $reserva->setFechaReserva($fecha);
-        $reserva->setAsiste($datos->asiste);
 
         if ($datos->asiste === true) {
             $reserva->setFechaCancelacion(null);
+            $reserva->setAsiste(true);
         } else {
             # Si no asiste
             $datetime = new DateTime();
             $fecha = $datetime->createFromFormat('Y-m-d', $datos->fechaCancelacion);
 
             $reserva->setFechaCancelacion($fecha);
+            $reserva->setAsiste(false);
         }
 
         // El usuario que reserva

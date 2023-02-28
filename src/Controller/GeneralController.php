@@ -122,19 +122,6 @@ class GeneralController extends AbstractController
         ]);
     }
 
-    #[Route('/reserva/{id}', name: 'reserva_concreta')]
-    public function reservaConcreta(int $id)
-    {
-        # TODO La página sobre la reserva original
-    }
-
-    #[Route('/evento/{id}', name: 'evento_concreto')]
-    public function eventoConcreto(int $id)
-    {
-        die("SI " . $id);
-        # TODO La página sobre la reserva original
-    }
-
     #[Route('/p', name: 'prueba_pdf')]
     public function pdf(PdfMaker $dompdf)
     {

@@ -3,6 +3,7 @@
 namespace App\Controller\Api;
 
 use App\Entity\Evento;
+use App\Entity\Tramos;
 use App\Repository\EventoRepository;
 use DateTime;
 use Doctrine\Persistence\ManagerRegistry;
@@ -70,12 +71,14 @@ class ApiEventoController extends AbstractController
         $datos = $datos->evento;
 
         $datetime = new DateTime();
-        $fecha = $datetime->createFromFormat('Y-m-d H:i:s.u', $datos->fecha);
+        $fecha = $datetime->createFromFormat('Y-m-d', $datos->fecha);
 
         $evento = new Evento();
         $evento->setNombre($datos->nombre);
         $evento->setFecha($fecha);
-        $evento->setTramo($datos->tramo);
+        $evento->setTramo(
+            $mr->getRepository(Tramos::class)->find($datos->tramo)
+        );
         $evento->setNumMaxAsistentes($datos->max_asistentes);
 
         $manager = $mr->getManager();
@@ -126,7 +129,7 @@ class ApiEventoController extends AbstractController
             $evento->addUsuario($user);
         }
         // Borramos los juegos del evento antes de editar el array
-        foreach ($evento->getJuegos(0) as $juego) {
+        foreach ($evento->getJuegos() as $juego) {
             # Lo eliminamos
             $evento->removeJuego($juego);
         }

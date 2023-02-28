@@ -54,48 +54,26 @@
 							</li>
 						{% endif %}
 
-						<li	class="scroll-to-section">
+						<li>
 							<a href="{{ url('eventos') }}">Eventos</a>
 						</li>
-
-						<li>
-							{% if is_granted('ROLE_USER') %}
-								<li class="has-sub">
-
-									<a class="mt-1" id="FotoPerfil" style="height:50px;">
-										<img src="{{ asset('images/uploads/' ~ app.user.imagen) }}" style="width:50px;border-radius:50%;" alt="Profile.pic">
-										<i class="fa fa-chevron-down"></i>
-									</a>
-
-									<ul class="sub-menu mt-0">
-										<li>
-											<a class="mt-0" href="{{ url('app_profile') }}">Mi perfil</a>
-										</li>
-										<li class="scroll-to-section">
-											<!-- Sus reservas -->
-											<a href="{{ url('reservar') }}">Reservas</a>
-										</li>
-										<li>
-											<a class="mt-0" href="{{ url('app_logout') }}">Cerrar Sesión</a>
-										</li>
-									</ul>
-
-								</li>
-
-							{% else %}
-								<a href="{{ url('app_login') }}">Iniciar Sesión</a>
-
-							{% endif %}
+						
+						<li class="has-sub d-block d-md-none">
+							{% include "components/profile-xs.html.twig" %}	
 						</li>
-					</li>
+						
+						<li class="has-sub">
+							{% include "components/profile.html.twig" %}						
+						</li>
+					</ul>
 
-
-				</li>
-			</ul>
-			<a class='menu-trigger'>
-				<span>Menú</span>
-			</a>
-			<!-- ***** Menu End ***** -->
-		</nav>
+					<a class='menu-trigger'>
+						<span>Menú</span>
+					</a>
+					<!-- ***** Menu End ***** -->
+				</nav>
+			</div>
+		</div>
 	</div>
-</div></div></header><!-- ***** Header Area End ***** --><script src="{{ asset('js/flechita-submenu.js') }}"></script>
+</header>
+<!-- ***** Header Area End ***** -->

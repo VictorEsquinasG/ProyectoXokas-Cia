@@ -50,7 +50,7 @@ $(function () {
     // var sala = 
     Jplantilla.find("#sala")
         .attr("class", "ml-3")
-        
+
         .css({
             overflow: 'scroll',
             minHeight: '300px',
@@ -61,20 +61,6 @@ $(function () {
         })
         ;
 
-    $('.mesa') /* LAS MESAS SON DROPABLES PARA DEJAR LOS TABLEROS */
-    .droppable({
-        // Cuando se suelte en él
-        drop: function (ev, ui) {
-
-            if (!posicionValida(mesa)) {
-                console.log("No puedes jugar en esa mesa");
-            } else {
-
-
-            }
-        }
-
-    });
 
     // USAMOS 1 BOTON PARA ABRIR LA VENTANA MODAL
     $("#creaReserva").click(function (ev) {
@@ -89,7 +75,7 @@ $(function () {
         /* CREAMOS UN MODAL  */
         dialog.dialog({
             modal: true,
-            width: "100%",
+            width: "85%",
             title: "Reservar mesa 📆🎲",
             show: {
                 effect: "blind",
@@ -107,6 +93,9 @@ $(function () {
                 // Volvemos a buscar datepickers
                 ConvierteDatePicker();
 
+                // Escondemos el input de los juegos
+                $(Jplantilla).find('#selecJuego').hide();
+
                 // El numero de jugadores cambiará los juegos disponibles
                 $('#numJugadores')
                     .change(function (ev) {
@@ -116,7 +105,15 @@ $(function () {
                         vaciaStock();
                         rellenaStockJuegos($('#almacen'), jugadores);
                     });
+                // Programamos el botón que retira el tablero de la mesa
+                $('#cancela_juego').click(function (ev) {
+                    ev.preventDefault();
+
+                    // Eliminamos el juego que haya seleccionado
+                    $('.mesa').children('.juego').remove();
+                });
             })
+            /* SE HACE LA RESERVA */
             .submit(function (e) {
                 e.preventDefault();
 
@@ -124,13 +121,19 @@ $(function () {
                 // Cogemos todos los campos del formulario
                 let fecha = formulario.find('#datePicker').val();
                 let idTramo = parseInt(formulario.find('#selecTramos').val());
-                let idJuego = parseInt(formulario.find('#selecJuego').val());
-                let idMesa = parseInt(formulario.find('#selecMesa').val());
+                let idJuego = parseInt($('#formu_reserva').data('Juego'));
+                let idMesa = parseInt($('#formu_reserva').data('Mesa'));
 
                 // creamos la reserva  
                 let reserva = new Reserva(null, fecha, true, null, null, idJuego, idMesa, idTramo);
                 // Hacemos el POST
                 if (setReserva(reserva)) {
+                    // Vaciamos el formulario
+                    formulario.find('#datePicker').val(null);
+                    formulario.find('#selecTramos').val('');
+                    $('#formu_reserva').data('Juego', '');
+                    $('#formu_reserva').data('Mesa', '');
+                    // Cerramos el modal
                     $(this).parent().remove();
                 } else {
                     console.log("ERROR al crear la reserva");
@@ -147,67 +150,93 @@ $(function () {
 /* PLANTILLA */
 var plantilla =
     `
-<div class="accordion" id="accordionExample">
-    <div class="accordion-item">
-        <h2 class="accordion-header" id="headingOne">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                Fecha de la reserva
-            </button>
-        </h2>
-        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-            <div class="accordion-body">
-                <div class="row">
-                    <div class="col-12 col-md-6 l-grid-line">
-                        <label>Fecha</label>
-                        <input type="text" id="datePicker" autocomplete="off">
+<form action="" id="formu_reserva">
+    <div class="accordion" id="accordionExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    Fecha y hora de la reserva
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <div class="row">
+                        <div class="col-12 col-md-6 l-grid-line">
+                            <label class="m-1">Hora</label>
+                            <select name="tramo" class="m-1" id="selecTramos"></select>
+                        </div>
+                        <div class="col-12 col-md-6 l-grid-line">
+                            <label class="m-1">Fecha</label>
+                            <input type="text" id="datePicker" autocomplete="off" class="m-1">
+                        </div>
                     </div>
-                    <div class="col-12 col-md-6 l-grid-line">
-                        <label>Hora</label>
-                        <select name="tramo" id="selecTramos"></select>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Más Detalles
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <label class="m-1">Número de jugadores:</label>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <input type="number" name="num_jugadores" class="m-1" id="numJugadores">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    Elegir juego
+                </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <div class="row l-grid" id="container-salas">
+                        <div id="almacen">
+                            <!-- Los juegos -->
+                        </div>
+                        <div id="sala">
+                            <!-- La mesa -->
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <a href="#" id="cancela_juego" class="btn btn-outline-danger">Deshacer selección</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingFour">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                    Hacer reserva
+                </button>
+            </h2>
+            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <div class="row m-3">
+                        <div class="col-12">
+                            <p class="display-5 text-center">¿Has acabado ya?</p>
+                        </div>
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn btn-primary">HACER MI RESERVA AHORA</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="accordion-item">
-        <h2 class="accordion-header" id="headingTwo">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                Más Detalles
-            </button>
-        </h2>
-        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-            <div class="accordion-body">
-                <div class="row">
-                    <div class="col-12 col-md-6">
-                        Número de jugadores:
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <input type="number" name="num_jugadores" id="numJugadores">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="accordion-item">
-        <h2 class="accordion-header" id="headingThree">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                Elegir juego
-            </button>
-        </h2>
-        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-            <div class="accordion-body">
-                <div class="row l-grid" id="container-salas">
-                    <div id="almacen">
-                        <!-- <select name="juego" id="selecJuego"></select> -->
-                    </div>
-                    <div id="sala">
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+</form>
 `
 
 function rellenaSelecTramos(selecTramos) {
@@ -258,6 +287,7 @@ function rellenaStockJuegos(salaJuegos, numJugadores = null) {
                         margin: '5px',
                         top: "0",
                         left: "0",
+                        zIndex: "10",
 
                         background: '#fff url(../images/uploads/' + v.imagen + ') no-repeat',
                         backgroundPosition: 'center center'
@@ -267,7 +297,7 @@ function rellenaStockJuegos(salaJuegos, numJugadores = null) {
                         revert: true,
                         revertDuration: 0,
                         helper: 'clone',
-                        accept: '#almacen, .mesa',
+                        accept: '#sala .mesa',
                         cursor: "move",
                         start: function (ev, ui) {
                             // Hacemos parcialmente transparente la mesa que estamos moviendo
@@ -323,4 +353,67 @@ function vaciaStock() {
         $('#almacen').children('.juego[id=juego_' + v.id + ']').remove();
 
     });
+}
+
+function posicionValidaTablero(juego, mesa) {
+
+    let entra = cabeTablero(juego, mesa) && mesaLibre(mesa);
+
+    return (entra)
+}
+
+function cabeTablero(juego, mesa) {
+    let game = juego.data('juego');
+    let table = mesa.data('mesa');
+
+    // El tablero debe ser más pequeño que la mesa (para caber dentro)
+    // Le podemos dar la vuelta al tablero para que quepa 
+    let cabeDerecho = (game.tablero.ancho < table.ancho && game.tablero.largo < table.largo);
+    let cabeDoblado = (game.tablero.largo < table.ancho && game.tablero.ancho < table.largo);
+
+    return (cabeDerecho || cabeDoblado);
+}
+
+function reservadaHoy(div) {
+    let reservada = false; // A priori está disponible la mesa
+    // Cogemos la mesa
+    let mesa = div.data('mesa');
+
+    // Miramos entre sus reservas
+    $.each(mesa.reservas, function (i, reserva) {
+
+        let fechaReserva = new Date(reserva.fechaReserva.date);
+        let hoy = new Date($('#datePicker').val());
+
+        // Si está reservada HOY (fecha seleccionada)
+        if (fechaReserva.toDateString() == hoy.toDateString()) {
+            reservada = true;
+            return false; // rompemos el bucle
+        }
+    })
+    return reservada;
+}
+
+function mesaLibre(mesa) {
+    // Si ya tiene un juego (para no permitir que arrastre varios juegos)
+    let ocupada = !(mesasLibres()); // ninguna mesa puede estar ocupada
+    let reservada = (reservadaHoy(mesa))
+
+    return (!ocupada && !reservada)
+}
+
+function mesasLibres() {
+    let libre = true;
+    let mesas = $('#sala .mesa');
+
+    $.each(mesas, function (i, v) {
+        let mesa = $(v);
+
+        // Cuando no tenga hijos es que la mesa está vacía (está libre)
+        libre = !(mesa.children().length > 0);
+
+        return libre ? true : false; // Rompemos el bucle       
+    });
+
+    return libre;
 }

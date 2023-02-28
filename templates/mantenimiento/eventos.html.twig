@@ -12,7 +12,7 @@
 
 			<div class="col-lg-10">
 				<div style="min-height:10px;display:flex;justify-content:center">
-					<a id="nuevo_evento" href="#" class="btn btn-link col-10 text-center">CREAR EVENTO</a>
+					<a id="editaEvento_" href="#" class="btn btn-link col-10 text-center">CREAR EVENTO</a>
 				</div>
 				<div class="table-responsive">
 					<table class="table table-striped table-bordered mt-1">
@@ -50,7 +50,7 @@
 											</a>
 										</span>
 										<span>
-											<a href="{{'/mantenimiento/evento/borrar/' ~ evento.getId() }}">
+											<a id="{{'borra_' ~ evento.getId() }}" href="{{'/mantenimiento/evento/borrar/' ~ evento.getId() }}">
 												<i class="fa fa-trash" title="borrar"></i>
 											</a>
 										</span>
@@ -80,4 +80,10 @@
 	<script src="{{asset('js/api/put.js')}}"></script>
 	<script src="{{asset('js/utils/DatePicker.js')}}"></script>
 	<script src="{{asset('js/utils/ventanaEmergente.js')}}"></script>
+
+	<script>
+		$('a[id^=borrar_]').click(function(ev) {
+			$(this).alert('El evento será borrado')
+		});
+	</script>
 {% endblock %}

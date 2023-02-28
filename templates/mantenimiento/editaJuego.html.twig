@@ -28,13 +28,13 @@
 
 			{{ form_start(juegoForm) }}
 
-			<div class="row">
+			<div class="row m-2">
 				{{ form_row(juegoForm.nombre) }}
 			</div>
-			<div class="row">
+			<div class="row m-2">
 				{{ form_row(juegoForm.descripcion) }}
 			</div>
-			<div class="row">
+			<div class="row m-2">
 				{{ form_row(juegoForm.minJugadores,{
                     label: 'Mínimo de jugadores'
                 }) }}
@@ -43,7 +43,7 @@
                 }) }}
 			</div>
 
-			<div class="row">
+			<div class="row m-2">
 				{{ form_row(juegoForm.anchoTablero,{
                 label: 'Ancho del tablero'
             		}) }}
@@ -52,7 +52,7 @@
                 	label: 'Largo del tablero'
             	}) }}
 			</div>
-			<div class="row">
+			<div class="row m-2">
 				{% if juegoForm.imagen|length %}
 					<img src="{{asset('images/uploads/' ~ juegoForm.imagen)}}">
 				{% else %}

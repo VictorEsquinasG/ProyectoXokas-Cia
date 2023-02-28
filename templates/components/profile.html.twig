@@ -1,0 +1,26 @@
+{% if is_granted('ROLE_USER') %}
+
+	<a class="mt-1" id="FotoPerfil" style="height:50px;">
+		<img src="{{ asset('images/uploads/' ~ app.user.imagen) }}" style="width:50px;border-radius:50%;" alt="Profile.pic">
+		<i class="fa fa-chevron-down"></i>
+	</a>
+
+	<ul class="sub-menu mt-0">
+		<li class="scroll-to-section">
+			<a class="mt-0" href="{{ url('app_profile') }}">Mi perfil</a>
+		</li>
+		<li
+			class="scroll-to-section">
+			<!-- Sus reservas -->
+			<a href="{{ url('reservar') }}">Reservas</a>
+		</li>
+		<li class="scroll-to-section">
+			<a class="mt-0" href="{{ url('app_logout') }}">Cerrar Sesión</a>
+		</li>
+	</ul>
+
+
+{% else %}
+	<a href="{{ url('app_login') }}">Iniciar Sesión</a>
+
+{% endif %}

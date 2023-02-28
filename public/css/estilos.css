@@ -14405,6 +14405,21 @@ body {
   opacity: 0.9;
 }
 
+table {
+  border: 1.25px solid black;
+  border-collapse: collapse;
+  text-align: center;
+  vertical-align: middle;
+  box-shadow: 0px 5px 25px rgb(70, 67, 67);
+}
+table th, table tr, table td {
+  border: 1px solid rgba(29, 29, 31, 0.524);
+}
+table thead, table th, table tfoot {
+  background-color: #42E04F;
+  color: white;
+}
+
 a {
   color: #1CE25F;
   text-decoration: none;

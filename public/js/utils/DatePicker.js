@@ -116,39 +116,77 @@ function setDateFormatES() {
 function pintaMesas(mesas) {
 
     $.each(mesas, function (i, mesa) {
-        debugger
+
         // La convertimos en un objeto mesa
         if (mesa.pos_x !== undefined && mesa.pos_x !== null) {
             // TIENE POSICION DE DISTRIBUCION
             var objActual = new Mesa(mesa.id, mesa.ancho, mesa.largo, mesa.sillas, mesa.pos_x, mesa.pos_y, mesa.distribuciones, mesa.reservas);
-        }else {
+        } else {
             // ES UNA MESA DE LA DISTRIBUCION BASE
             var objActual = new Mesa(mesa.id, mesa.ancho, mesa.largo, mesa.sillas, mesa.posicion_x, mesa.posicion_y, mesa.distribuciones, mesa.reservas);
         }
         // Cogemos la sala
         let sala = $('#sala').data('sala');
-        // Cogemos la mesa
-        let caja =
-            $('<div/>')
-                .attr('class', 'mesa')
-                .data('mesa', objActual)
-                .css({
-                    position: "absolute",
-                    width: objActual.ancho + 'px',
-                    height: objActual.largo + 'px',
-                    // Lo ubicamos respecto a la sala
-                    top: (objActual.pos_y + 939) + "px",
-                    left: (objActual.pos_x + 285) + "px",
 
-                    background: "green"
-                })
-            ;
-            debugger
-        // Estilo de la mesa si está reservada
-        marcaReservada(caja);
+        // Si está colocada en la sala la colocamos y si no la ignoramos (no hay almacén)
+        if (objActual.pos_x > 0 && objActual.pos_y > 0) {
+            // Cogemos la mesa
+            let caja =
+                $('<div/>')
+                    .attr('id', 'mesa_' + objActual.id)
+                    .attr('class', 'mesa')
+                    .data('mesa', objActual)
+                    .css({
+                        position: "relative",
+                        width: objActual.ancho + 'px',
+                        height: objActual.largo + 'px',
+                        // Lo ubicamos respecto a la sala
+                        top: (objActual.pos_y) + "px", //+ 380
+                        left: (objActual.pos_x) + "px", //+ 280
 
-        // La pintamos 
-        sala.addMesa(caja);
+                        background: "green" // Por defecto está disponible
+                    })
+                        /* LAS MESAS SON DROPABLES PARA DEJAR LOS TABLEROS */
+                    .droppable({
+                        // Cuando se suelte en él
+                        drop: function (ev, ui) {
+                            let juego = ui.draggable;
+                            let mesa = $(this);
+                
+                            if (!posicionValidaTablero(juego, mesa)) {
+                                console.log("No puedes jugar en esa mesa");
+                            } else {
+                                let objMesa = mesa.data('mesa');
+                                let objJuego = juego.data('juego');
+                                // Le damos el estilo
+                                juego.css({
+                                    'position':'relative',
+                                    /* Lo ponemos en medio de la mesa */
+                                    'top': ((objMesa.largo)/2),
+                                    'left':((objMesa.ancho)/2),
+                                    /* Le dejamos con su tamaño real */
+                                    'width': objJuego.tablero.ancho + 'px',
+                                    'height': objJuego.tablero.largo + 'px'
+                                });
+                                
+                                // Lo añadimos a la mesa
+                                juego.appendTo(mesa);
+                                // Lo marcamos en el select oculto
+                                $('#formu_reserva').data("Juego",objJuego.id);
+                                $('#formu_reserva').data("Mesa",objMesa.id);
+
+                            }
+                        }
+                
+                    })
+                ;
+
+            // Estilo de la mesa si está reservada
+            marcaReservada(caja,$('#datePicker').val(),$('#selecTramos').val());
+
+            // La pintamos 
+            sala.addMesa(caja);
+        }
     });
 }
 /**
@@ -157,36 +195,40 @@ function pintaMesas(mesas) {
  */
 function vaciaSala() {
     // Eliminamos todas las mesas de la página
-    let mesasSala = $('#sala > .mesa');
+    let mesasSala = $('#sala .mesa');
     let sala = $('#sala').data('sala');
-    $.each(mesasSala, function (i, v) {
-        let mesa = $(v).data('mesa');
-        // Borramos la mesa de la sala
-        sala.removeMesa(mesa);
+    $.each(mesasSala, function (i, div) {
+        // Cogemos la mesa
+        let mesa = $(div).data('mesa');
 
         // Borramos las mesas
-        $('#sala').children('.mesa[id=mesa_' + v.id + ']').remove();
-
+        $('#sala').children('.mesa[id=mesa_' + mesa.id + ']').remove();
+        
+        // Borramos la mesa de la sala
+        sala.removeMesa(mesa);
     });
 }
 
-function marcaReservada(div) {
+function marcaReservada(div,fecha,tramo) {
     // Cogemos la mesa
     let mesa = div.data('mesa');
     // Miramos entre sus reservas
-    $.each(mesa.reservas, function (i, v) {
-        
-        let reserva = JSON.parse(v);
-        
-        let fechaReserva = new Date(reserva.fecha_reserva.date);
-        let hoy = new Date();
-        
-        // Si está reservada HOY
-        if (fechaReserva.getTime() == hoy.getTime()) {
+    $.each(mesa.reservas, function (i, reserva) {
+
+        let fechaReserva = new Date(reserva.fechaReserva.date);
+        let tramoReserva = reserva.tramo.id;
+        let fechaElegida = new Date(fecha);
+
+        let cancelada = (reserva.fecha_cancelacion !== null);
+        let mismaFecha = (fechaReserva.toDateString() == fechaElegida.toDateString());
+        let mismaHora = (tramoReserva == tramo);
+
+        // Si está reservada HOY AHORA
+        if (mismaHora && mismaFecha && !cancelada) {
             div.css({
                 // Está reservada y se ve de manera visual
                 background: "red"
-            })
+            }).data('reservada',true)
         }
     })
 }

@@ -107,6 +107,18 @@ function getUsuarios() {
 }
 
 
+function getReservas() {
+    
+    return $.ajax({
+        type: "GET",
+        url: "/api/reserva/",
+        async: false,
+        success: function (response) {
+            return (response.reservas);
+        }
+    });
+}
+
 function getEvento(id) {
     return $.ajax({
         type: "GET",
@@ -164,9 +176,8 @@ function getMesas() {
         async: false,
     })
         .done(function (respuesta) {
-            let mesas = respuesta.mesas;
 
-            return mesas;
+            return respuesta.mesas;
         });
 
 }
@@ -185,8 +196,8 @@ function getMesasHoy(fecha) {
                 return response.distribuciones;
             }
         });
-
-    disposiciones = disposiciones.responseJSON.distribuciones;
+        
+    disposiciones = disposiciones.responseJSON.distribucion;
     
     if (disposiciones.length > 0) {
         // Hay disposiciones, buscamos las mesas de la nuestra 
@@ -202,6 +213,7 @@ function getMesasHoy(fecha) {
     } else {
         let data = getMesas();
         let arrayMesas = data.responseJSON.mesas;
+        
         $.each(arrayMesas, function (i, v) { 
             // Ponemos todas las mesas
             mesas.push(v);
@@ -228,10 +240,11 @@ function getMesa(id) {
 function getReserva(id) {
     return $.ajax({
         type: "GET",
-        url: "api/reserva/" + id,
+        url: "/api/reserva/" + id,
         async: false,
     })
         .done(function (respuesta) {
+            
             let reserva = respuesta.reserva;
 
             return reserva;

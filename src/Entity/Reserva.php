@@ -118,7 +118,7 @@ class Reserva implements JsonSerializable
 
     public function __toString(): string
     {
-        return $this->fecha_reserva->format("Y-m-d");
+        return $this->fecha_reserva->format("d-m-Y");
     }
 
     function jsonSerialize(): mixed

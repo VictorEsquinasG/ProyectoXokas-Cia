@@ -11,7 +11,7 @@ function setReserva(reserva) {
         "fecha": reserva.fecha,
         "asiste": reserva.asiste,
         "fechaCancelacion": reserva.fechaCancelacion,
-        "usuario": reserva.usuario, // El usuario que sea
+        "usuario": null, // El usuario actual
         "mesa": reserva.mesa,
         "juego": reserva.juego,
         "tramo": reserva.tramo

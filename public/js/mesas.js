@@ -382,7 +382,7 @@ $(function () {
         $.each(mesasSala, function (i, v) {
             let mesa = $(v);
             // Borramos la mesa de la sala
-            sala.removeMesa(mesa);
+            sala.removeMesa(v);
 
             if (borrado) {
                 // Borramos las mesas

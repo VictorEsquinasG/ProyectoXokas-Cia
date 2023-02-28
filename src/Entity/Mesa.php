@@ -172,33 +172,31 @@ class Mesa implements JsonSerializable
 
     public function getDistribucionesNotLazy()
     {
-        $return = [];
-        $array = $this->getDistribuciones();
-        # 
-        foreach ($array as $elemento) {
+        $disp = $this->distribuciones->map(function (Distribucion $distribucion) {
+            return [
+                'id' => $distribucion->getId(),
+                'fecha' => $distribucion->getFecha(),
+                'pos_x' => $distribucion->getPosicionX(),
+                'pos_y' => $distribucion->getPosicionY(),
+                'nombre' => $distribucion->getAlias(),
+            ];
+        })->toArray();
 
-            $elemento = json_encode($elemento);
-
-            $return[] = $elemento;
-        }
-        // dd($return);
-
-        return $return;
+        return $disp;
     }
 
     public function getReservasNotLazy()
     {
-        $return = [];
-        $array = $this->getReservas();
-        # 
-        foreach ($array as $elemento) {
-            
-            $elemento = json_encode($elemento);
+        $reservas = $this->reservas->map(function (Reserva $reserva) {
+            return [
+                'id' => $reserva->getId(),
+                'fechaReserva' => $reserva->getFechaReserva(),
+                'tramo' => $reserva->getTramo(),
+                "fecha_cancelacion" => $reserva->getFechaCancelacion()
+            ];
+        })->toArray();
 
-            $return[] = $elemento;
-        }
-        // dd($return);
-        return $return;
+        return $reservas;
     }
 
     public function jsonSerialize(): mixed

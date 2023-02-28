@@ -40,6 +40,7 @@ class Sala {
         let mesas = this.mesas;
         // Lo borramos del array mesas
         mesas.forEach((meson,i) => {
+            debugger
             
             let id_actual = meson.data('mesa').id;
             if (id_actual == id) {
@@ -98,7 +99,7 @@ class Evento {
         this.tramo = tramo;
         this.juegos = juegos;
         this.usuarios = usuarios;
-        this.num_max_asistentes = max_asistentes;
+        this.max_asistentes = max_asistentes;
         
     }
 }

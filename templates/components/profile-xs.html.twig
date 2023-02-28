@@ -1,0 +1,27 @@
+{% if is_granted('ROLE_USER') %}
+
+	<li class="d-block d-md-none">
+		<!-- Editar su perfil -->
+		<span class="d-inline">
+			<img src="{{ asset('images/uploads/' ~ app.user.imagen) }}" style="width:20px;border-radius:50%;" alt="opción de Mi_Perfil:editar">
+			<a class="mt-0" href="{{ url('app_profile') }}">Mi perfil</a>
+		</span>
+	</li>
+
+	<li class="d-block d-md-none">
+		<!-- Sus reservas -->
+		<span class="d-inline">
+			<img src="{{ asset('images/uploads/' ~ app.user.imagen) }}" style="width:20px;border-radius:50%;" alt="opción de Mi_Perfil:mis reservas">
+			<a href="{{ url('reservar') }}">Reservas</a>
+		</span>
+	</li>
+
+	<li class="d-block d-md-none">
+		<!-- Cerrar sesión -->
+		<span class="d-inline">
+			<img src="{{ asset('images/uploads/' ~ app.user.imagen) }}" style="width:20px;border-radius:50%;" alt="opción de Mi_Perfil:salir">
+			<a class="mt-0" href="{{ url('app_logout') }}">Cerrar Sesión</a>
+		</span>
+	</li>
+
+{% endif %}

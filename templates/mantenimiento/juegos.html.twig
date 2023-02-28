@@ -6,13 +6,6 @@
 {% block body %}
 
 	<style>
-
-		thead,
-		th,
-		tfoot {
-			background-color: #42E04F !important;
-			color: white;
-		}
 		
 		span > svg {
 			cursor: pointer;
@@ -76,7 +69,7 @@
 											</a>
 										</span>
 										<span>
-											<a href="{{'/mantenimiento/juego/borrar/' ~ juego.getId() }}">
+											<a id="{{'borrar_' ~ juego.getId() }}" href="{{'/mantenimiento/juego/borrar/' ~ juego.getId() }}">
 												<i class="fa fa-trash" title="borrar"></i>
 											</a>
 										</span>
@@ -102,4 +95,10 @@
 		</div>
 
 	</article>
+
+	<script>
+		$('a[id^=borrar_]').click(function(ev) {
+			$(this).alert('El juego será borrado')
+		});
+	</script>
 {% endblock %}

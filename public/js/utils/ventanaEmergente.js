@@ -102,18 +102,22 @@ $(function () { // Window.onload
             </form>
         </article>
         `
+        
     var plantillaEvento =
         `
         <article>
             <form>
                 <div class="row mt-3">
-                    <h5 class="nombre text-center text-md-start display-4"></h5>
+                    <div class="col-12">
+                        <labelcol-12 col-md-6">Nombre</label>
+                        <input class="nombre text-start col-12 col-md-6">
+                    </div>
                 </div>
 
                 <div class="row mt-3">
                     <div class="col-12 col-md-6">
                         <label>Fecha:</label>
-                        <input type="text" name="fecha" id="datePicker">
+                        <input type="text" name="fecha" id="datePicker" autocomplete="off">
                     </div>
                     <div class="col-12 col-md-6">
                         <label>Tramo:</label>
@@ -123,7 +127,7 @@ $(function () { // Window.onload
                 
                 <div class="row mt-3">    
                     <div class="col-12 col-md-6 text-center">
-                        <h5>Juegos</h5>
+                        <label>Juegos</label>
                         <select name="juegos" multiple id="selecJuego"></select>
                     </div>
                     <div class="d-none d-md-block col-md-6">
@@ -168,7 +172,7 @@ $(function () { // Window.onload
         ev.preventDefault();
 
         /* RELLENAMOS LOS SELECTS */
-        rellenaSelecReserva();
+        rellenaSelecReserva(JplantillaReserva);
 
         JplantillaReserva.find('#btnSubmit').val('RESERVAR');
 
@@ -223,7 +227,8 @@ $(function () { // Window.onload
           PEDIRÁ UN OBJETO RESERVA
           DEL CUAL COGEREMOS LOS CAMPOS QUE TENGA SELECCIONADOS
       */
-        let reservaActual = getReserva(id).responseJSON.Reserva;
+        let reservaActual = getReserva(id);
+        reservaActual = reservaActual.responseJSON.reserva;
 
         let date = new Date(reservaActual.fecha.date);
         let fecha = (date.toLocaleDateString('es'));
@@ -233,7 +238,7 @@ $(function () { // Window.onload
         let mesa = reservaActual.mesa.id;
 
         /* RELLENAMOS LOS SELECTS */
-        rellenaSelecReserva();
+        rellenaSelecReserva(JplantillaReserva);
 
         // Damos los valores a la plantilla
         JplantillaReserva.find('#datePicker').val(fecha).prop("disabled", true);
@@ -291,7 +296,7 @@ $(function () { // Window.onload
                 ;
         } else {
             debugger;
-            JplantillaReserva.find('#title').html('RESERVA CANCELADA :C');
+            JplantillaReserva.find('#title').html('RESERVA CANCELADA :-/');
         }
         JplantillaReserva.find('#btnSubmit').val('Guardar cambios');
 
@@ -375,7 +380,7 @@ $(function () { // Window.onload
         let fechaArray = date.split('-');
         let fechaString = (fechaArray[2] + '/' + fechaArray[1] + '/' + fechaArray[0]);
 
-        JplantillaEvento.find('.nombre').html(nombre);
+        JplantillaEvento.find('.nombre').val(nombre);
         JplantillaEvento.find('#datePicker').val(fechaString).prop('disabled', true);
         JplantillaEvento.find('#max_asistentes').val(max_asistentes).prop('disabled', true);
         JplantillaEvento.find('#div_asistentes').attr( 'class', 'd-none' ); // Ocultamos los asistentes;
@@ -402,12 +407,15 @@ $(function () { // Window.onload
         })
             .append(JplantillaEvento)
     });
+
     /**
-     * Editar eventos
+     * Editar y crear eventos
      */
     $('a[id^=editaEvento_]').click(function (ev) {
         ev.preventDefault();
+
         let id = $(this).attr('id').split('_')[1];
+        let title = "Editar evento 🍸✍🏾"; // El título/cabecera que tendrá el modal
 
         let eventoActual = getEvento(id).responseJSON.evento;
 
@@ -415,41 +423,53 @@ $(function () { // Window.onload
         rellenaSelecTramos(JplantillaEvento);
         rellenaSelecUsuarios(JplantillaEvento);
 
-        /* RELLENAMOS LOS CAMPOS */
-        let nombre = eventoActual.nombre;
-        let fecha = eventoActual.fecha.date;
-        let tramo = eventoActual.tramo.id;
-        let asistentes = eventoActual.usuarios;
-        let juegos = eventoActual.juegos;
-        let max_asistentes = eventoActual.max_asistentes;
-        let date = fecha.substr(0, 10);
-        let fechaArray = date.split('-');
-        let fechaString = (fechaArray[2] + '/' + fechaArray[1] + '/' + fechaArray[0]);
-
-        JplantillaEvento.find('.nombre').html(nombre);
-        JplantillaEvento.find('#datePicker').val(fechaString);
-        JplantillaEvento.find('#div_asistentes').attr( 'class', 'd-block col-12 col-md-6 text-center' ); // Mostramos los asistentes;
-        JplantillaEvento.find('#max_asistentes').val(max_asistentes);
-        JplantillaEvento.find('#selecTramo').val(tramo);
-
-        let selecAsistentes = JplantillaEvento.find('#asistentes');
-        let selecJuego = JplantillaEvento.find('#selecJuego');
-
-        $.each(asistentes, function (i, usuario) {
-            selecAsistentes.val(usuario.id);
-        });
-        
-        $.each(juegos, function (i, juego) {
-            selecJuego.val(juego.id);
-        });
-
-        JplantillaEvento.find('button[type="submit"]').attr("class","d-block btn btn-primary"); // Nos cercionamos de que el botón está visible
+        /* RELLENAMOS LOS CAMPOS (EDITAR) */
+        if (eventoActual !== undefined && eventoActual !== null) {
+            let nombre = eventoActual.nombre;
+            let fecha = eventoActual.fecha.date;
+            let tramo = eventoActual.tramo.id;
+            let asistentes = eventoActual.usuarios;
+            let juegos = eventoActual.juegos;
+            let max_asistentes = eventoActual.max_asistentes;
+            let date = fecha.substr(0, 10);
+            let fechaArray = date.split('-');
+            let fechaString = (fechaArray[2] + '/' + fechaArray[1] + '/' + fechaArray[0]);
+     
+            /* PONEMOS EL VALOR DE LOS CAMPOS */
+            JplantillaEvento.find('.nombre').val(nombre);
+            JplantillaEvento.find('#datePicker').val(fechaString);
+            JplantillaEvento.find('#div_asistentes').attr( 'class', 'd-block col-12 col-md-6 text-center' ); // Mostramos los asistentes;
+            JplantillaEvento.find('#max_asistentes').val(max_asistentes);
+            JplantillaEvento.find('#selecTramo').val(tramo);
+            
+            /* LOS SELECTS */
+            let selecAsistentes = JplantillaEvento.find('#asistentes');
+            let selecJuego = JplantillaEvento.find('#selecJuego');
+    
+            $.each(asistentes, function (i, usuario) {
+                selecAsistentes.val(usuario.id);
+            });
+            
+            $.each(juegos, function (i, juego) {
+                selecJuego.val(juego.id);
+            });
+            JplantillaEvento.find('button[type="submit"]').attr("class","d-block btn btn-primary"); // Nos cercionamos de que el botón está visible
+        }else {
+            /* CREAR UN EVENTO NUEVO */
+            title = "Añadir evento 🍸🆕";
+            // Vaciamos los inputs
+            JplantillaEvento.find('.nombre').val('');
+            JplantillaEvento.find('#datePicker').text(''); 
+            JplantillaEvento.find('#max_asistentes').val('');
+            // Aspecto del botón
+            JplantillaEvento.find('button[type="submit"]').attr("class","d-block btn btn-primary").html('Crear evento'); // Nos cercionamos de que el botón está visible
+        }
 
         dialog.dialog({
             modal: true,
             width: "750px",
             minHeight: "900px",
-            title: "Editar evento 🍸✍🏾",
+            title: title,
         })
             .append(JplantillaEvento)
 
@@ -462,15 +482,16 @@ $(function () { // Window.onload
 
                 let formulario = $(this);
                 // Cogemos todos los campos del formulario
+                let nombre = formulario.find('.nombre').val();
                 let fecha = formulario.find('#datePicker').val();
                 let asistentes = formulario.find('#asistentes').val();
                 let max_asistentes = formulario.find('#max_asistentes').val();
                 let idTramo = parseInt(formulario.find('#selecTramos').val());
                 let idJuegos = parseInt(formulario.find('#selecJuego').val());
 
-                // Lo mandamos a editar
+                // Lo mandamos a crear ó editar
                 let evento = new Evento(id, fecha, idTramo, nombre, idJuegos, asistentes, max_asistentes);
-                putEvento(evento);
+                persistEvento(evento);
                 // Cerramos el dialog
                 $(this).parent().remove();
             })
@@ -542,13 +563,13 @@ function rellenaSelecTramos(Jplantilla) {
  * Función que rellena todos los selects necesarios para
  * la entidad reserva
  */
-function rellenaSelecReserva() {
+function rellenaSelecReserva(plantilla) {
     /* CAPTURAMOS LOS CAMPOS DEL FORMULARIO */
-    let fecha = JplantillaReserva.find('#datePicker');
-    let selecTramos = JplantillaReserva.find('#selecTramos');
-    let selecJuegos = JplantillaReserva.find('#selecJuego');
-    let selecMesas = JplantillaReserva.find('#selecMesa');
-    let btnCancelar = JplantillaReserva.find('#btnCancelar');
+    let fecha = plantilla.find('#datePicker');
+    let selecTramos = plantilla.find('#selecTramos');
+    let selecJuegos = plantilla.find('#selecJuego');
+    let selecMesas = plantilla.find('#selecMesa');
+    let btnCancelar = plantilla.find('#btnCancelar');
     /* VACIAMOS LOS CAMPOS Y LOS REACTIVAMOS */
     fecha.html('').prop("disabled", false);
     selecTramos.html('').prop("disabled", false);
