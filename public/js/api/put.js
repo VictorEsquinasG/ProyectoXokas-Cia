@@ -6,7 +6,7 @@
 function putReserva(reserva) {
     let reser = {};
     reser.reserva = reserva;
-    debugger;
+    
     $.ajax({
         type: "PUT",
         url: "/api/reserva",
@@ -21,7 +21,6 @@ function putReserva(reserva) {
 
 function persistEvento(evento) {
     let id = evento.id;
-    debugger
     
     if (id !== undefined && id !== null && id !== '') {
         // Ya existe, lo actualizamos
@@ -49,7 +48,7 @@ function putEvento(evento) {
 }
 function postEvento(evento) {
     let ev = {};
-    debugger
+    
     // evento.fecha = [evento.fecha[0] + "-" + evento.fecha[1] + "-" + evento.fecha[2]];
     
     ev.evento = evento;

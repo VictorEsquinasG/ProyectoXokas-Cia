@@ -24,7 +24,9 @@ class GeneralController extends AbstractController
     public function index(EventoRepository $eventoRepository, JuegoRepository $juegoRepository): Response
     {
         $events = [];
+        $games = [];
         $eventos = $eventoRepository->findAll();
+        $juegos = $juegoRepository->findAll();
         foreach ($eventos as $evento) {
             $events[] = [
                 "id" => $evento->getId(),
@@ -35,8 +37,18 @@ class GeneralController extends AbstractController
                 "numMaxAsistentes" => $evento->getNumMaxAsistentes(),
             ];
         }
+        foreach ($juegos as $juego) {
+            $games[]= [
+                "id" => $juego->getId(),
+                "img" => $juego->getImagen(),
+                "nombre" => $juego->getNombre(),
+                "desc" => $juego->getMinJugadores()."-".$juego->getMaxJugadores()." \n",
+                "desc2" => "(".$juego->getAnchoTablero()."x".$juego->getLargoTablero()."cm)",
+            ];
+        }
         return $this->render('general/index.html.twig', [
-            "eventos" => $events
+            "eventos" => $events,
+            "juegos" => $games
         ]);
     }
 
@@ -128,7 +140,7 @@ class GeneralController extends AbstractController
 
         // Retrieve the HTML generated in our twig file
         $html = $this->renderView('pdf/mypdf.html.twig', [
-            'title' => "UN PSF PARA DOMINAR A TODOS"
+            'title' => "UN PDF PARA DOMINAR A TODOS"
         ]);
 
         // Cargamos el HTML al Dompdf

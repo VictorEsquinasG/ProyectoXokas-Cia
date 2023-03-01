@@ -296,7 +296,7 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface, Json
    
     public function __toString(): string
     {
-        return $this->getNombreCompleto();
+        return $this->getNombreCompleto().' ('.$this->getPuntos().'ptos.)';
     }
 
     public function getPuntos(): ?float

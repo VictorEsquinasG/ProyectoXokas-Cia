@@ -9,17 +9,36 @@
 {% block body %}
 
 	<div
-		class="row mt-5">
-		<!-- SLIDER -->
+		class="row mt-5 mb-5">
+		<!-- SLIDER EVENTOS -->
+		<p class="display-4 m-5">
+			Eventos de la asociación
+		</p>
 		{% include "components/carousel-eventos.html.twig" %}
+		<!-- /SLIDER -->
+	</div>
+	<div
+		class="row mt-5 mb-5">
+		<!-- SLIDER EVENTOS -->
+		<p class="display-4 m-5">
+			Nuestro catálogo de juegos
+		</p>
+		{% include "components/carousel-juegos.html.twig" %}
 		<!-- /SLIDER -->
 	</div>
 
 	<div
-		class="row mt-3">
+		class="row mt-5">
 		<!-- RESERVA -->
 		{% include "components/section-reserva.html.twig" %}
 		<!-- /RESERVA -->
+	</div>
+
+	<div
+		class="row mt-5">
+		<!-- PROMO-VIDEO -->
+		{% include "components/video.html.twig" %}
+		<!-- /PROMO-VIDEO -->
 	</div>
 
 	<div

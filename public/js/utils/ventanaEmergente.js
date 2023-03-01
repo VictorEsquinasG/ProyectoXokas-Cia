@@ -220,6 +220,7 @@ $(function () { // Window.onload
 
     $('div[id^=ver_reserva_]').click(function (ev) {
         ev.preventDefault();
+        
         let id = $(this).attr('id').split('_')[2];
 
         /* 
@@ -294,10 +295,7 @@ $(function () { // Window.onload
                         )
                 )
                 ;
-        } else {
-            debugger;
-            JplantillaReserva.find('#title').html('RESERVA CANCELADA :-/');
-        }
+            }
         JplantillaReserva.find('#btnSubmit').val('Guardar cambios');
 
 
@@ -311,6 +309,12 @@ $(function () { // Window.onload
             }
         })
             .append(JplantillaReserva)
+            .show(function () {
+                // Ha sido cancelada
+                if (reservaActual.fechaCancelacion !== null) {
+                    $('#title').text('RESERVA CANCELADA :-/');
+                }
+            })
             .submit(function () {
                 // PUT
                 let formulario = $(this);
@@ -380,7 +384,7 @@ $(function () { // Window.onload
         let fechaArray = date.split('-');
         let fechaString = (fechaArray[2] + '/' + fechaArray[1] + '/' + fechaArray[0]);
 
-        JplantillaEvento.find('.nombre').val(nombre);
+        JplantillaEvento.find('.nombre').val(nombre).prop('disabled', true);
         JplantillaEvento.find('#datePicker').val(fechaString).prop('disabled', true);
         JplantillaEvento.find('#max_asistentes').val(max_asistentes).prop('disabled', true);
         JplantillaEvento.find('#div_asistentes').attr( 'class', 'd-none' ); // Ocultamos los asistentes;
@@ -486,8 +490,8 @@ $(function () { // Window.onload
                 let fecha = formulario.find('#datePicker').val();
                 let asistentes = formulario.find('#asistentes').val();
                 let max_asistentes = formulario.find('#max_asistentes').val();
-                let idTramo = parseInt(formulario.find('#selecTramos').val());
-                let idJuegos = parseInt(formulario.find('#selecJuego').val());
+                let idTramo = formulario.find('#selecTramo').val();
+                let idJuegos = formulario.find('#selecJuego').val();
 
                 // Lo mandamos a crear ó editar
                 let evento = new Evento(id, fecha, idTramo, nombre, idJuegos, asistentes, max_asistentes);
