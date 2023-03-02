@@ -36,7 +36,7 @@ class RegistrationController extends AbstractController
             $user->setPassword(
                 $userPasswordHasher->hashPassword(
                     $user,
-                    $form->get('plainPassword')->getData()
+                    $form->get('password')->getData()
                 )
             );
 
@@ -45,7 +45,11 @@ class RegistrationController extends AbstractController
             
             // TODO revisar que funcione la plantilla
             // Ponemos plantilla HTML
-            $html = $this->render('registration/confirmation_email.html.twig');
+            $html = $this->renderView('registration/confirmation_email.html.twig', [
+                'signedUrl'=>'app_login',
+                'expiresAtMessageKey' => '15',
+                'expiresAtMessageData' => ' días'
+            ]);
             // Mandamos el correo
             $correo->setAsunto('Bienvenido a XOKAS & CO.')
             ->setDestinatario($user->getEmail())
