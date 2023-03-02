@@ -97,11 +97,23 @@
 				</div>
 
 				{# <input type="hidden" name="_target_path" value="/mesas"> #}
+				<div class="m-3">
+					{% for flash_message in app.session.flashbag.get('success') %}
+						<div class="alert alert-success fade show text-center">
+							<div class='w-100 d-flex flex-row justify-content-between'>
+								<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+								{{ flash_message }}
+								<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+							</div>
+						</div>
+					{% endfor %}
 
-				{% for flash_error in app.flashes('verify_email_error') %}
-					<br/>
-					<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-				{% endfor %}
+					{% for flash_message in app.session.flashbag.get('error') %}
+						<div class="alerta alerta--error ">
+							{{ flash_message }}
+						</div>
+					{% endfor %}
+				</div>
 
 				<div class="row mt-3">
 					<button type="submit" class="btn btn-primary col-12">Guardar cambios</button>

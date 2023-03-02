@@ -47,7 +47,7 @@ class ProfileController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash(
-                'notice',
+                'success',
                 "Usuario actualizado"
             );
 

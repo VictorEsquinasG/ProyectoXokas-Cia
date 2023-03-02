@@ -103,7 +103,7 @@ class MantenimientoController extends AbstractController
 
             // Damos feedback 
             $this->addFlash(
-                'notice',
+                'success',
                 'Tus cambios se han guardado!'
             );
 
@@ -155,7 +155,7 @@ class MantenimientoController extends AbstractController
 
             // Damos feedback 
             $this->addFlash(
-                'notice',
+                'success',
                 'Juego creado con éxito!'
             );
 
