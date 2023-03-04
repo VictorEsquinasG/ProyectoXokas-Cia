@@ -61,26 +61,62 @@ $(function () {
                     if (dispActual !== '-1') {
                         // No es la disposición estándard
 
-                        var $disp = getDisposicion(dispActual, mesa.data('mesa').id);
-                        // Si no existe creamos la nueva disposición
-                        if ($disp == null) {
-                            $disp = new Distribucion(null, mesa.data('mesa').id, getFechaDisposicionByName(all_distribuciones, dispActual), -1, -1, dispActual, false);
-                            $disp = creaDisposicion($disp);
+                        if (dispActual == 'crear') {
+                            // Está creando una distribución
+
+                            dialog.dialog({
+                                modal: true,
+                                width: "700px",
+                                title: "Crear distribucion 📅🎲",
+                            })
+                                .append(JPlantillaDisp)
+                                .show(
+                                    // 
+                                    creaDatePicker()
+                                    )
+                                .submit(function (ev) {
+                                    ev.preventDefault();
+
+                                    let form = $(this);
+                                    let nombre = form.find('input[name=nombre]').val();
+                                    let fecha = form.find('#datePicker').val();
+
+                                    // Creamos la disposición
+                                    $('<option>').val(nombre).html(nombre).data('fecha', fecha)
+                                        .appendTo('#selDisposicion');
+                                    // Cambiamos el select a la disposición creada
+                                    $('#selDisposicion').val(nombre);
+                                   
+                                    cambiaDisposicion($('#dialog').data('disp'));
+                                    // Cerramos el modal
+                                    dialog.remove();
+                                })
+                                ;
+                        } else {
+                            // Cogemos la disposición
+                            var $disp = getDisposicion(dispActual, mesa.data('mesa').id); 
+                            // Si no existe creamos la nueva disposición
+                            if ($disp == null) {
+                                // La fecha será la de la distribución, excepto si es nueva, entonces será la que dijo el usuario
+                                let fecha = getFechaDisposicionByName(all_distribuciones, dispActual)?getFechaDisposicionByName(all_distribuciones, dispActual):$('select[name="dispo"]').find(":selected").data('fecha').split('/')[2]+'-'+$('select[name="dispo"]').find(":selected").data('fecha').split('/')[1]+'-'+$('select[name="dispo"]').find(":selected").data('fecha').split('/')[0];
+                                // Creamos un objeto distribucion y lo persistimos
+                                let dispo = new Distribucion(null, mesa.data('mesa').id, fecha, -1, -1, dispActual, false);
+                                $disp = creaDisposicion(dispo);
+                            }
+    
+                            let $objDisp = {};
+                            // Anotamos su nueva posición 
+                            $objDisp = new Distribucion($disp.id, $disp.mesa, $disp.fecha.date, mesa.left, mesa.top, $disp.alias, $disp.reservada);
+                            // La posición la actualizamos ese día
+                            actualizaDisposicion($objDisp);
                         }
-
-                        let $objDisp = {};
-
-                        // Anotamos su nueva posición 
-                        $objDisp = new Distribucion($disp.id, $disp.mesa, $disp.fecha.date, mesa.left, mesa.top, $disp.alias, $disp.reservada);
-                        // La posición la actualizamos ese día
-                        actualizaDisposicion($objDisp);
                     } else { /* Posición BASE / ESTÁNDAR */
                         // Su nueva posición
                         let obj = mesa.data('mesa');
                         obj.pos_x = parseInt(mesa.left);
                         obj.pos_y = parseInt(mesa.top);
                         // Actualizamos su posición en la BD
-                        actualizaMesa(mesa); 
+                        actualizaMesa(mesa);
                     }
                 }
             }
@@ -109,8 +145,8 @@ $(function () {
 
         // Actualizamos su posición guardada en el objeto
         if (mesa.top == undefined) {
-            mesa.top = (parseInt(objmesa.pos_y) + sala.dify);
-            mesa.left = (parseInt(objmesa.pos_x) + sala.difx);
+            mesa.top = (parseInt(objmesa.pos_y));
+            mesa.left = (parseInt(objmesa.pos_x));
         }
 
         sala
@@ -152,8 +188,7 @@ $(function () {
             data: JSON.stringify(dist),
             dataType: "json",
             async: false,
-            success: function (response) {
-                console.log(response);
+            success: function (response) {                
                 console.log("Posición de la mesa " + response.id + " establecida");
                 nueva = response.distribucion;
             }
@@ -165,7 +200,7 @@ $(function () {
     function actualizaDisposicion(disp) {
         let dist = {};
         dist.distribucion = disp;
-       
+
         // dist.distribucion.fecha = dist.distribucion.fecha.substr(0,10); //19
         $.ajax({
             type: "PUT",
@@ -181,90 +216,7 @@ $(function () {
     }
 
 
-    function posicionValida(mesa) {
-        var solapada = false;  // Presuponemos que no se solapa
-        var mesas = $('#sala .mesa[id^=mesa_]');
-        // var mesas = $('#sala').data('sala').mesas;
 
-        /* COMPROBAMOS QUE NO CHOCA CON CADA UNA DE LAS MESAS DE LA SALA */
-        $(mesas).each(function () {
-            actual = $(this);
-
-            var idMesa_actual = actual.data('mesa').id;
-            var idMesa_movida = mesa.eq(0).data('mesa').id;
-            // No permitimos que se compare consigo misma
-            if (idMesa_actual != idMesa_movida) {
-                // Coordenadas de otra mesa    
-                actual.left = parseInt(actual.offset().left);
-                actual.top = parseInt(actual.offset().top);
-
-                solapada = solapa(mesa, actual);
-            }
-
-            if (solapada) {
-                // choca
-                return false; //Rompemos el bucle
-            }
-        });
-
-        /* SI NO HA CHOCADO Y NO SOBRESALE DE LA SALA */
-        return (!solapada && !saleDeSala(mesa));
-    }
-
-    function saleDeSala(mesa) {
-        var sala = $('#sala').data('sala');
-
-        let top = sala.dify;
-        let left = sala.difx;
-        let right = left + sala.div.width();
-        let bottom = top + sala.div.height();
-
-        var salidaVertical =
-            ((top > mesa.top) || (bottom < mesa.bottom));
-        var salidaHorizontal =
-            ((mesa.left < left) || (mesa.right > right));
-
-        return ((salidaVertical) || (salidaHorizontal));
-    }
-
-    function solapa(mesa1, mesa2) {
-
-        mesa1.bottom = mesa1.top + mesa1.height();
-        mesa1.right = mesa1.left + (mesa1.width() - 2); // Para que los bordes puedan solaparse levemente
-
-        mesa2.bottom = mesa2.top + mesa2.height();
-        mesa2.right = mesa2.left + (mesa2.width() - 2);
-
-        var contiene =
-            (mesa1.left <= mesa2.left && mesa1.right >= mesa2.right ||
-                mesa1.top <= mesa2.top && mesa1.bottom >= mesa2.bottom);
-
-        var choqueHorizontal =
-            (mesa1.right < mesa2.right && mesa1.right > mesa2.left ||
-                mesa1.left > mesa2.left && mesa1.left < mesa2.right);
-
-        var choqueVertical = // VERTICALES
-            (mesa1.top < mesa2.bottom && mesa1.top > mesa2.top ||
-                mesa1.bottom < mesa2.bottom && mesa1.bottom > mesa2.top);
-
-        return ((choqueHorizontal && choqueVertical) || contiene);
-    }
-
-    function creaTextTamanio(mesa) {
-        return $('<p>')
-            .html(
-                mesa.ancho +
-                " x " +
-                mesa.largo +
-                " cm"
-            ).css({
-                width: '100%',
-                height: '26px',
-                'vertical-align': 'top',
-                'text-align': 'center',
-                backgroundColor: 'rgba(55, 56, 55,0.8)'
-            });
-    }
 
     function actualizaMesa(Objmesa) {
         let mesa = Objmesa.data('mesa');
@@ -309,13 +261,14 @@ $(function () {
             url: "/api/mesa",
             data: JSON.stringify(mesa_removida),
             dataType: "JSON",
+            async: false,
             success: function (respuesta) {
                 // console.log(respuesta);
                 return respuesta.Success;
             }
         });
         // console.log(success);
-        return true;
+        return success;
     }
 
     // Capturamos el SELECT que definirá el cambio
@@ -325,8 +278,10 @@ $(function () {
         var disposicion_seleccionada = $('select[name="dispo"]').val();
 
         if (disposicion_seleccionada !== '-1') {
+
             // Mandamos a actualizar
             cambiaDisposicion(disposicion_seleccionada);
+
         } else {
             disposicionEstandar();
         }
@@ -341,7 +296,7 @@ $(function () {
             url: "/api/mesa",
             success: function (data) {
                 let mesas = data.mesas;
-                
+
                 $.each(mesas, function (i, mesita) {
                     // A cada mesa le preguntamos por sus distribuciones
                     let mesaActual = $('#mesa_' + mesita.id);
@@ -349,8 +304,8 @@ $(function () {
                     let distribuciones = mesita.distribuciones;
 
                     $.each(distribuciones, function (i, v) {
-                        let dist = JSON.parse(v);
-                        let nombre = dist.alias;
+                        let dist = v;
+                        let nombre = dist.nombre;
                         // Hablamos de la misma distribucion (mismo nombre o misma fecha)
                         if (nombre == selected) {
                             // Guardamos sus coordenadas actuales
@@ -388,7 +343,7 @@ $(function () {
                 // Borramos las mesas
                 $('#sala').children('.mesa[id=mesa_' + v.id + ']').remove();
             } else {
-                // Guardamos cada mesa 
+                // Guardamos cada mesa en el almacén
                 almacena(mesa);
             }
         });
@@ -626,3 +581,135 @@ $(function () {
     }
 
 });
+
+var dialog = $('<div />').attr('id', 'dialogDistribucion');
+
+let plantillaDisp = `
+<article>
+    <div class="row">
+        <form>
+            <div class="row m-2">
+                <div class="col-12 col-md-6">
+                    <label>Nombre
+                    </label>
+                </div>
+                <div class="col-12 col-md-6">
+                    <input type="text" name="nombre" required>
+                </div>
+            </div>
+            <div class="row m-2">
+                <div class="col-12 col-md-6">
+                    <label>Fecha
+                    </label>
+                </div>
+                <div class="col-12 col-md-6">
+                    <input type="text" id="datePicker" name="fecha" required autocomplete="off">
+                </div>
+            </div>
+            <div class="row m-2">
+                <div class="col-12">
+                    <input type="submit" class="btn btn-outline-primary" value="Crear distrib">
+                </div>
+            </div>
+        </form>
+    </div>
+</article>
+`;
+
+var JPlantillaDisp = $(plantillaDisp);
+
+function posicionValida(mesa) {
+    var solapada = false;  // Presuponemos que no se solapa
+    var mesas = $('#sala .mesa[id^=mesa_]');
+    // var mesas = $('#sala').data('sala').mesas;
+
+    /* COMPROBAMOS QUE NO CHOCA CON CADA UNA DE LAS MESAS DE LA SALA */
+    $(mesas).each(function () {
+        actual = $(this);
+
+        var idMesa_actual = actual.data('mesa').id;
+        var idMesa_movida = mesa.eq(0).data('mesa').id;
+        // No permitimos que se compare consigo misma
+        if (idMesa_actual != idMesa_movida) {
+            // Coordenadas de otra mesa    
+            actual.left = parseInt(actual.offset().left);
+            actual.top = parseInt(actual.offset().top);
+
+            solapada = solapa(mesa, actual);
+        }
+
+        if (solapada) {
+            // choca
+            return false; //Rompemos el bucle
+        }
+    });
+
+    /* SI NO HA CHOCADO Y NO SOBRESALE DE LA SALA */
+    return (!solapada && !saleDeSala(mesa));
+}
+
+function saleDeSala(mesa) {
+    var sala = $('#sala').data('sala');
+
+    let top = sala.dify;
+    let left = sala.difx;
+    let right = left + sala.div.width();
+    let bottom = top + sala.div.height();
+
+    var salidaVertical =
+        ((top > mesa.top) || (bottom < mesa.bottom));
+    var salidaHorizontal =
+        ((mesa.left < left) || (mesa.right > right));
+
+    return ((salidaVertical) || (salidaHorizontal));
+}
+
+function solapa(mesa1, mesa2) {
+
+    mesa1.bottom = mesa1.top + mesa1.height();
+    mesa1.right = mesa1.left + (mesa1.width() - 2); // Para que los bordes puedan solaparse levemente
+
+    mesa2.bottom = mesa2.top + mesa2.height();
+    mesa2.right = mesa2.left + (mesa2.width() - 2);
+
+    var contiene =
+        (mesa1.left <= mesa2.left && mesa1.right >= mesa2.right ||
+            mesa1.top <= mesa2.top && mesa1.bottom >= mesa2.bottom);
+
+    var choqueHorizontal =
+        (mesa1.right < mesa2.right && mesa1.right > mesa2.left ||
+            mesa1.left > mesa2.left && mesa1.left < mesa2.right);
+
+    var choqueVertical = // VERTICALES
+        (mesa1.top < mesa2.bottom && mesa1.top > mesa2.top ||
+            mesa1.bottom < mesa2.bottom && mesa1.bottom > mesa2.top);
+
+    return ((choqueHorizontal && choqueVertical) || contiene);
+}
+
+function creaTextTamanio(mesa) {
+    return $('<p>')
+        .html(
+            mesa.ancho +
+            " x " +
+            mesa.largo +
+            " cm"
+        ).css({
+            width: '100%',
+            height: '26px',
+            'vertical-align': 'top',
+            'text-align': 'center',
+            backgroundColor: 'rgba(55, 56, 55,0.8)'
+        });
+}
+
+/**
+ * 
+ * @returns una función que busca id=datePicker para convertirlo en un datePicker de JQuery UI
+ */
+function creaDatePicker() {
+    return function () {
+        // Buscamos #datePicker 
+        ConvierteDatePicker();
+    }
+}

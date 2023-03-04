@@ -62,7 +62,7 @@ class ApiDistribucionController extends AbstractController
         $dia = ($date[2] > 10) ? $date[2] : "0" . $date[2];
 
         $fecha = $ano . "-" . $mes . "-" . $dia . " 00:00:00";
-        
+
         $distribuciones = $mr->getByDate($fecha);
         # DISTRIBUCIONES POR FECHA
         return $this->json(
@@ -89,7 +89,7 @@ class ApiDistribucionController extends AbstractController
         $distribucion->setAlias($datos->alias);
         $datetime = new DateTime();
 
-        $fecha = $datetime->createFromFormat('Y-m-d H:i:s.u', $datos->fecha);
+        $fecha = $datetime->createFromFormat('Y-m-d', $datos->fecha);
         $distribucion->setFecha($fecha);
 
         if (isset($datos->reservada)) {
@@ -105,7 +105,13 @@ class ApiDistribucionController extends AbstractController
             $manager->persist($distribucion);
             $manager->flush();
         } catch (PDOException $e) {
-            $this->json(['message' => $e->getMessage(), "Success" => false], 400);
+            $this->json(
+                [
+                    'message' => $e->getMessage(),
+                    "Success" => false
+                ],
+                400
+            );
         }
         $id = $distribucion->getId();
         # Creado con éxito => Devolvemos la ID

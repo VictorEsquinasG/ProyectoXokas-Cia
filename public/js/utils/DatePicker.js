@@ -8,7 +8,7 @@
 function datePicker(fecha, diasFestivos) {
     // Entrada mínima mañana y máxima 3 meses
     fecha.datepicker({
-        dateFormat: "yy-mm-dd",
+        dateFormat: "dd/mm/yy",
         firstDay: 1,    // Empieza en lunes
         beforeShowDay: $.datepicker.noWeekends,
         defaultDate: "+1D",
@@ -99,7 +99,7 @@ function setDateFormatES() {
         dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
         dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
         weekHeader: 'Sm',
-        dateFormat: 'dd-mm-yy',
+        dateFormat: 'dd/mm/yy',
         firstDay: 1,
         isRTL: false,
         showMonthAfterYear: false,
@@ -228,7 +228,9 @@ function marcaReservada(div,fecha,tramo) {
             div.css({
                 // Está reservada y se ve de manera visual
                 background: "red"
-            }).data('reservada',true)
+            })
+            .attr('title','RESERVADA') // ToolTip que explica porqué no podemos reservar
+            .data('reservada',true)
         }
     })
 }

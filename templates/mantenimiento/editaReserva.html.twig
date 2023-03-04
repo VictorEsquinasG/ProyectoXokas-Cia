@@ -1,12 +1,22 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-	<article class="mt-6">
+	<article class="m-5">
 
 		<div id="container__tabla">
 
 
 			<table id="dataTable_reservas" class="table table-striped table-bordered" style="width:90%">
+				<thead>
+					<th>ID</th>
+					<th>Fecha</th>
+					<th>Juego</th>
+					<th>Mesa</th>
+					<th>Usuario</th>
+				</thead>
+				<tbody>
+
+				</tbody>
 				{# CON AJAX #}
 			</table>
 
@@ -17,6 +27,8 @@
 
 	{# La convertimos en dataTable #}
 	{# <script src="{{ asset('js/api/get.js') }}"></script> #}
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.13.3/css/jquery.dataTables.min.css">
+	<script src="https://cdn.datatables.net/1.13.3/js/jquery.dataTables.min.js"></script>
 	<script src="{{ asset('js/utils/dataTable.js') }}"></script>
 
 	<style>

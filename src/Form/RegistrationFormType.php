@@ -28,7 +28,7 @@ class RegistrationFormType extends AbstractType
                 'type' => PasswordType::class,
                             'first_options' => ['label' => 'Contraseña'],
                             'second_options' => ['label' => 'Repita su contraseña'],
-                'invalid_message'=> 'Las contraseñas no coincidena',
+                'invalid_message'=> 'Las contraseñas no coinciden',
                 'constraints' => [
                 
                     new NotBlank([

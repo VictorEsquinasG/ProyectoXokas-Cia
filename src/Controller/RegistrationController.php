@@ -43,7 +43,6 @@ class RegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
             
-            // TODO revisar que funcione la plantilla
             // Ponemos plantilla HTML
             $html = $this->renderView('registration/confirmation_email.html.twig', [
                 'signedUrl'=>'app_login',

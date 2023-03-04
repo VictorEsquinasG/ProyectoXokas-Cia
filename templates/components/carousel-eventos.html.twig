@@ -30,7 +30,7 @@
 
 
 	{% for evento in eventos %}
-		<a href="{{'/evento/' ~ evento.id}}" class="btn" style="background-color:#45E04D;">
+		<a href="#" id="{{'evento_' ~ evento.id}}" class="btn" style="background-color:#45E04D;">
 			<div class="item">
 				<img src="{{asset('/images/uploads/' ~ evento.juego)}}" style="height:160px;" alt="">
 				<div class="down-content">

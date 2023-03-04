@@ -2,10 +2,10 @@
  * Librería que hace uso de JQUERY UI
  * 
  * @author Víctor Esquinas
- */
+*/
 
 
-let dialog = $('<div>').attr('id','modal');
+let modal = $('<div>').attr('id', 'modal');
 
 let plantilla =
     `<form action="" method="POST">
@@ -27,7 +27,8 @@ let plantilla =
 var Jplantilla = $(plantilla);
 
 function ModalMesa() {
-    dialog.dialog({
+
+    modal.dialog({
         modal: true,
         width: '700px',
         title: 'Creando una nueva mesa'
@@ -54,15 +55,31 @@ function ModalMesa() {
                     "posicion_y": mesita.pos_y,
                 }
             };
+            // La mandamos a crear
             $.ajax({
                 type: "POST",
-                url: "api/mesa/",
+                url: "/api/mesa/",
                 data: JSON.stringify(mesa),
                 dataType: "json",
                 success: function (response) {
                     console.log(response);
                 }
             });
+
+            // Creamos la mesa sin recargar la página
+            let textoInfo = creaTextTamanio(mesita);
+
+            $('<div>')
+                .attr('class', 'mesa')
+                .css({
+                    position: "relative",
+                    width: '100px',
+                    height: '100px',
+                    top: 0,
+                    left: 0,
+                })
+                .append(textoInfo)
+                .appendTo('#almacen');
 
             // Cerramos el dialog
             $('#modal').remove();

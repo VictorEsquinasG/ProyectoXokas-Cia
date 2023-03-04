@@ -102,7 +102,7 @@ $(function () { // Window.onload
             </form>
         </article>
         `
-        
+
     var plantillaEvento =
         `
         <article>
@@ -165,9 +165,10 @@ $(function () { // Window.onload
 
     // El dialog
     var dialog = $('<div />').attr('id', 'dialog');
+    var modal = $('<div />').attr('id', 'modal');
 
     // USAMOS 1 BOTON PARA ABRIR LA VENTANA MODAL
-    $("#creaReserva").click(function (ev) {
+    $("#newReserva").click(function (ev) {
 
         ev.preventDefault();
 
@@ -220,7 +221,7 @@ $(function () { // Window.onload
 
     $('div[id^=ver_reserva_]').click(function (ev) {
         ev.preventDefault();
-        
+
         let id = $(this).attr('id').split('_')[2];
 
         /* 
@@ -295,7 +296,7 @@ $(function () { // Window.onload
                         )
                 )
                 ;
-            }
+        }
         JplantillaReserva.find('#btnSubmit').val('Guardar cambios');
 
 
@@ -350,12 +351,17 @@ $(function () { // Window.onload
         JplantillaJuego.find('.num_jugadores').html("Entre " + juego.jugadores.min + " y " + juego.jugadores.max);
         JplantillaJuego.find('.tamaniotablero').html(juego.tamañoTablero.ancho + "cm x " + juego.tamañoTablero.largo + "cm");
 
+
         dialog.dialog({
             modal: true,
             width: "700px",
             minHeight: "900px",
             title: "Juega a " + juego.nombre + "🎲♟️",
-        }).append(JplantillaJuego);
+            close: function () {
+                dialog.destroy();
+            }
+        }).append(JplantillaJuego)
+            ;
 
     });
 
@@ -387,29 +393,34 @@ $(function () { // Window.onload
         JplantillaEvento.find('.nombre').val(nombre).prop('disabled', true);
         JplantillaEvento.find('#datePicker').val(fechaString).prop('disabled', true);
         JplantillaEvento.find('#max_asistentes').val(max_asistentes).prop('disabled', true);
-        JplantillaEvento.find('#div_asistentes').attr( 'class', 'd-none' ); // Ocultamos los asistentes;
+        JplantillaEvento.find('#div_asistentes').attr('class', 'd-none'); // Ocultamos los asistentes;
 
         let selecAsistentes = JplantillaEvento.find('#asistentes');
-        let selecJuego = JplantillaEvento.find('#selecJuego').attr( 'disabled', 'disabled' );
+        let selecJuego = JplantillaEvento.find('#selecJuego').attr('disabled', 'disabled');
 
         $.each(asistentes, function (i, usuario) {
             selecAsistentes.val(usuario.id);
         });
-        
+
         $.each(juegos, function (i, juego) {
             selecJuego.val(juego.id);
         });
 
         JplantillaEvento.find('#selecTramo').val(tramo).prop('disabled', true);
-        JplantillaEvento.find('button[type="submit"]').attr("class","d-none"); // No hay botón de aceptar
+        JplantillaEvento.find('button[type="submit"]').attr("class", "d-none"); // No hay botón de aceptar
 
-        dialog.dialog({
+
+        modal.dialog({
             modal: true,
             width: "750px",
             minHeight: "900px",
             title: "Información del evento 🍸📒",
+            close: function () {
+                modal.destroy();
+            }
         })
             .append(JplantillaEvento)
+            ;
     });
 
     /**
@@ -438,35 +449,35 @@ $(function () { // Window.onload
             let date = fecha.substr(0, 10);
             let fechaArray = date.split('-');
             let fechaString = (fechaArray[2] + '/' + fechaArray[1] + '/' + fechaArray[0]);
-     
+
             /* PONEMOS EL VALOR DE LOS CAMPOS */
             JplantillaEvento.find('.nombre').val(nombre);
             JplantillaEvento.find('#datePicker').val(fechaString);
-            JplantillaEvento.find('#div_asistentes').attr( 'class', 'd-block col-12 col-md-6 text-center' ); // Mostramos los asistentes;
+            JplantillaEvento.find('#div_asistentes').attr('class', 'd-block col-12 col-md-6 text-center'); // Mostramos los asistentes;
             JplantillaEvento.find('#max_asistentes').val(max_asistentes);
             JplantillaEvento.find('#selecTramo').val(tramo);
-            
+
             /* LOS SELECTS */
             let selecAsistentes = JplantillaEvento.find('#asistentes');
             let selecJuego = JplantillaEvento.find('#selecJuego');
-    
+
             $.each(asistentes, function (i, usuario) {
                 selecAsistentes.val(usuario.id);
             });
-            
+
             $.each(juegos, function (i, juego) {
                 selecJuego.val(juego.id);
             });
-            JplantillaEvento.find('button[type="submit"]').attr("class","d-block btn btn-primary"); // Nos cercionamos de que el botón está visible
-        }else {
+            JplantillaEvento.find('button[type="submit"]').attr("class", "d-block btn btn-primary"); // Nos cercionamos de que el botón está visible
+        } else {
             /* CREAR UN EVENTO NUEVO */
             title = "Añadir evento 🍸🆕";
             // Vaciamos los inputs
             JplantillaEvento.find('.nombre').val('');
-            JplantillaEvento.find('#datePicker').text(''); 
+            JplantillaEvento.find('#datePicker').text('');
             JplantillaEvento.find('#max_asistentes').val('');
             // Aspecto del botón
-            JplantillaEvento.find('button[type="submit"]').attr("class","d-block btn btn-primary").html('Crear evento'); // Nos cercionamos de que el botón está visible
+            JplantillaEvento.find('button[type="submit"]').attr("class", "d-block btn btn-primary").html('Crear evento'); // Nos cercionamos de que el botón está visible
         }
 
         dialog.dialog({

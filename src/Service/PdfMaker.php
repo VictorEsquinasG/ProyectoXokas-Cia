@@ -53,7 +53,7 @@ class PdfMaker
         return $this;
     }
 
-    public function recargaForzada(string $documento, ?array $opciones = null):self
+    public function recargaForzada(string $documento, ?array $opciones = null)
     {
         return 
         $this->pdf->stream($documento, $opciones);

@@ -87,45 +87,51 @@ $(function () {
             }
         })
             .append(Jplantilla)
-            .show(function () {
-                /* CREAMOS LA SALA */
-                new Sala($('#sala'));
-                // Volvemos a buscar datepickers
-                ConvierteDatePicker();
+            .show(
+                /* CADA VEZ QUE MOSTRAMOS EL DIALOG */
+                function () {
+                    /* CREAMOS LA SALA */
+                    new Sala($('#sala'));
+                    // Volvemos a buscar datepickers
+                    ConvierteDatePicker();
 
-                // Escondemos el input de los juegos
-                $(Jplantilla).find('#selecJuego').hide();
+                    // El numero de jugadores cambiará los juegos disponibles
+                    $('#numJugadores')
+                        .change(function (ev) {
+                            ev.preventDefault();
 
-                // El numero de jugadores cambiará los juegos disponibles
-                $('#numJugadores')
-                    .change(function (ev) {
+                            let jugadores = $(this).val();
+                            vaciaStock();
+                            rellenaStockJuegos($('#almacen'), jugadores);
+                            validaNumSillas(parseInt(jugadores));
+                        });
+                    // Programamos el botón que retira el tablero de la mesa
+                    $('#cancela_juego').click(function (ev) {
                         ev.preventDefault();
 
-                        let jugadores = $(this).val();
-                        vaciaStock();
-                        rellenaStockJuegos($('#almacen'), jugadores);
+                        // Eliminamos el juego que haya seleccionado
+                        $('.mesa').children('.juego').remove();
                     });
-                // Programamos el botón que retira el tablero de la mesa
-                $('#cancela_juego').click(function (ev) {
-                    ev.preventDefault();
-
-                    // Eliminamos el juego que haya seleccionado
-                    $('.mesa').children('.juego').remove();
-                });
-            })
+                })
             /* SE HACE LA RESERVA */
             .submit(function (e) {
                 e.preventDefault();
 
                 let formulario = $(this);
                 // Cogemos todos los campos del formulario
-                let fecha = formulario.find('#datePicker').val();
+                let date = formulario.find('#datePicker').val().split('/');
+                // pasamos la fecha a formato americano
+                let fecha = date[2]+'-'+date[1]+'-'+date[0];
                 let idTramo = parseInt(formulario.find('#selecTramos').val());
                 let idJuego = parseInt($('#formu_reserva').data('Juego'));
                 let idMesa = parseInt($('#formu_reserva').data('Mesa'));
 
                 // creamos la reserva  
                 let reserva = new Reserva(null, fecha, true, null, null, idJuego, idMesa, idTramo);
+
+                // Borramos los juegos que hayan encima de las mesas (en caso que no sea la primera vez que vayamos a mostrar el dialog)
+                $('#sala .mesa').remove('.juego');
+
                 // Hacemos el POST
                 if (setReserva(reserva)) {
                     // Vaciamos el formulario
@@ -402,6 +408,35 @@ function mesaLibre(mesa) {
     return (!ocupada && !reservada)
 }
 
+function muestraReserva() {
+    return function () {
+        /* CREAMOS LA SALA */
+        new Sala($('#sala'));
+        // Volvemos a buscar datepickers
+        ConvierteDatePicker();
+
+        // Escondemos el input de los juegos
+        $(Jplantilla).find('#selecJuego').hide();
+
+        // El numero de jugadores cambiará los juegos disponibles
+        $('#numJugadores')
+            .change(function (ev) {
+                ev.preventDefault();
+
+                let jugadores = $(this).val();
+                vaciaStock();
+                rellenaStockJuegos($('#almacen'), jugadores);
+            });
+        // Programamos el botón que retira el tablero de la mesa
+        $('#cancela_juego').click(function (ev) {
+            ev.preventDefault();
+
+            // Eliminamos el juego que haya seleccionado
+            $('.mesa').children('.juego').remove();
+        });
+    }
+}
+
 function mesasLibres() {
     let libre = true;
     let mesas = $('#sala .mesa');
@@ -416,4 +451,33 @@ function mesasLibres() {
     });
 
     return libre;
+}
+
+/**
+ * Función que recorre las mesas de la sala en busca de mesas que no cumplen con el número de sillas mínimo
+ * (no caben los jugadores) y bloquea la mesa para que no se pueda reservar
+ * @param {*} numero 
+ */
+function validaNumSillas(numero) {
+
+    let mesas = $('#sala .mesa');
+
+    $.each(mesas, function (i, v) {
+        
+        let mesa = $(v).data('mesa');
+        // Número de sillas igual o mayor que el número de personas
+        if (numero <= mesa.sillas) {
+            // Si no caben los jugadores en la mesa
+            $(v).css({
+                backgroundColor: 'red',
+            })
+            .data('reservada',true) //No es válida para colocar el juego
+            
+            if ($(v).attr('title') == undefined) {
+                // Si ya tiene el tooltip de 'RESERVADA' no le vamos a poner 'nº de jugadores'
+                $(v).attr('title','No caben los jugadores')// ToolTip que nos dice por qué no podemos colocar tablero
+            }
+        }
+    });
+
 }

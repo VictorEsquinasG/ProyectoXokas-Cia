@@ -1,9 +1,23 @@
 $(function () {
 
     let data = getReservas().responseJSON.reservas;
-    debugger
-    $('#dataTable_reservas').dataTable(    
-        {
+    
+    data.forEach(reserva => {
+        reserva.mesa.string +=" cm"; // A cada mesa le añadimos su unidad de medida (centímetros)
+        reserva.fecha_reserva.date = reserva.fecha_reserva.date.toLocaleString();
+    });
+    $('#dataTable_reservas').DataTable({
+        data:data,
+        columns: [
+            {data:"id"},
+            {data:"fecha_reserva.date"},
+            {data:"juego.nombre"},
+            {data:"mesa.string"},
+            {data:"usuario.nombre"}
+        ]
+    });
+    // $('#dataTable_reservas').dataTable(    
+        // {
         //para cambiar el lenguaje a español
         // "language": {
         //     "Lengthfenu": "Mostrar MENU registros",
@@ -20,6 +34,6 @@ $(function () {
         //     },
         //     "sProcessing": "Procesando..",
         // },
-        "data" : data
-    });
+        // "data" : data
+    // });
 });

@@ -16,7 +16,7 @@
 			<label for='selDisposicion'>Disposición de la sala</label>
 			
 			<select
-				name="dispo" id="selDisposicion" style="position: absolute;left: 50%;transform: translate(-50%, 0);">
+				name="dispo" id="selDisposicion" style="position: absolute;left: 50%;transform: translate(-50%, 0);top: 181px;">
 				{# Como mínimo tiene la estándar #}
 				<option value="-1" selected>Estándar</option>
 				{% for opt in disposiciones %}
@@ -25,8 +25,8 @@
 				<option value="crear">Crea dispo..</option>
 			</select>
 
-			{# <input type="button" style="float:right" id="creaMesa" value="CREAR">
-			 #}
+			<input type="button" style="float:right" id="creaMesa" value="CREAR MESA">
+			
 		</form>
 	</div>
 	<div id="container-mesas">
@@ -79,9 +79,9 @@
 		}
 	</style>
 
-	{# BASE #}
-	<script src="{{ asset('js/api/get.js') }}"></script>
+	{# SCRIPTS #}
 	<script src="{{ asset('js/mesas.js') }}"></script>
+	<script src="{{ asset('js/utils/datePicker.js') }}"></script>
 	<script src="{{ asset('js/creaMesa.js') }}"></script>
 
 {% endblock %}
