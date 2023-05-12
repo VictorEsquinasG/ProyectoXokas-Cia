@@ -68,7 +68,7 @@ $(function () {
 
         /* CREAMOS EL FORMULARIO */
         let selecTramos = Jplantilla.find('#selecTramos');
-        rellenaSelecTramos(selecTramos);
+        rellenaSelectTramos(selecTramos);
 
         let stock = Jplantilla.find('#almacen');
         rellenaStockJuegos(stock);
@@ -105,6 +105,7 @@ $(function () {
                             rellenaStockJuegos($('#almacen'), jugadores);
                             validaNumSillas(parseInt(jugadores));
                         });
+
                     // Programamos el botón que retira el tablero de la mesa
                     $('#cancela_juego').click(function (ev) {
                         ev.preventDefault();
@@ -112,6 +113,7 @@ $(function () {
                         // Eliminamos el juego que haya seleccionado
                         $('.mesa').children('.juego').remove();
                     });
+                    
                 })
             /* SE HACE LA RESERVA */
             .submit(function (e) {
@@ -148,7 +150,6 @@ $(function () {
             ;
 
     });
-
 
 
 });//fin
@@ -245,7 +246,7 @@ var plantilla =
 </form>
 `
 
-function rellenaSelecTramos(selecTramos) {
+function rellenaSelectTramos(selecTramos) {
     // Vaciamos el select
     selecTramos.html('');
     // Rellenamos
@@ -314,8 +315,7 @@ function rellenaStockJuegos(salaJuegos, numJugadores = null) {
                                 'width': ui.helper.prevObject.eq(0).data('juego').tablero.ancho + 'px',
                                 'height': ui.helper.prevObject.eq(0).data('juego').tablero.largo + 'px'
                             });
-                            // QUITAMOS EL SPAN INFORMATIVO
-                            $(this).eq(0).children().remove();
+                           
                         },
                         stop: function (ev, ui) {
                             // Devolvemos su opacidad a la mesa colocada
@@ -403,9 +403,10 @@ function reservadaHoy(div) {
 function mesaLibre(mesa) {
     // Si ya tiene un juego (para no permitir que arrastre varios juegos)
     let ocupada = !(mesasLibres()); // ninguna mesa puede estar ocupada
-    let reservada = (reservadaHoy(mesa))
+    let reservada = (reservadaHoy(mesa));
+    let disponible = (((mesa.data('reservada') == undefined) || !(mesa.data('reservada'))) && !(mesa.css("background-color") == 'rgb(255, 0, 0)'));
 
-    return (!ocupada && !reservada)
+    return (!ocupada && !reservada && disponible);
 }
 
 function muestraReserva() {
@@ -414,9 +415,6 @@ function muestraReserva() {
         new Sala($('#sala'));
         // Volvemos a buscar datepickers
         ConvierteDatePicker();
-
-        // Escondemos el input de los juegos
-        $(Jplantilla).find('#selecJuego').hide();
 
         // El numero de jugadores cambiará los juegos disponibles
         $('#numJugadores')
@@ -427,12 +425,15 @@ function muestraReserva() {
                 vaciaStock();
                 rellenaStockJuegos($('#almacen'), jugadores);
             });
+
         // Programamos el botón que retira el tablero de la mesa
         $('#cancela_juego').click(function (ev) {
             ev.preventDefault();
 
-            // Eliminamos el juego que haya seleccionado
-            $('.mesa').children('.juego').remove();
+            // Eliminamos el juego que haya seleccionado de la mesa (moviéndolo al almacen)
+            let jogo = $('.mesa').children('.juego');
+
+            $('#almacen').append(jogo);
         });
     }
 }
@@ -465,19 +466,32 @@ function validaNumSillas(numero) {
     $.each(mesas, function (i, v) {
         
         let mesa = $(v).data('mesa');
-        // Número de sillas igual o mayor que el número de personas
-        if (numero <= mesa.sillas) {
-            // Si no caben los jugadores en la mesa
-            $(v).css({
-                backgroundColor: 'red',
-            })
-            .data('reservada',true) //No es válida para colocar el juego
-            
-            if ($(v).attr('title') == undefined) {
-                // Si ya tiene el tooltip de 'RESERVADA' no le vamos a poner 'nº de jugadores'
-                $(v).attr('title','No caben los jugadores')// ToolTip que nos dice por qué no podemos colocar tablero
+        
+        // Si ya está reservada no hay que comprobar su número de sillas
+        if (($(v).data('reservada') == undefined || !$(v).data('reservada'))) {     
+            // Son más personas que sillas?   (Número de sillas igual o mayor que el número de personas)
+            if (numero > mesa.sillas) {
+                // Si no caben los jugadores en la mesa
+                $(v).css({
+                    backgroundColor: 'red',
+                })
+                //No es válida para colocar el juego
+                
+                if ($(v).attr('title') == undefined) {
+                    // Si ya tiene el tooltip de 'RESERVADA' no le vamos a poner 'nº de jugadores'
+                    $(v).attr('title','No caben los jugadores')// ToolTip que nos dice por qué no podemos colocar tablero
+                }
+            }
+            else
+            {
+                // Sobreescribimos por si cambiara el numero de sillas varias veces en el formulario
+                $(v).css({
+                    backgroundColor: 'green',
+                })
+                .attr('title','')
             }
         }
+
     });
 
 }

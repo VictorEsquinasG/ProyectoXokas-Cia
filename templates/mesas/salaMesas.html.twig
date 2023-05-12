@@ -12,11 +12,11 @@
 	{# En el body #}
 	<div class="col-12 p-2" style="height: fit-content; border: 1px solid gray;margin:0 5px;">
 
-		<form action="" method="post">
+		<form action="" method="post" id="header-form">
 			<label for='selDisposicion'>Disposición de la sala</label>
 			
 			<select
-				name="dispo" id="selDisposicion" style="position: absolute;left: 50%;transform: translate(-50%, 0);top: 181px;">
+				name="dispo" id="selDisposicion" style="position: absolute;left: 50%;transform: translate(-50%, 0);top: 183px;">
 				{# Como mínimo tiene la estándar #}
 				<option value="-1" selected>Estándar</option>
 				{% for opt in disposiciones %}
@@ -56,6 +56,9 @@
 			margin: 5px;
 			height: fit-content;
 		}
+		#header-form {
+			min-height: 25px;
+		}
 		#sala {
 			grid-row: fila;
 			grid-column: a;
@@ -76,6 +79,15 @@
 			display: flex;
 			flex-direction: row;
 			margin: 5px;
+		}
+		#creaMesa {
+			padding: 3px;
+			border-radius: 5px;
+			border-color: #00E36A;
+			color: #00E36A;
+			background-color: transparent;
+			margin: 5px;
+			margin-top: 0;
 		}
 	</style>
 

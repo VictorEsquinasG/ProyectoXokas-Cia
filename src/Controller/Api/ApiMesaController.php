@@ -77,6 +77,7 @@ class ApiMesaController extends AbstractController
             [
                 "id" => $id,
                 "message" => "Éxito al crear la mesa " . $id,
+                "mesa" => $mesa,
                 "Success" => true
             ],
             201

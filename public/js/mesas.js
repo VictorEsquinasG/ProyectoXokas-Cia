@@ -113,8 +113,8 @@ $(function () {
                     } else { /* Posición BASE / ESTÁNDAR */
                         // Su nueva posición
                         let obj = mesa.data('mesa');
-                        obj.pos_x = parseInt(mesa.left);
-                        obj.pos_y = parseInt(mesa.top);
+                        obj.pos_x = parseInt(mesa.left - sala.difx);
+                        obj.pos_y = parseInt(mesa.top - sala.dify);
                         // Actualizamos su posición en la BD
                         actualizaMesa(mesa);
                     }
@@ -132,37 +132,7 @@ $(function () {
 
 
 
-    function appendSala(sala, mesa) {
-        let objmesa;
-        if (mesa.data('mesa')) {
-            objmesa = mesa.data('mesa');
-        } else {
-            objmesa = mesa[0];
-
-            mesa.posicionYAnterior = parseInt(mesa.pos_y);
-            mesa.posicionXAnterior = parseInt(mesa.pos_x);
-        }
-
-        // Actualizamos su posición guardada en el objeto
-        if (mesa.top == undefined) {
-            mesa.top = (parseInt(objmesa.pos_y));
-            mesa.left = (parseInt(objmesa.pos_x));
-        }
-
-        sala
-            .addMesa(mesa);
-        // Cambiamos su estilo para poder visualizarla
-        mesa.css({
-            position: "absolute",
-            top: mesa.top + "px",
-            left: mesa.left + "px",
-            width: objmesa.ancho + "px",
-            height: objmesa.largo + "px"
-        })
-            /* ELIMINAMOS EL TEXTO INFORMATIVO */
-            .children('p').remove()
-            ;
-    }
+    
 
     function getDisposicion(alias, mesa_id) {
         var distribucion = null;
@@ -349,53 +319,7 @@ $(function () {
         });
     }
 
-    /**
-     * Almacena una mesa sin cambiar su posición en la base de datos
-     * @param {*} mesa 
-     */
-    function almacena(mesa) {
-        let obj = mesa.data('mesa');
-
-        /* CREAMOS EL TEXTO CON SU TAMAÑO */
-        var textTamanio = creaTextTamanio(obj);
-        /* LE DAMOS EL MISMO ESTILO A TODAS LAS MESAS E INDICAMOS SU TAMAÑO */
-        mesa.css({
-            position: "relative",
-            width: '100px',
-            height: '100px',
-            top: "0",
-            left: "0",
-        });
-
-        if (!(mesa.children('p').length > 0)) {
-            // No tiene la etiqueta
-            mesa.append(textTamanio);
-        }
-        /* CAMBIAMOS LOS ATRIBUTOS DEL OBJETO */
-        obj.pos_x = -1;
-        obj.pos_y = -1;
-        /* LO AÑADIMOS AL ALMACÉN */
-        $('#almacen').append(mesa);
-    }
-
-
-    function recoloca(mesa) {
-        // El DIV ya está creado
-        let obj = mesa.data('mesa');
-        var top = parseInt(obj.pos_y);
-        var left = parseInt(obj.pos_x);
-
-        if (top >= 0 && left >= 0) {
-            // Tiene posición => Se coloca de manera absoluta en la sala
-            appendSala($('#sala').data('sala'), mesa);
-        } else {
-            // No está colocado => Al almacén
-            almacena(mesa);
-        }
-
-        console.log("Recolocada " + obj.id);
-    }
-
+    
     function coloca(mesa) {
         var sala = $('#sala').data('sala');
         let caja = creaDiv(mesa);
@@ -712,4 +636,82 @@ function creaDatePicker() {
         // Buscamos #datePicker 
         ConvierteDatePicker();
     }
+}
+
+function recoloca(mesa) {
+    // El DIV ya está creado
+    let obj = mesa.data('mesa');
+    var top = parseInt(obj.pos_y);
+    var left = parseInt(obj.pos_x);
+
+    if (top >= 0 && left >= 0) {
+        // Tiene posición => Se coloca de manera absoluta en la sala
+        appendSala($('#sala').data('sala'), mesa);
+    } else {
+        // No está colocado => Al almacén
+        almacena(mesa);
+    }
+
+    console.log("Recolocada " + obj.id);
+}
+
+function appendSala(sala, mesa) {
+    let objmesa;
+    if (mesa.data('mesa')) {
+        objmesa = mesa.data('mesa');
+    } else {
+        objmesa = mesa[0];
+
+        mesa.posicionYAnterior = parseInt(mesa.pos_y);
+        mesa.posicionXAnterior = parseInt(mesa.pos_x);
+    }
+
+    // Actualizamos su posición guardada en el objeto
+    if (mesa.top == undefined) {
+        mesa.top = (parseInt(objmesa.pos_y));
+        mesa.left = (parseInt(objmesa.pos_x));
+    }
+
+    sala
+        .addMesa(mesa);
+    // Cambiamos su estilo para poder visualizarla
+    mesa.css({
+        position: "absolute",
+        top: mesa.top + "px",
+        left: mesa.left + "px",
+        width: objmesa.ancho + "px",
+        height: objmesa.largo + "px"
+    })
+        /* ELIMINAMOS EL TEXTO INFORMATIVO */
+        .children('p').remove()
+        ;
+}
+
+/**
+     * Almacena una mesa sin cambiar su posición en la base de datos
+     * @param {*} mesa 
+     */
+function almacena(mesa) {
+    let obj = mesa.data('mesa');
+
+    /* CREAMOS EL TEXTO CON SU TAMAÑO */
+    var textTamanio = creaTextTamanio(obj);
+    /* LE DAMOS EL MISMO ESTILO A TODAS LAS MESAS E INDICAMOS SU TAMAÑO */
+    mesa.css({
+        position: "relative",
+        width: '100px',
+        height: '100px',
+        top: "0",
+        left: "0",
+    });
+
+    if (!(mesa.children('p').length > 0)) {
+        // No tiene la etiqueta
+        mesa.append(textTamanio);
+    }
+    /* CAMBIAMOS LOS ATRIBUTOS DEL OBJETO */
+    obj.pos_x = -1;
+    obj.pos_y = -1;
+    /* LO AÑADIMOS AL ALMACÉN */
+    $('#almacen').append(mesa);
 }

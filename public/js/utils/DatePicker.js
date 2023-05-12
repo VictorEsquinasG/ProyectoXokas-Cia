@@ -131,8 +131,9 @@ function pintaMesas(mesas) {
         // Si está colocada en la sala la colocamos y si no la ignoramos (no hay almacén)
         if (objActual.pos_x > 0 && objActual.pos_y > 0) {
             // Cogemos la mesa
+            
             let caja =
-                $('<div/>')
+                $('<div>')
                     .attr('id', 'mesa_' + objActual.id)
                     .attr('class', 'mesa')
                     .data('mesa', objActual)
@@ -146,13 +147,13 @@ function pintaMesas(mesas) {
 
                         background: "green" // Por defecto está disponible
                     })
-                        /* LAS MESAS SON DROPABLES PARA DEJAR LOS TABLEROS */
+                    /* LAS MESAS SON DROPABLES PARA DEJAR LOS TABLEROS */
                     .droppable({
                         // Cuando se suelte en él
                         drop: function (ev, ui) {
                             let juego = ui.draggable;
                             let mesa = $(this);
-                
+
                             if (!posicionValidaTablero(juego, mesa)) {
                                 console.log("No puedes jugar en esa mesa");
                             } else {
@@ -160,29 +161,34 @@ function pintaMesas(mesas) {
                                 let objJuego = juego.data('juego');
                                 // Le damos el estilo
                                 juego.css({
-                                    'position':'relative',
+                                    'position': 'relative',
                                     /* Lo ponemos en medio de la mesa */
-                                    'top': ((objMesa.largo)/2),
-                                    'left':((objMesa.ancho)/2),
+                                    'top': ((objMesa.largo) / 2),
+                                    'left': ((objMesa.ancho) / 2),
                                     /* Le dejamos con su tamaño real */
                                     'width': objJuego.tablero.ancho + 'px',
                                     'height': objJuego.tablero.largo + 'px'
-                                });
-                                
+                                })
+                                ;
+
+                                // QUITAMOS EL SPAN INFORMATIVO
+                                juego.eq(0).children().remove();
                                 // Lo añadimos a la mesa
                                 juego.appendTo(mesa);
                                 // Lo marcamos en el select oculto
-                                $('#formu_reserva').data("Juego",objJuego.id);
-                                $('#formu_reserva').data("Mesa",objMesa.id);
+                                $('#formu_reserva').data("Juego", objJuego.id);
+                                $('#formu_reserva').data("Mesa", objMesa.id);
 
                             }
                         }
-                
+
                     })
                 ;
 
+                let dateValue = $('#datePicker').val().split('/');
+                let fechaDada = dateValue[2]+'-'+dateValue[1]+'-'+dateValue[0];
             // Estilo de la mesa si está reservada
-            marcaReservada(caja,$('#datePicker').val(),$('#selecTramos').val());
+            marcaReservada(caja, fechaDada, $('#selecTramos').val());
 
             // La pintamos 
             sala.addMesa(caja);
@@ -195,7 +201,7 @@ function pintaMesas(mesas) {
  */
 function vaciaSala() {
     // Eliminamos todas las mesas de la página
-    let mesasSala = $('#sala .mesa');
+   /*  let mesasSala = $('#sala .mesa');
     let sala = $('#sala').data('sala');
     $.each(mesasSala, function (i, div) {
         // Cogemos la mesa
@@ -203,13 +209,16 @@ function vaciaSala() {
 
         // Borramos las mesas
         $('#sala').children('.mesa[id=mesa_' + mesa.id + ']').remove();
-        
+
         // Borramos la mesa de la sala
         sala.removeMesa(mesa);
-    });
+    }); */
+
+    let sala = $('#sala');
+    sala.empty();
 }
 
-function marcaReservada(div,fecha,tramo) {
+function marcaReservada(div, fecha, tramo) {
     // Cogemos la mesa
     let mesa = div.data('mesa');
     // Miramos entre sus reservas
@@ -229,8 +238,8 @@ function marcaReservada(div,fecha,tramo) {
                 // Está reservada y se ve de manera visual
                 background: "red"
             })
-            .attr('title','RESERVADA') // ToolTip que explica porqué no podemos reservar
-            .data('reservada',true)
+                .attr('title', 'RESERVADA') // ToolTip que explica porqué no podemos reservar
+                .data('reservada', true)
         }
     })
 }

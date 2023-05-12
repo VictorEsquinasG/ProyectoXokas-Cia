@@ -40,7 +40,7 @@ class Sala {
         let mesas = this.mesas;
         // Lo borramos del array mesas
         mesas.forEach((meson,i) => {
-            
+            debugger
             let id_actual = meson.data('mesa').id;
             if (id_actual == id) {
                 this.mesas.splice(i,1);

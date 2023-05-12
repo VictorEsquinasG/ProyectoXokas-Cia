@@ -46,30 +46,33 @@ function ModalMesa() {
             let mesita = new Mesa(null, ancho, largo, sillas, -1, -1, null, null);
             // Guardamos la mesa creada en formato JSON
             mesa.mesa = {
-                "mesa": {
-                    "id": mesita.id,
-                    "ancho": mesita.ancho,
-                    "largo": mesita.largo,
-                    "sillas": mesita.sillas,
-                    "posicion_x": mesita.pos_x,
-                    "posicion_y": mesita.pos_y,
-                }
+
+                "id": mesita.id,
+                "ancho": mesita.ancho,
+                "largo": mesita.largo,
+                "sillas": mesita.sillas,
+                "posicion_x": mesita.pos_x,
+                "posicion_y": mesita.pos_y,
+
             };
             // La mandamos a crear
-            $.ajax({
+            let obj = $.ajax({
                 type: "POST",
-                url: "/api/mesa/",
+                url: "/api/mesa",
                 data: JSON.stringify(mesa),
                 dataType: "json",
+                async: false,
                 success: function (response) {
                     console.log(response);
+                    return response.mesa;
                 }
             });
+           
 
             // Creamos la mesa sin recargar la página
             let textoInfo = creaTextTamanio(mesita);
 
-            $('<div>')
+            let caja = $('<div>')
                 .attr('class', 'mesa')
                 .css({
                     position: "relative",
@@ -78,8 +81,30 @@ function ModalMesa() {
                     top: 0,
                     left: 0,
                 })
+                .data('mesa',obj)
                 .append(textoInfo)
-                .appendTo('#almacen');
+                .draggable({
+                    revert: true,
+                    revertDuration: 0,
+                    helper: 'clone',
+                    accept: '#almacen, #sala',
+                    cursor: "move",
+                    start: function (ev, ui) {
+                        // Hacemos parcialmente transparente la mesa que estamos moviendo
+                        ui.helper.prevObject.css({ 'opacity': '50%' });
+
+                        ui.helper.css({ 'border': '3.5px dotted #3de051' });
+                        // QUITAMOS LA PAPELERA
+                        $(this).children().eq(0).css({ display: 'none' });
+                    },
+                    stop: function (ev, ui) {
+                        // Devolvemos su opacidad a la mesa colocada
+                        $(ui.helper.prevObject[0]).css({ 'opacity': '100%' })
+                    }
+                })
+                ;
+
+                recoloca(caja);
 
             // Cerramos el dialog
             $('#modal').remove();
